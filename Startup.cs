@@ -22,11 +22,10 @@ namespace Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddControllersWithViews();
-            //services.AddSingleton<IConfiguration>(Configuration);
-            //services.AddDbContext<DB_QLGHContext>(options =>
-            //    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddSingleton<IConfiguration>(Configuration);
+            services.AddDbContext<DB_QLGHContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             // In production, the React files will be served from this directory
 
             services.AddSpaStaticFiles(configuration =>
@@ -62,10 +61,10 @@ namespace Web
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
             });
-            app.UseCors(x => x
-              .AllowAnyOrigin()//web api neu co chính thức JwtBearerDefaults thì phải cùng sever cùng host cùng domain cho vào.khi có lênh này thì thì cho phép mọi nguồn gốc
-              .AllowAnyMethod()//cho phép giao thức gửi http 
-              .AllowAnyHeader());//cho phep moi header trong bên thứ 3
+            //app.UseCors(x => x
+            //  .AllowAnyOrigin()//web api neu co chính thức JwtBearerDefaults thì phải cùng sever cùng host cùng domain cho vào.khi có lênh này thì thì cho phép mọi nguồn gốc
+            //  .AllowAnyMethod()//cho phép giao thức gửi http 
+            //  .AllowAnyHeader());//cho phep moi header trong bên thứ 3
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "ClientApp";
