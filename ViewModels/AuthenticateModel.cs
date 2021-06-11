@@ -1,0 +1,19 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+
+namespace Web.ViewModels
+{
+    public class AuthenticateModel
+    {
+        [Required]
+        public string Hoten { get; set; }
+        [Required]
+        public string TaiKhoan { get; set; }
+
+        [Required]
+        public string MatKhau { get; set; }
+    }
+}

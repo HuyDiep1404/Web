@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Web.Models;
+using Web.Services;
 
 namespace Web
 {
@@ -23,7 +24,8 @@ namespace Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddSingleton<IConfiguration>(Configuration);
+            services.AddSingleton(Configuration);
+            services.AddScoped<IDangnhap, Dangnhap>();
             services.AddDbContext<DB_QLGHContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             // In production, the React files will be served from this directory
