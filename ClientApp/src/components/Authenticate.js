@@ -1,13 +1,27 @@
-import React, { useState } from 'react';
+import React,  { Component }  from 'react';
 import PropTypes from 'prop-types';
-import styles from './Authenticate.module.less';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import FetchApi from './../../Api';
+import FetchApi from './../../src/Api';
  
 
-export default function Authenticate() {
+export class Authenticate extends Component {
+  constructor(props) {
+    super(props);
+    this.state={
+      customer :{
+      MaKh:null,
+    Hoten:"",
+    TaiKhoan:"",
+    MatKhau:null,
+    message:""
+
+    }};
+   
+  }
+  render() {
+  
   const useStyles = makeStyles((theme) => ({
     root: {
       '& > *': {
@@ -18,48 +32,50 @@ export default function Authenticate() {
     },
   }));
   const classes = useStyles();
-  const [customer, setCustomer] = useState({
-      Hoten:null,
-    TaiKhoan:"",
-    MatKhau:null,
-    message:""
-  });
+
   
 
-  const handleTextFieldChange1 = function(e) {
-      const data = customer;
+  const handleTextFieldChange1 = (e) => {
+      const data = this.state.customer;
     data.TaiKhoan = e.target.value;
-      setCustomer(data);
+    this.setState(data.TaiKhoan);
 }
 
-const handleTextFieldChange2 = function(e) {
-  const data = user;
+const handleTextFieldChange2 = (e) => {
+  const data = this.state.customer;
   data.MatKhau=e.target.value;// e.target.value:nhan du lieu nhap trên textbox
-  setCustomer(data);
+  this.setState(data.MatKhau);
 }
-const callback=(data)=>{
-    if({...customer}.Hoten==null)
+const callback = (data) => {
+    if(this.state.customer.MaKh==null)
     {    
-      const newData = {...customer};
-        newData.message=data.message;
-        setCustomer(newData);
-      console.log({...customer}.message);
+      const newData = this.state.customer;
+        newData.MaKh=data.MaKh;
+        newData.Hoten=data.Hoten;
+        this.setState(newData);
+      console.log(this.state.customer);
   }
 }
-const handleSubmit=function (e) {
+
+
+  
+ const handleSubmit = (e)  =>  {
  
   //e.preventDefault();
+  
 FetchApi('GET', 'https://localhost:5001/Values/authenticate', 
 { 'Content-Type': 'application/json' },JSON.stringify({
-  TaiKhoan:customer.TaiKhoan,
-  MatKhau:customer.MatKhau
+  TaiKhoan: this.state.customer.TaiKhoan,
+  MatKhau:this.state.customer.MatKhau
 }), callback);
 
+  
 
-console.log('You clicked submit.'+customer.TaiKhoan+' password '+customer.MatKhau);
+
+console.log('You clicked submit.'+this.state.customer.TaiKhoan+' password '+this.state.customer.MatKhau);
 }
 
-//onChange la su thay đổi trên text box
+
   return (
        <div>
        <form className={classes.root} noValidate autoComplete="off"  >
@@ -70,15 +86,13 @@ console.log('You clicked submit.'+customer.TaiKhoan+' password '+customer.MatKha
       </Button>
       
     </form>
-    
-    <label> {{...customer}.message} </label>
   </div>
    
         
          
   );
   
-}
+}}
 
 Authenticate.propTypes = {};
 

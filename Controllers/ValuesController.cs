@@ -33,7 +33,13 @@ namespace Web.Controllers
             if (custumer == null)
                 return BadRequest(new { message = "Username or password is incorrect" });
             else
-                return RedirectToAction("Shopb14", new { Hoten = custumer.Hoten });
+                return Ok(new
+
+                {
+                    MaKh = custumer.MaKh,
+                    Hoten = custumer.Hoten
+                }
+                    ) ;
             
             
         }
