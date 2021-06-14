@@ -8,8 +8,7 @@ namespace Web.ViewModels
 {
     public class AuthenticateModel
     {
-        [Required]
-        public string Hoten { get; set; }
+       
         [Required]
         public string TaiKhoan { get; set; }
 

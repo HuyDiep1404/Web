@@ -8,12 +8,13 @@ namespace Web.ViewModels
 {
     public class RegisterModel
     {
+
         [Required]
         public string Hoten { get; set; }
         [Required]
-        public DateTime? NgaySinh { get; set; }
+        public string NgaySinh { get; set; }
         [Required]
-        public bool? GioiTinh { get; set; }
+        public string GioiTinh { get; set; }
         [Required]
         public string SoDt { get; set; }
         [Required]
