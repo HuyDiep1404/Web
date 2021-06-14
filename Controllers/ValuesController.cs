@@ -9,6 +9,7 @@ using Web.Models;
 using Microsoft.Extensions.Configuration;
 using Web.Services;
 using Web.ViewModels;
+using Web.Book;
 
 namespace Web.Controllers
 {
@@ -39,13 +40,13 @@ namespace Web.Controllers
                     MaKh = custumer.MaKh,
                     Hoten = custumer.Hoten
                 }
-                    ) ;
+                    );
 
 
         }
-        
 
-         [HttpPost("create")]
+
+        [HttpPost("create")]
         public IActionResult Create([FromBody] RegisterModel model)//RegisterModel là 1 viewmoel,
         {
             int c = _dangnhap.Get().Count();
@@ -54,8 +55,8 @@ namespace Web.Controllers
             {
                 /* var c = hdrepo.GetDonhang().Count();
              var ms = "MHD0" + (c + 1);*/
-                
-            MaKh = "MK0"+(c+1),
+
+                MaKh = "MK0" + (c + 1),
                 Hoten = model.Hoten,
                 NgaySinh = DateTime.Parse(model.NgaySinh),
                 GioiTinh = Boolean.Parse(model.GioiTinh),
@@ -80,6 +81,9 @@ namespace Web.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        //[HttpPost("GetHeaderAndpublishingcompany")]
+
+
 
     }
 }

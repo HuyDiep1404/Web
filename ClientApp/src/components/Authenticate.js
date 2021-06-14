@@ -32,73 +32,95 @@ export class Authenticate extends  React.Component {
     MatKhau:null,
     message:""
     }};
-    this.myFunction = this.myFunction.bind(this);
+    this.myFunction1= this.myFunction1.bind(this);
+    this.myFunction2= this.myFunction2.bind(this);
+    this.handleSubmit= this.handleSubmit.bind(this);
+    
+ 
   }
-  myFunction(param){
+  callback = (data) => {
+    const newData = this.state;
+    newData.customer.message=data.message;
+    this.setState(newData); 
+  if(this.state.customer.message==="")
+  {
+    if(this.state.customer.MaKh==null)
+    {    
+     
+      const newData = this.state;
+        newData.customer.MaKh=data.MaKh;
+        newData.customer.Hoten=data.Hoten;
+        this.setState(newData);
+      console.log(this.state.customer);
+
+      this.props.history.push("/home");
+      return (        
+          <Alert severity="success">This is a success alert — check it out!</Alert>
+    );
+  }
+  }
+  else{
+
+  }
+  return (
+    <div className={classN.root}>
+      <Alert severity="error"> This is an error alert — check it out!</Alert>
+      </div>
+  );
+  }
+  myFunction1(param){
     const data = this.state;
-    data.customer.TaiKhoan=param;// e.target.value:nhan du lieu nhap trên textbox
+    data.customer.TaiKhoan=param;
+    // e.target.value:nhan du lieu nhap trên textbox
     this.setState(data);
     console.log(param);
     console.log(data);
 }
+myFunction2(param){
+  const data = this.state;
+  data.customer.MatKhau=param;// e.target.value:nhan du lieu nhap trên textbox
+  this.setState(data);
+  console.log(param);
+  console.log(data);
+}
+handleSubmit()
+{
+  FetchApi('POST', 'https://localhost:5001/Values/authenticate', 
+  { 'Content-Type': 'application/json' },JSON.stringify({
+  TaiKhoan:this.state.customer.TaiKhoan,
+  MatKhau:this.state.customer.MatKhau
+  }), this.callback);
+  
+  console.log('You clicked submit.'+this.state.customer.TaiKhoan+' password '+this.state.customer.MatKhau);
+}
+
+
   
  render() {
  
   return (
-        <FormName  myFunction={this.myFunction} />
+    <div>
+        <FormName  myFunction1={this.myFunction1} myFunction2={this.myFunction2}
+        handleSubmit={this.handleSubmit} />
+        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="success">
+          This is a success message!
+        </Alert>
+      </Snackbar>
+      </div>
+
   );
   
   }}
-function FormName(){
+function FormName(props){
   const classN=useStyles();
-  const handleTextFieldChange1 = (e) => this.props.myFunction(e.target.value);
+  const handleTextFieldChange1 = (e) => props.myFunction1(e.target.value);
 
-const handleTextFieldChange2 = (e) => {
-const data = this.state;
-data.customer.MatKhau=e.target.value;// e.target.value:nhan du lieu nhap trên textbox
-this.setState(data);
-}
-const callback = (data) => {
-  const newData = this.state;
-  newData.customer.message=data.message;
-  this.setState(newData);
-if(this.state.customer.message==="")
-{
-  if(this.state.customer.MaKh==null)
-  {    
-   
-    const newData = this.state;
-      newData.customer.MaKh=data.MaKh;
-      newData.customer.Hoten=data.Hoten;
-      this.setState(newData);
-    console.log(this.state.customer);
-    this.props.history.push("/home");
-    return (
-      <div className={classN.root}>
-        <Alert severity="success">This is a success alert — check it out!</Alert>
-        </div>
-  );
-}
-}
-return (
-  <div className={classN.root}>
-    <Alert severity="error">This is an error alert — check it out!</Alert>
-    </div>
-);
-}
+const handleTextFieldChange2 = (e) => props.myFunction2(e.target.value);
+const handleSubmit = ()  =>  props.handleSubmit();
 
-const handleSubmit = (e)  =>  {
 
-//e.preventDefault();
 
-FetchApi('POST', 'https://localhost:5001/Values/authenticate', 
-{ 'Content-Type': 'application/json' },JSON.stringify({
-TaiKhoan: this.state.customer.TaiKhoan,
-MatKhau:this.state.customer.MatKhau
-}), callback);
-
-console.log('You clicked submit.'+this.state.customer.TaiKhoan+' password '+this.state.customer.MatKhau);
-}
   return (<div>
       <form  className={classN.root} noValidate autoComplete="off"  >
       <TextField id="standard-basic" label="Tài khoản" onChange={handleTextFieldChange1} />
