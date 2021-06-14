@@ -12,5 +12,6 @@ namespace Web.Services
 
 
         KhachHangb2 Create(KhachHangb2 customer, string mk);
+        IEnumerable<KhachHangb2> Get();
     }
 }

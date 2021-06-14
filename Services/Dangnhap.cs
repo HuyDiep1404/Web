@@ -48,5 +48,9 @@ namespace Web.Services
            
             return customer;
         }
+        public IEnumerable<KhachHangb2> Get()
+        {          
+            return _context.KhachHangb2s;
+        }
     }
 }

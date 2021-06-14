@@ -25,7 +25,7 @@ namespace Web.Controllers
             _dangnhap = dangnhap;
             DBContext = dbContext;
         }
-        [HttpGet("authenticate")]
+        [HttpPost("authenticate")]
         public IActionResult Authenticate([FromBody] AuthenticateModel model)// hàm Authenticate như hàm login
         {
             var custumer = _dangnhap.Authenticate(model.TaiKhoan, model.MatKhau);//nhận username và password nhập vào từ body
@@ -33,11 +33,53 @@ namespace Web.Controllers
             if (custumer == null)
                 return BadRequest(new { message = "Username or password is incorrect" });
             else
-                return RedirectToAction("Shopb14", new { Hoten = custumer.Hoten });
-            
-            
+                return Ok(new
+
+                {
+                    MaKh = custumer.MaKh,
+                    Hoten = custumer.Hoten
+                }
+                    ) ;
+
+
         }
-      
+        
+
+         [HttpPost("create")]
+        public IActionResult Create([FromBody] RegisterModel model)//RegisterModel là 1 viewmoel,
+        {
+            int c = _dangnhap.Get().Count();
+            //int k = _dangnhap.Get().Count();
+            var customer = new KhachHangb2()//tao ra mot model gan gia tri cua viewmodel bang bien model
+            {
+                /* var c = hdrepo.GetDonhang().Count();
+             var ms = "MHD0" + (c + 1);*/
+                
+            MaKh = "MK0"+(c+1),
+                Hoten = model.Hoten,
+                NgaySinh = DateTime.Parse(model.NgaySinh),
+                GioiTinh = Boolean.Parse(model.GioiTinh),
+                SoDt = model.SoDt,
+                TaiKhoan = model.TaiKhoan,
+                MatKhau = model.MatKhau,
+                Email = model.Email,
+                DiaChi = model.DiaChi
+            };
+            try
+            {
+                // create user
+                _dangnhap.Create(customer, model.MatKhau);
+                return Ok(new
+                {
+                    message = "da tao thanh cong " + customer.Hoten//phai tao ra 1 đối tượng 
+                });
+            }
+            catch (Exception ex)
+            {
+                // return error message if there was an exception
+                return BadRequest(ex.Message);
+            }
+        }
 
     }
 }
