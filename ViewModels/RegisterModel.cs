@@ -9,12 +9,13 @@ namespace Web.ViewModels
     public class RegisterModel
     {
 
+
         [Required]
         public string Hoten { get; set; }
         [Required]
-        public string NgaySinh { get; set; }
+        public DateTime NgaySinh { get; set; }
         [Required]
-        public string GioiTinh { get; set; }
+        public bool GioiTinh { get; set; }
         [Required]
         public string SoDt { get; set; }
         [Required]
