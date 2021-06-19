@@ -29,17 +29,19 @@ namespace Web.Services
             // authentication successful
             return customer;
         }
-        public KhachHangb2 Create(KhachHangb2 customer, string mk)
+        public KhachHangb2 Create(KhachHangb2 customer)
         {
-            if (string.IsNullOrWhiteSpace(mk))
-                throw new Exception("Password is required");
+      
 
             if (_context.KhachHangb2s.Any(x => x.TaiKhoan == customer.TaiKhoan))
-                //<<<<<<< HEAD
-                throw new Exception("Username \"" + customer.TaiKhoan + "\" is already taken");
+                
+                throw new Exception("Taì Khoản " + customer.TaiKhoan + " đã tồn tại");
             if (_context.KhachHangb2s.Any(x => x.SoDt == customer.SoDt))
-                //<<<<<<< HEAD
-                throw new Exception("numberphone \"" + customer.SoDt + "\" is already taken");
+               
+                throw new Exception("numberphone " + customer.SoDt + " đã được sử dụng");
+            if (_context.KhachHangb2s.Any(x => x.Email == customer.Email))
+               
+                throw new Exception("Email " + customer.Email + " đã được sử dụng");
 
 
             _context.KhachHangb2s.Add(customer);

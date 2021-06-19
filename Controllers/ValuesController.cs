@@ -58,8 +58,8 @@ namespace Web.Controllers
 
                 MaKh = "MK0" + (c + 1),
                 Hoten = model.Hoten,
-                NgaySinh = DateTime.Parse(model.NgaySinh),
-                GioiTinh = Boolean.Parse(model.GioiTinh),
+                NgaySinh = model.NgaySinh,
+                GioiTinh = model.GioiTinh,
                 SoDt = model.SoDt,
                 TaiKhoan = model.TaiKhoan,
                 MatKhau = model.MatKhau,
@@ -69,16 +69,19 @@ namespace Web.Controllers
             try
             {
                 // create user
-                _dangnhap.Create(customer, model.MatKhau);
+                _dangnhap.Create(customer);
                 return Ok(new
                 {
-                    message = "da tao thanh cong " + customer.Hoten//phai tao ra 1 đối tượng 
-                });
+                    message = "đã tạo thành công" //phai tao ra 1 đối tượng 
+                }) ;
             }
             catch (Exception ex)
             {
                 // return error message if there was an exception
-                return BadRequest(ex.Message);
+                return BadRequest(new
+                {
+                    message = ex.Message //phai tao ra 1 đối tượng 
+                });
             }
         }
         //[HttpPost("GetHeaderAndpublishingcompany")]

@@ -18,7 +18,7 @@ namespace Web.Book
         {
             return _context.Sach1s.Where(x => (x.MaChuDe == mcd || mcd == null) || (x.MaNxb == mnxb || mnxb == null));
         }
-        public IEnumerable<Sach1> GetSTCDVaNXB(string masp=null)
+        public IEnumerable<Sach1> GetMaSP(string masp=null)
         {
             return _context.Sach1s.Where(x => x.MaSp == masp || masp == null);
         }
