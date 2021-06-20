@@ -122,6 +122,7 @@ data.customer.TaiKhoan=param;
 this.setState(data);
 
 }
+//check khi bat dau nhap data
 myFunction6(param){
   const data = this.state;
   data.customer.MatKhau=param;// e.target.value:nhan du lieu nhap trên textbox
@@ -257,6 +258,7 @@ checkemail=()=>
    this.setState(newData); 
 
 }
+//kiem tra khi click button
  checkpassword=()=>
         {
           const data = this.state;

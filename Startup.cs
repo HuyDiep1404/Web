@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Web.Models;
 using Web.Services;
+using Web.Book;
 
 namespace Web
 {
@@ -31,6 +32,7 @@ namespace Web
             });
             services.AddSingleton(Configuration);
             services.AddScoped<IDangnhap, Dangnhap>();
+            services.AddScoped<IInfo, Info>();
             services.AddDbContext<DB_QLGHContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             // In production, the React files will be served from this directory

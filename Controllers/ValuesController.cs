@@ -17,12 +17,13 @@ namespace Web.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
+        private IInfo _info;
         private IDangnhap _dangnhap;
         private DB_QLGHContext DBContext;
-        public ValuesController(DB_QLGHContext dbContext,
+        public ValuesController(DB_QLGHContext dbContext, IInfo info,
             IDangnhap dangnhap)
         {
-
+            _info = info;
             _dangnhap = dangnhap;
             DBContext = dbContext;
         }
@@ -84,9 +85,46 @@ namespace Web.Controllers
                 });
             }
         }
-        //[HttpPost("GetHeaderAndpublishingcompany")]
+        //[HttpPost("getCDVaNXB")]
+        //public IActionResult GetCDVaNXB([FromBody] BookModel model)
+        //{
+        //    var book = _info.GetCDVaNXB(model.MaChuDe, model.MaNxb);
+        //    if (book == null)
+        //        return BadRequest(new { message = "khong tim thấy quyển sách cần tìm theo mã chủ đề và mã nhà xuất bản" });
+        //    else
+        //        return Ok(book);
 
 
+        //}
+        [HttpGet("getCDVaNXB")]
+        public IActionResult GetCDVaNXB(string macd = null, string maxb=null)
+        {
+            var book = _info.GetCDVaNXB(macd, maxb);
+            if (book.Any())
+                return Ok(book);
+            else
+            return BadRequest(new { message = "khong tim thấy quyển sách cần tìm theo mã chủ đề và mã nhà xuất bản" });
+            
+                
+
+
+        }
+        [HttpGet("getChuDe")]
+        public IActionResult GetChuDe()
+        {
+            var chude = _info.GetChuDe();
+         
+                return Ok(chude);
+
+        }
+        [HttpGet("getMaNXB")]
+        public IActionResult GetMaNXB()
+        {
+            var nxb = _info.GetMaNXB();
+            
+                return Ok(nxb);
+
+        }
 
     }
 }
