@@ -104,18 +104,16 @@ namespace Web.Controllers
                 return Ok(book);
             else
             return BadRequest(new { message = "khong tim thấy quyển sách cần tìm theo mã chủ đề và mã nhà xuất bản" });
-            
-                
-
 
         }
         [HttpGet("getChuDe")]
         public IActionResult GetChuDe()
         {
             var chude = _info.GetChuDe();
-         
+           
                 return Ok(chude);
 
+         
         }
         [HttpGet("getMaNXB")]
         public IActionResult GetMaNXB()

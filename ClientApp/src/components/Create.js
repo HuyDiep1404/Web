@@ -90,28 +90,26 @@ export class Create extends React.Component {
 myFunction1(param){
   const data = this.state;
   data.customer.Hoten=param;
-  // e.target.value:nhan du lieu nhap trên textbox
+ 
   this.setState(data);
  
 }
 myFunction2(param){
   const data = this.state;
   data.customer.NgaySinh=param;
-  // e.target.value:nhan du lieu nhap trên textbox
+
   this.setState(data);
 
 }
 myFunction3(param){
   const data = this.state;
   data.customer.GioiTinh=param;
-  // e.target.value:nhan du lieu nhap trên textbox
-  this.setState(data);
+   this.setState(data);
   
 }
 myFunction4(param){
   const data = this.state;
   data.customer.SoDt=param;
-  // e.target.value:nhan du lieu nhap trên textbox
   this.setState(data);
  
 }

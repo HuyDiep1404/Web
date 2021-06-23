@@ -103,22 +103,20 @@ data la gia tri ma api tra ve. khi api tra ve*/
     data.customer.TaiKhoan=param;
     // e.target.value:nhan du lieu nhap trên textbox
     this.setState(data);
-    console.log(param);
-    console.log(data);
+   
 }
 myFunction2(param){
   const data = this.state;
   data.customer.MatKhau=param;// e.target.value:nhan du lieu nhap trên textbox
   this.setState(data);
-  console.log(param);
-  console.log(data);
+
 }
 handleClickShowPassword() {
   const data = this.state;
   data.customer.showPassword=!data.customer.showPassword;// e.target.value:nhan du lieu nhap trên textbox
   this.setState(data);
 
-  console.log(data);
+ 
 };
 
 handleSubmit()

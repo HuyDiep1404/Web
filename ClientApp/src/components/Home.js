@@ -19,6 +19,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 
 const useStyles = makeStyles((theme) => ({
+  
+
   root: {
     display: 'flex',
     flexWrap: 'wrap',
@@ -44,18 +46,26 @@ export class Home extends React.Component {
     super(props);
     this.state={
       customer:null,
-      book :[],
+      book :[
+        
+      ],
+      MaChuDe:null,
+      click:false,
+      MaXuatBan:null,
+      
      Api: {
-    message:""
+    message:"",
 
     },
-    ChuDe :[],
-    XuatBan:
-    { MaNxb:null,   
-      TenXb:""
-    }
+    ChuDe :[]
+      
+  ,
+    XuatBan:[]
+    
   }
-  this.handleClose=this.handleClose.bind(this);
+  this.myFunction1 = this.myFunction1.bind(this);
+  this.myFunction2 = this.myFunction2.bind(this);
+  this.handleClose = this.handleClose.bind(this);
 }
   handleClose( event,reason){
     if (reason === 'clickaway') {
@@ -65,6 +75,40 @@ export class Home extends React.Component {
     data.customer.open=false;
     this.setState(data);
   };
+
+
+  myFunction1(param)
+  {
+    const newData = this.state;   
+    newData.MaChuDe=param;
+    newData.click=true;
+    this.setState(newData);
+    this.props.history.replace({
+      pathname: '/',
+      state: {
+        data: this.props.history.location.state?.data,
+        chude: this.state.MaChuDe,//truyen data  
+        
+      }
+    })
+    
+  }
+ 
+  
+  myFunction2(param)
+  {
+    const newData = this.state;   
+    newData.MaXuatBan=param;
+    newData.click=true;
+    this.setState(newData);
+    this.props.history.replace({
+      pathname: '/',
+      state: {
+        data: this.props.history.location.state?.data,
+       xuatban: this.state.MaXuatBan
+      }
+    })
+  }
    callback=(data) =>{ 
       
     if(data.message)
@@ -72,15 +116,35 @@ export class Home extends React.Component {
           
     }  else{
          const newData = this.state;// {...items}còn là 1 bộ hẹn giờ nếu ta không kèm theo điều kiện thì nó sẽ lập vô hạn      
-      newData.book=data;//vì items ban đầu chưa có gì nên ta phả gán newData.contacts=data để truyền data vào      
+      newData.book=data;
+      
+      //vì items ban đầu chưa có gì nên ta phả gán newData.contacts=data để truyền data vào      
       this.setState(newData);//cập nhật lại dư liệu của cái trạng thái      
       
     }
     }
+    
+    callback1=(data)=>{ 
+    
+           const newData = this.state;// {...items}còn là 1 bộ hẹn giờ nếu ta không kèm theo điều kiện thì nó sẽ lập vô hạn      
+        newData.ChuDe=data;
+       
+        //vì items ban đầu chưa có gì nên ta phả gán newData.contacts=data để truyền data vào      
+        this.setState(newData);//cập nhật lại dư liệu của cái trạng thái      
+      
+      }
+      callback2=(data)=>{ 
+    
+           const newData = this.state;// {...items}còn là 1 bộ hẹn giờ nếu ta không kèm theo điều kiện thì nó sẽ lập vô hạn      
+        newData.XuatBan=data;
+        //vì items ban đầu chưa có gì nên ta phả gán newData.contacts=data để truyền data vào      
+        this.setState(newData);//cập nhật lại dư liệu của cái trạng thái      
+      
+      }
     checkdata()
     { 
     const data = this.props.history.location.state?.data;//nhan data tu trang khac
-  
+    
     if(data === null || data === undefined)
     {
       this.props.history.push("/authenticate");/*cach chuyen qua 1 trang khac */
@@ -88,19 +152,63 @@ export class Home extends React.Component {
   }   
 callapi()
     {
-    FetchApi('GET', 'https://localhost:5001/Values/getCDVaNXB', 
+      const data1 = this.props.history.location.state?.chude;
+      const data = this.props.history.location.state?.xuatban;
+if(data1 != null && this.state.click == true )
+{
+  const data=this.state;
+  data.click=false;
+  this.setState(data);
+      FetchApi('GET', `https://localhost:5001/Values/getCDVaNXB?macd=${data1}`, 
+      { 'Content-Type': 'application/json' },null, this.callback);
+}
+if(data != null && this.state.click == true )
+{
+  const data=this.state;
+  data.click=false;
+  this.setState(data);
+  FetchApi('GET', `https://localhost:5001/Values/getCDVaNXB?manxb=${data}`, 
   { 'Content-Type': 'application/json' },null, this.callback);
+}
+
+  if(this.state.book.length == 0)
+  {
+  FetchApi('GET', 'https://localhost:5001/Values/getCDVaNXB', 
+  { 'Content-Type': 'application/json' },null, this.callback);
+  }
+  
+
     }
+    callChuDe()
+    {
+      if(this.state.ChuDe.length == 0)
+    FetchApi('GET', 'https://localhost:5001/Values/getChuDe', 
+  { 'Content-Type': 'application/json' },null, this.callback1);
     
+  }
+    callXuatBan()
+    {
+      if(this.state.XuatBan.length == 0)
+      {
+    FetchApi('GET', 'https://localhost:5001/Values/getMaNXB', 
+  { 'Content-Type': 'application/json' },null, this.callback2);
+    }
+  }
+   //ham được goi trong render luôn luôn cập nhật 
   render () {
     const cus=this.props.history.location.state?.data;
+
    //console.log(cus);
     this.checkdata();
     this.callapi();
+    this.callChuDe();
+    this.callXuatBan();
     return (
       <div>
-          <FormName book = {this.state.book} customer={cus} ChuDe={this.state.ChuDe}/>        
-          
+          <FormName book = {this.state.book} customer = {cus} ChuDe = {this.state.ChuDe} XuatBan = {this.state.XuatBan}
+           selectCd={this.props.history.location.state?.chude}
+           myFunction1={this.myFunction1} myFunction2={this.myFunction2}/>        
+         
         </div>
     
     );
@@ -109,23 +217,36 @@ callapi()
 //console.log() khi bỏ biến trạng thái vào thì sẽ bị lập
     function FormName(props){ 
       const classes = useStyles();
-   
+      const cde=props.Chude?.find(a => a.maChuDe === props.selectCd);
+   const handleTextFieldChange1=(value, i) => props.myFunction1(value);
+   const handleTextFieldChange2=(value, i) => props.myFunction2(value);
     return (
-      <div>
-      <div>
+      <div className={classes.root}>
+  
         <h1>Hello, {props.customer?.Hoten}!</h1> 
-        </div>  
-        <div>
+        <h2>
+      {cde?.tenChuDe }</h2>
+       
         <Paper className={classes.paper}>
-        {props.ChuDe.map((data) => (
-        <MenuList>
-          <MenuItem >{data.tenChuDe}</MenuItem>          
+       
+      Chủ đề 
+      
+           <MenuList>
+        {props.ChuDe.map((data, i) =>        
+          <MenuItem key={i} value={data.maChuDe} onClick={handleTextFieldChange1.bind(this, data.maChuDe, i)}>{data.tenChuDe}</MenuItem>          
+                )}        
         </MenuList>
-        ))}
+        Nhà xuất bản
+        <MenuList>
+        {props.XuatBan.map((data, i) =>        
+          <MenuItem key={i} value={data.maNxb} onClick={handleTextFieldChange2.bind(this, data.maNxb, i)}>{data.tenXb}</MenuItem>          
+                )}        
+        </MenuList>
+      
+               
       </Paper>
 
-        </div>
-        <div className={classes.root}>
+       
       
         <GridList cellHeight={200} className={classes.gridList} cols={4}>
           <GridListTile key="Subheader" cols={4} style={{ height: 'auto' }}>
@@ -133,20 +254,20 @@ callapi()
           </GridListTile>
           {props.book.map((data) => (
             <GridListTile key={data.maSp}>
-              <img src={data.anhBia} alt={data.tensp} />
+              <img src={data.anhBia} alt={data.tenSp} />
               <GridListTileBar
                 title={data.tensp}//ten của khung lơn trong ô, chú ý key khong được giống nhau 
                 subtitle={<span>mô tả: {data.mota}</span>}//ten khung nho trong ô
                 actionIcon={
                   <IconButton aria-label={`info about ${data.tensp}`} className={classes.icon}>
-                    <InfoIcon />
+                    <InfoIcon  />
                   </IconButton>
                 }
               />
             </GridListTile>
           ))}
         </GridList>
-      </div>    
+       
         
         </div>
         
