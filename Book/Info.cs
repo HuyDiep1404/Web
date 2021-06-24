@@ -14,21 +14,56 @@ namespace Web.Book
         {
             _context = context;
         }
-        public IEnumerable<Sach1>GetSTCDVaNXB(string mcd=null,string mnxb=null)
+        public IEnumerable<Sach1> GetCDVaNXB(string mcd = null,string mnxb = null)
         {
-            return _context.Sach1s.Where(x => (x.MaChuDe == mcd || mcd == null) || (x.MaNxb == mnxb || mnxb == null));
+            return _context.Sach1s.Where(x => (x.MaChuDe == mcd || mcd == null) && (x.MaNxb == mnxb || mnxb == null));
         }
-        public IEnumerable<Sach1> GetMaSP(string masp=null)
+        public IEnumerable<Sach1> GetMaSP(string masp = null)
         {
             return _context.Sach1s.Where(x => x.MaSp == masp || masp == null);
         }
-        public Sach1 GetMasp(string masp = null)
+        public Sach1 Masp(string masp = null)
         {
             return _context.Sach1s.First(x=>x.MaSp == masp);
         }
-        //public void Insert(Sach book,string booktitle)
-        //{
-        //    var tensach=_context.S
-        //}
+        public Sach1 Insert(Sach1 book)
+        {
+            
+            _context.Sach1s.Add(book);
+            _context.SaveChanges();
+
+
+            return book;
+        }
+        public void Update(Sach1 book)
+        {
+            var masp = _context.Sach1s.Find(book.MaSp);
+            if (masp == null)
+                throw new Exception("không tìm thấy sản phẩm này");
+          
+                
+
+            _context.Sach1s.Update(masp);
+            _context.SaveChanges();
+
+        }
+        public void Delete(string masp)
+        {
+            var book = _context.Sach1s.Find(masp);
+            if (book != null)
+            {
+                _context.Sach1s.Remove(book);
+                _context.SaveChanges();
+            }
+        }
+        public IEnumerable<Nhaxb> GetMaNXB()
+        {
+            return _context.Nhaxbs;
+        }
+        public IEnumerable<ChuDe> GetChuDe()
+        {
+            return _context.ChuDes;
+        }
+
     }
 }

@@ -90,28 +90,26 @@ export class Create extends React.Component {
 myFunction1(param){
   const data = this.state;
   data.customer.Hoten=param;
-  // e.target.value:nhan du lieu nhap trên textbox
+ 
   this.setState(data);
  
 }
 myFunction2(param){
   const data = this.state;
   data.customer.NgaySinh=param;
-  // e.target.value:nhan du lieu nhap trên textbox
+
   this.setState(data);
 
 }
 myFunction3(param){
   const data = this.state;
   data.customer.GioiTinh=param;
-  // e.target.value:nhan du lieu nhap trên textbox
-  this.setState(data);
+   this.setState(data);
   
 }
 myFunction4(param){
   const data = this.state;
   data.customer.SoDt=param;
-  // e.target.value:nhan du lieu nhap trên textbox
   this.setState(data);
  
 }
@@ -122,6 +120,7 @@ data.customer.TaiKhoan=param;
 this.setState(data);
 
 }
+//check khi bat dau nhap data
 myFunction6(param){
   const data = this.state;
   data.customer.MatKhau=param;// e.target.value:nhan du lieu nhap trên textbox
@@ -257,6 +256,7 @@ checkemail=()=>
    this.setState(newData); 
 
 }
+//kiem tra khi click button
  checkpassword=()=>
         {
           const data = this.state;
