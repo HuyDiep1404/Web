@@ -17,6 +17,7 @@ import Paper from '@material-ui/core/Paper';
 import Popper from '@material-ui/core/Popper';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
+import { Panorama } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
   
@@ -39,6 +40,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(2),
   },
 }));
+//viết component ben trong class
 export class Home extends React.Component {
   
   static displayName = Home.name;
@@ -52,10 +54,11 @@ export class Home extends React.Component {
       MaChuDe:null,
       click:false,
       MaXuatBan:null,
-      
+      text:"",
      Api: {
     message:"",
-
+    severity:"",
+    open:false,
     },
     ChuDe :[]
       
@@ -65,16 +68,9 @@ export class Home extends React.Component {
   }
   this.myFunction1 = this.myFunction1.bind(this);
   this.myFunction2 = this.myFunction2.bind(this);
-  this.handleClose = this.handleClose.bind(this);
+  this.handleClose=this.handleClose.bind(this);
 }
-  handleClose( event,reason){
-    if (reason === 'clickaway') {
-      return;
-    }
-    const data = this.state;
-    data.customer.open=false;
-    this.setState(data);
-  };
+  
 
 
   myFunction1(param)
@@ -93,10 +89,32 @@ export class Home extends React.Component {
     })
     
   }
- 
-  
+  myFunction3(param)
+  {
+    const newData = this.state;   
+    newData.MaXuatBan=param;
+    newData.click=true;
+    this.setState(newData);
+    this.props.history.push({//history la 1 mảng ,replace thảy đổi bên trong mảng
+      pathname: '/',
+      state: {
+        data: this.props.history.location.state?.data,
+       xuatban: this.state.MaXuatBan
+      }
+    })
+
+  }
+  handleClose( event,reason){
+    if (reason === 'clickaway') {
+      return;
+    }
+    const data = this.state;
+    data.Api.open=false;
+    this.setState(data);
+  };
   myFunction2(param)
   {
+  
     const newData = this.state;   
     newData.MaXuatBan=param;
     newData.click=true;
@@ -109,19 +127,42 @@ export class Home extends React.Component {
       }
     })
   }
-   callback=(data) =>{ 
-      
-    if(data.message)
+  
+   callback=(data2) =>{ 
+    const newData = this.state;
+    const data1 = this.props.history.location.state?.chude;
+      const data = this.props.history.location.state?.xuatban;
+    if(newData.book.length === 0 || newData.click)
+{
+newData.text="";
+    if(data1!=undefined)
+    {
+      newData.text="sách theo chủ đề";
+    }
+    if(data!=undefined)
+    {
+      newData.text="sách theo nhà xuất bản";
+    }
+    this.setState(newData);
+}
+    if(data2.message)
     {     
-          
-    }  else{
-         const newData = this.state;// {...items}còn là 1 bộ hẹn giờ nếu ta không kèm theo điều kiện thì nó sẽ lập vô hạn      
-      newData.book=data;
+          newData.Api.message=data2.message;
+      newData.click=false;
+    newData.Api.open=true;
+          newData.Api.severity="error";
+      this.setState(newData);
       
+    }  else{
+      const newData = this.state;   // {...items}còn là 1 bộ hẹn giờ nếu ta không kèm theo điều kiện thì nó sẽ lập vô hạn      
+      newData.book=data2;
+      newData.click=false;
+      this.setState(newData);
       //vì items ban đầu chưa có gì nên ta phả gán newData.contacts=data để truyền data vào      
-      this.setState(newData);//cập nhật lại dư liệu của cái trạng thái      
+      //cập nhật lại dư liệu của cái trạng thái      
       
     }
+   
     }
     
     callback1=(data)=>{ 
@@ -152,43 +193,33 @@ export class Home extends React.Component {
   }   
 callapi()
     {
+      const newData=this.state;
       const data1 = this.props.history.location.state?.chude;
       const data = this.props.history.location.state?.xuatban;
-if(data1 != null && this.state.click == true )
-{
-  const data=this.state;
-  data.click=false;
-  this.setState(data);
-      FetchApi('GET', `https://localhost:5001/Values/getCDVaNXB?macd=${data1}`, 
+if(newData.book.length === 0 || newData.click)
+{  
+let url="https://localhost:5001/Values/getCDVaNXB";
+  if(data1 != undefined){
+url=`${url}?macd=${data1}`;
+  }
+  if(data != undefined){
+    url=`${url}?maxb=${data}`;
+  }
+      FetchApi('GET', url, 
       { 'Content-Type': 'application/json' },null, this.callback);
 }
-if(data != null && this.state.click == true )
-{
-  const data=this.state;
-  data.click=false;
-  this.setState(data);
-  FetchApi('GET', `https://localhost:5001/Values/getCDVaNXB?manxb=${data}`, 
-  { 'Content-Type': 'application/json' },null, this.callback);
-}
-
-  if(this.state.book.length == 0)
-  {
-  FetchApi('GET', 'https://localhost:5001/Values/getCDVaNXB', 
-  { 'Content-Type': 'application/json' },null, this.callback);
-  }
-  
-
     }
     callChuDe()
     {
-      if(this.state.ChuDe.length == 0)
-    FetchApi('GET', 'https://localhost:5001/Values/getChuDe', 
+      if(this.state.ChuDe.length === 0)
+      {
+        FetchApi('GET', 'https://localhost:5001/Values/getChuDe', 
   { 'Content-Type': 'application/json' },null, this.callback1);
-    
+} 
   }
     callXuatBan()
     {
-      if(this.state.XuatBan.length == 0)
+      if(this.state.XuatBan.length === 0)
       {
     FetchApi('GET', 'https://localhost:5001/Values/getMaNXB', 
   { 'Content-Type': 'application/json' },null, this.callback2);
@@ -197,7 +228,7 @@ if(data != null && this.state.click == true )
    //ham được goi trong render luôn luôn cập nhật 
   render () {
     const cus=this.props.history.location.state?.data;
-
+let that=this;
    //console.log(cus);
     this.checkdata();
     this.callapi();
@@ -206,9 +237,13 @@ if(data != null && this.state.click == true )
     return (
       <div>
           <FormName book = {this.state.book} customer = {cus} ChuDe = {this.state.ChuDe} XuatBan = {this.state.XuatBan}
-           selectCd={this.props.history.location.state?.chude}
-           myFunction1={this.myFunction1} myFunction2={this.myFunction2}/>        
-         
+           selectCd={this.props.history.location.state?.chude} selectXb = {this.props.history.location.state?.xuatban}
+          text={this.state.text} myFunction1={this.myFunction1} myFunction2={this.myFunction2}/>        
+         <Snackbar open={that.state.Api.open} autoHideDuration={3000}  onClose={this.handleClose} >
+         <Alert onClose={this.handleClose} severity={that.state.Api.severity}>
+           {that.state.Api.message}
+         </Alert>
+         </Snackbar>
         </div>
     
     );
@@ -217,16 +252,21 @@ if(data != null && this.state.click == true )
 //console.log() khi bỏ biến trạng thái vào thì sẽ bị lập
     function FormName(props){ 
       const classes = useStyles();
-      const cde=props.Chude?.find(a => a.maChuDe === props.selectCd);
+    let cde=props.ChuDe?.find(a => a.maChuDe === props.selectCd);
+    let xban=props.XuatBan?.find(a => a.maNxb === props.selectXb);
+ 
+    //(cde||xban)?props.text+cde.tenChuDe+xban.tenXb:props.text 
    const handleTextFieldChange1=(value, i) => props.myFunction1(value);
    const handleTextFieldChange2=(value, i) => props.myFunction2(value);
     return (
       <div className={classes.root}>
   
         <h1>Hello, {props.customer?.Hoten}!</h1> 
-        <h2>
-      {cde?.tenChuDe }</h2>
-       
+       { props.text}<h2>
+       {(cde)?.tenChuDe }</h2>
+      <h2>
+      {(xban)?.tenXb }</h2>
+      
         <Paper className={classes.paper}>
        
       Chủ đề 
@@ -256,11 +296,11 @@ if(data != null && this.state.click == true )
             <GridListTile key={data.maSp}>
               <img src={data.anhBia} alt={data.tenSp} />
               <GridListTileBar
-                title={data.tensp}//ten của khung lơn trong ô, chú ý key khong được giống nhau 
+                title={data.tenSp}//ten của khung lơn trong ô, chú ý key khong được giống nhau 
                 subtitle={<span>mô tả: {data.mota}</span>}//ten khung nho trong ô
                 actionIcon={
                   <IconButton aria-label={`info about ${data.tensp}`} className={classes.icon}>
-                    <InfoIcon  />
+                    <InfoIcon />
                   </IconButton>
                 }
               />
