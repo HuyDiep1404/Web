@@ -55,6 +55,7 @@ export class Home extends React.Component {
       click:false,
       MaXuatBan:null,
       text:"",
+      MaSp:null,
      Api: {
     message:"",
     severity:"",
@@ -68,6 +69,7 @@ export class Home extends React.Component {
   }
   this.myFunction1 = this.myFunction1.bind(this);
   this.myFunction2 = this.myFunction2.bind(this);
+  this.myFunction3 = this.myFunction3.bind(this);
   this.handleClose=this.handleClose.bind(this);
 }
   
@@ -91,15 +93,17 @@ export class Home extends React.Component {
   }
   myFunction3(param)
   {
+    debugger;
+
     const newData = this.state;   
-    newData.MaXuatBan=param;
+    newData.Api.MaSp=param;
     newData.click=true;
     this.setState(newData);
     this.props.history.push({//history la 1 mảng ,replace thảy đổi bên trong mảng
-      pathname: '/',
+      pathname: '/review',
       state: {
         data: this.props.history.location.state?.data,
-       xuatban: this.state.MaXuatBan
+       masp: this.state.Api.MaSp
       }
     })
 
@@ -122,14 +126,14 @@ export class Home extends React.Component {
     this.props.history.replace({
       pathname: '/',
       state: {
-        data: this.props.history.location.state?.data,
+        data: this.props.history.location.state?.data,//truyen lai customer vì nó không phải biến state nên không được lưu lại
        xuatban: this.state.MaXuatBan
       }
     })
   }
   
-   callback=(data2) =>{ 
-    const newData = this.state;
+   callback=(data2) =>{ 
+    const newData = this.state;
     const data1 = this.props.history.location.state?.chude;
       const data = this.props.history.location.state?.xuatban;
     if(newData.book.length === 0 || newData.click)
@@ -146,40 +150,40 @@ newData.text="";
     this.setState(newData);
 }
     if(data2.message)
-    {     
-          newData.Api.message=data2.message;
+    {     
+          newData.Api.message=data2.message;
       newData.click=false;
     newData.Api.open=true;
-          newData.Api.severity="error";
+          newData.Api.severity="error";
       this.setState(newData);
       
-    }  else{
-      const newData = this.state;   // {...items}còn là 1 bộ hẹn giờ nếu ta không kèm theo điều kiện thì nó sẽ lập vô hạn      
+    }  else{
+      const newData = this.state;   // {...items}còn là 1 bộ hẹn giờ nếu ta không kèm theo điều kiện thì nó sẽ lập vô hạn      
       newData.book=data2;
       newData.click=false;
       this.setState(newData);
-      //vì items ban đầu chưa có gì nên ta phả gán newData.contacts=data để truyền data vào      
-      //cập nhật lại dư liệu của cái trạng thái      
+      //vì items ban đầu chưa có gì nên ta phả gán newData.contacts=data để truyền data vào      
+      //cập nhật lại dư liệu của cái trạng thái      
       
     }
    
     }
     
-    callback1=(data)=>{ 
+    callback1=(data)=>{ 
     
-           const newData = this.state;// {...items}còn là 1 bộ hẹn giờ nếu ta không kèm theo điều kiện thì nó sẽ lập vô hạn      
+           const newData = this.state;// {...items}còn là 1 bộ hẹn giờ nếu ta không kèm theo điều kiện thì nó sẽ lập vô hạn      
         newData.ChuDe=data;
        
-        //vì items ban đầu chưa có gì nên ta phả gán newData.contacts=data để truyền data vào      
-        this.setState(newData);//cập nhật lại dư liệu của cái trạng thái      
+        //vì items ban đầu chưa có gì nên ta phả gán newData.contacts=data để truyền data vào      
+        this.setState(newData);//cập nhật lại dư liệu của cái trạng thái      
       
       }
-      callback2=(data)=>{ 
+      callback2=(data)=>{ 
     
-           const newData = this.state;// {...items}còn là 1 bộ hẹn giờ nếu ta không kèm theo điều kiện thì nó sẽ lập vô hạn      
+           const newData = this.state;// {...items}còn là 1 bộ hẹn giờ nếu ta không kèm theo điều kiện thì nó sẽ lập vô hạn      
         newData.XuatBan=data;
-        //vì items ban đầu chưa có gì nên ta phả gán newData.contacts=data để truyền data vào      
-        this.setState(newData);//cập nhật lại dư liệu của cái trạng thái      
+        //vì items ban đầu chưa có gì nên ta phả gán newData.contacts=data để truyền data vào      
+        this.setState(newData);//cập nhật lại dư liệu của cái trạng thái      
       
       }
     checkdata()
@@ -238,7 +242,7 @@ let that=this;
       <div>
           <FormName book = {this.state.book} customer = {cus} ChuDe = {this.state.ChuDe} XuatBan = {this.state.XuatBan}
            selectCd={this.props.history.location.state?.chude} selectXb = {this.props.history.location.state?.xuatban}
-          text={this.state.text} myFunction1={this.myFunction1} myFunction2={this.myFunction2}/>        
+          text={this.state.text} myFunction1={this.myFunction1} myFunction3={this.myFunction3} myFunction2={this.myFunction2}/>        
          <Snackbar open={that.state.Api.open} autoHideDuration={3000}  onClose={this.handleClose} >
          <Alert onClose={this.handleClose} severity={that.state.Api.severity}>
            {that.state.Api.message}
@@ -255,17 +259,17 @@ let that=this;
     let cde=props.ChuDe?.find(a => a.maChuDe === props.selectCd);
     let xban=props.XuatBan?.find(a => a.maNxb === props.selectXb);
  
-    //(cde||xban)?props.text+cde.tenChuDe+xban.tenXb:props.text 
+    //<h3>{(cde||cde==null)?cde.tenChuDe:xban.tenXb}</h3>
    const handleTextFieldChange1=(value, i) => props.myFunction1(value);
    const handleTextFieldChange2=(value, i) => props.myFunction2(value);
+   const handleTextFieldChange3=(value) => props.myFunction3(value);
     return (
       <div className={classes.root}>
   
         <h1>Hello, {props.customer?.Hoten}!</h1> 
-       { props.text}<h2>
-       {(cde)?.tenChuDe }</h2>
-      <h2>
-      {(xban)?.tenXb }</h2>
+       <h2>{ props.text}  {(cde)?.tenChuDe}  {(xban)?.tenXb }</h2>
+     
+     
       
         <Paper className={classes.paper}>
        
@@ -299,7 +303,7 @@ let that=this;
                 title={data.tenSp}//ten của khung lơn trong ô, chú ý key khong được giống nhau 
                 subtitle={<span>mô tả: {data.mota}</span>}//ten khung nho trong ô
                 actionIcon={
-                  <IconButton aria-label={`info about ${data.tensp}`} className={classes.icon}>
+                  <IconButton aria-label={`info about ${data.tensp}`} className={classes.icon} value={data.maSp}  onClick={handleTextFieldChange3.bind(this, data.maSp)}>
                     <InfoIcon />
                   </IconButton>
                 }
@@ -313,4 +317,3 @@ let that=this;
         
     );
   }
-
