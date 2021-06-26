@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
   export class Review extends React.Component {
     static displayName = Review.name;
     constructor(props) {
-      super(props);
+      super(props);     
       this.state={
           info:{
             MaSp:null,
@@ -53,20 +53,22 @@ const useStyles = makeStyles((theme) => ({
             Mota:"",
             AnhBia:"",
           },
+          giohang:[],
           message:""
       };
       this.myFunction= this.myFunction.bind(this);
     }
     myFunction()
     {
-      
-      this.props.history.push({//history la 1 mảng ,replace thảy đổi bên trong mảng
+      this.props.giohang=[1,2];
+      this.props.onUpdate(this.props.giohang);      
+      /*this.props.history.push({//history la 1 mảng ,replace thảy đổi bên trong mảng
         pathname: '/cart',
         state: {
           data: this.props.history.location.state?.data,
          masp: this.state.Api.MaSp
         }
-      })
+      })*/
     }
     callback  = (data) => {   
  
@@ -83,8 +85,8 @@ const useStyles = makeStyles((theme) => ({
    }
     calldetail()
     {
+      console.log(this.props);
       const masp = this.props.history.location.state?.masp;
-       const data= this.props.history.location.state?.data;
         if(this.state.info.MaSp === null && masp != undefined )
         {
         FetchApi('GET', `https://localhost:5001/Values/getMaSP?masp=${masp}`, 
@@ -100,8 +102,8 @@ const useStyles = makeStyles((theme) => ({
         this.calldetail();
         return(
         <div>
-            < Detail MaSp={this.state.info.MaSp} TenSp={this.state.info.TenSp} GiaBan={this.state.info.GiaBan} Mota={this.state.info.Mota} 
-            AnhBia ={this.state.info.AnhBia} myFunction={this.myFunction}/>
+            {this.state.info.MaSp && <Detail MaSp={this.state.info.MaSp} TenSp={this.state.info.TenSp} GiaBan={this.state.info.GiaBan} Mota={this.state.info.Mota} 
+            AnhBia ={this.state.info.AnhBia} myFunction={this.myFunction}/>}
         </div>
 
         );
@@ -109,7 +111,7 @@ const useStyles = makeStyles((theme) => ({
   }
   function Detail(props){ 
     const classes = useStyles();
-    const handlechangle = ()=> props.myFunction();
+    const handlechange = ()=> props.myFunction();
     return (
 <div>
 <Card className={classes.root}>
@@ -121,7 +123,7 @@ const useStyles = makeStyles((theme) => ({
         }          
         
         title={props.TenSp}
-        subheader={props.GiaBan +"VND"}
+        subheader={ new Intl.NumberFormat('en-US', { style: 'currency', currency: 'VND' }).format(props.GiaBan)}
       />
       <CardMedia
         className={classes.media}
@@ -134,7 +136,7 @@ const useStyles = makeStyles((theme) => ({
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites" onClick={handlechangle} >
+        <IconButton aria-label="add to favorites" onClick={handlechange} >
           <LocalGroceryStoreIcon />
         </IconButton>
         </CardActions>
