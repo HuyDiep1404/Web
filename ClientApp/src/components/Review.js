@@ -18,6 +18,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { isNonNullChain } from 'typescript';
 import { useHistory } from "react-router-dom";
 import FetchApi from './../../src/Api';
+import Button from '@material-ui/core/Button';
 import LocalGroceryStoreIcon from '@material-ui/icons/LocalGroceryStore';
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -52,24 +53,59 @@ const useStyles = makeStyles((theme) => ({
            GiaBan:null,
             Mota:"",
             AnhBia:"",
+            SoLuongTon:0
           },
           giohang:[],
+          
           message:""
       };
       this.myFunction= this.myFunction.bind(this);
+      this.showCart= this.showCart.bind(this);
+      this.backHome= this.backHome.bind(this);
     }
-    myFunction()
-    {
-      this.props.giohang=[1,2];
-      this.props.onUpdate(this.props.giohang);      
-      /*this.props.history.push({//history la 1 mảng ,replace thảy đổi bên trong mảng
-        pathname: '/cart',
-        state: {
-          data: this.props.history.location.state?.data,
-         masp: this.state.Api.MaSp
-        }
-      })*/
-    }
+    myFunction(param)
+    {      
+      const data = this.props.history.location.state?.data.MaKh;
+      let newData= JSON.parse(localStorage.getItem('giohang')) ?? [];
+      let item=newData.find(a => a.MaSp == param && a.MaKh == data);
+      if(item){
+        item.sl++;
+      }
+      else{
+        item ={
+          MaSp:param,
+          sl:1,
+          MaKh:data
+        };
+        newData.push(item);
+      }
+     localStorage.setItem('giohang', JSON.stringify(newData));
+     console.log(newData);
+      }
+      showCart()
+      {
+        this.props.history.push({
+          pathname: '/cart',
+          state: {
+            data: this.state.giohang//truyen lai customer vì nó không phải biến state nên không được lưu lại
+           
+          }
+        })
+      }
+      backHome()
+      {
+        
+        this.props.history.replace({
+          pathname: '/',
+          state: {
+             data : this.props.history.location.state?.data
+          }
+        })
+      }
+
+    
+    
+
     callback  = (data) => {   
  
     const newData = this.state;
@@ -85,7 +121,6 @@ const useStyles = makeStyles((theme) => ({
    }
     calldetail()
     {
-      console.log(this.props);
       const masp = this.props.history.location.state?.masp;
         if(this.state.info.MaSp === null && masp != undefined )
         {
@@ -103,7 +138,7 @@ const useStyles = makeStyles((theme) => ({
         return(
         <div>
             {this.state.info.MaSp && <Detail MaSp={this.state.info.MaSp} TenSp={this.state.info.TenSp} GiaBan={this.state.info.GiaBan} Mota={this.state.info.Mota} 
-            AnhBia ={this.state.info.AnhBia} myFunction={this.myFunction}/>}
+            AnhBia ={this.state.info.AnhBia} myFunction={this.myFunction} showCart={this.showCart} backHome={this.backHome}/>}
         </div>
 
         );
@@ -111,9 +146,17 @@ const useStyles = makeStyles((theme) => ({
   }
   function Detail(props){ 
     const classes = useStyles();
-    const handlechange = ()=> props.myFunction();
+    const handlechange = (value)=> props.myFunction(value);
+const handlechange1 = ()=>props.showCart();
+const handlechange2 = ()=>props.backHome();
     return (
 <div>
+<Button variant="contained" color="primary"  onClick={handlechange1}>
+          Giỏ Hàng
+        </Button> 
+        <Button variant="contained" color="primary"  onClick={handlechange2}>
+          Mua Tiếp
+        </Button> 
 <Card className={classes.root}>
       <CardHeader
         avatar={
@@ -136,9 +179,10 @@ const useStyles = makeStyles((theme) => ({
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites" onClick={handlechange} >
+        <IconButton aria-label="add to favorites"  value={props.MaSp}  onClick={handlechange.bind(this, props.MaSp)} >
           <LocalGroceryStoreIcon />
         </IconButton>
+        
         </CardActions>
      </Card>
 </div>

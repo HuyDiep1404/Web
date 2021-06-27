@@ -17,6 +17,7 @@ export default class App extends Component {
   render () {
     return (
       <Layout>
+        <div>giohang</div>
         <Route exact path='/' component={Home} />
         <Route path='/counter' component={Counter} />
         <Route path='/authenticate' component={Authenticate} />

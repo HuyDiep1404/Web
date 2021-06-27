@@ -97,9 +97,11 @@ export class Home extends React.Component {
     newData.Api.MaSp=param;
     newData.click=true;
     this.setState(newData);
-    this.props.history.replace({//history la 1 mảng ,replace thảy đổi bên trong mảng
+    
+    this.props.history.push({//history la 1 mảng ,replace thảy đổi bên trong mảng
       pathname: '/review',
       state: {
+        data: this.props.history.location.state?.data,
        masp: this.state.Api.MaSp
       }
     })
