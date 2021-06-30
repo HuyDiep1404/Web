@@ -18,6 +18,7 @@ import Popper from '@material-ui/core/Popper';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 import { Panorama } from '@material-ui/icons';
+import { Container, Section, Bar } from 'react-simple-resizer';
 
 const useStyles = makeStyles((theme) => ({
   
@@ -113,6 +114,7 @@ export class Home extends React.Component {
    }
   myFunction3(param)
   {
+    
     const newData = this.state;   
     newData.Api.MaSp=param;
     newData.click=true;
@@ -260,6 +262,8 @@ let that=this;
     this.callXuatBan();
     return (
       <div>
+        
+
           <FormName book = {this.state.book} customer = {cus} ChuDe = {this.state.ChuDe} XuatBan = {this.state.XuatBan}
            selectCd={this.props.history.location.state?.chude} selectXb = {this.props.history.location.state?.xuatban}
           text={this.state.text} myFunction1={this.myFunction1} myFunction3={this.myFunction3} myFunction2={this.myFunction2}/>        
@@ -289,30 +293,25 @@ let that=this;
         <h1>Hello, {props.customer?.Hoten}!</h1> 
        <h2>{ props.text}  {(cde)?.tenChuDe}  {(xban)?.tenXb }</h2>
      
-     
-      
-        <Paper className={classes.paper}>
-       
-      Chủ đề 
-      
-           <MenuList>
-        {props.ChuDe.map((data, i) =>        
-          <MenuItem key={i} value={data.maChuDe} onClick={handleTextFieldChange1.bind(this, data.maChuDe, i)}>{data.tenChuDe}</MenuItem>          
-                )}        
-        </MenuList>
-        Nhà xuất bản
-        <MenuList>
-        {props.XuatBan.map((data, i) =>        
-          <MenuItem key={i} value={data.maNxb} onClick={handleTextFieldChange2.bind(this, data.maNxb, i)}>{data.tenXb}</MenuItem>          
-                )}        
-        </MenuList>
-      
-               
-      </Paper>
-
-       
-      
-        <GridList cellHeight={200} className={classes.gridList} cols={4}>
+       <Container>
+    <Section style={{ background: '#d3d3d3' }} size={150}>
+    <Paper className={classes.paper}>       
+       Chủ đề        
+            <MenuList>
+         {props.ChuDe.map((data, i) =>        
+           <MenuItem key={i} value={data.maChuDe} onClick={handleTextFieldChange1.bind(this, data.maChuDe, i)}>{data.tenChuDe}</MenuItem>          
+                 )}        
+         </MenuList>
+         Nhà xuất bản
+         <MenuList>
+         {props.XuatBan.map((data, i) =>        
+           <MenuItem key={i} value={data.maNxb} onClick={handleTextFieldChange2.bind(this, data.maNxb, i)}>{data.tenXb}</MenuItem>          
+                 )}        
+         </MenuList>             
+       </Paper>
+    </Section>    
+    <Section style={{ background: '#d3d3d3' }} minSize={200} >
+    <GridList cellHeight={200} className={classes.gridList} cols={4}>
           <GridListTile key="Subheader" cols={4} style={{ height: 'auto' }}>
             <ListSubheader component="div">December</ListSubheader>
           </GridListTile>
@@ -331,6 +330,14 @@ let that=this;
             </GridListTile>
           ))}
         </GridList>
+    </Section>
+  </Container>
+      
+       
+
+       
+      
+        
        
         
         </div>

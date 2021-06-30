@@ -83,11 +83,20 @@ const useStyles = makeStyles((theme) => ({
     onCart(){
       this.props.onCart(JSON.parse(localStorage.getItem('giohang')).length);
     }
-    handleClickOpen()
+    handleClickOpen(param)
     {
-      const data=this.state;
-      data.open=true;
-      this.setState(data);
+     
+      const data = this.props.history.location.state?.data.MaKh;
+      const Data=this.state;
+      let newData= JSON.parse(localStorage.getItem('giohang')) ?? [];
+      let item=newData.find(a => a.MaSp == param && a.MaKh == data);
+      if(item)
+      {
+        Data.soluong=item.sl;
+      }
+      
+      Data.open=true;
+      this.setState(Data);
     }
     handleClose()
     {
@@ -138,7 +147,8 @@ const useStyles = makeStyles((theme) => ({
     handleTextFieldChange(param)
     {
       const Data=this.state;
-      if(param>Data.info.SoLuongTon)
+     
+         if(param>Data.info.SoLuongTon)
       {
         Data.isError=true;
         Data.textError="vui lòng nhập lại số lượng vì số lượng vượt quá số lượng tồn";
@@ -151,6 +161,8 @@ const useStyles = makeStyles((theme) => ({
       }
       this.setState(Data);
       }
+     
+      
       
     
    /* myFunction(param)
@@ -245,7 +257,7 @@ const useStyles = makeStyles((theme) => ({
     const handlechange = (value)=> props.myFunction(value);
 const handlechange1 = ()=>props.showCart();
 const handlechange2 = ()=>props.backHome();
-const handleClickOpen =() => props.handleClickOpen();
+const handleClickOpen =(value) => props.handleClickOpen(value);
 const handleTextFieldChange =(e) =>props.handleTextFieldChange(e.target.value);
 
 const handleClose= () =>props.handleClose();
@@ -308,7 +320,7 @@ const handleUpdate= () =>props.handleUpdate();
       <CardActions disableSpacing>
       <Tooltip title="Thêm Vào Giỏ Hàng">
 
-        <IconButton aria-label="add to favorites" onClick={handleClickOpen}  >
+        <IconButton aria-label="add to favorites" value={props.MaSp} onClick={handleClickOpen.bind(this,props.MaSp)}  >
           < LocalGroceryStoreIcon/>
         </IconButton>
         </Tooltip>

@@ -36,12 +36,12 @@ export default class App extends Component {
    this.onCart=this.onCart.bind(this);
    this.showCart=this.showCart.bind(this);
   }
-    /*handle()
+    handle()
       {  
         this.state.count=JSON.parse(localStorage.getItem('giohang')).length;
              
 
-      }*/
+      }
       onCart(param){
 this.setState({count :param});
       }
@@ -53,7 +53,7 @@ this.setState({count :param});
 
 
   render () {
-    //this.handle();
+    this.handle();
     return (
       <Layout>
 
