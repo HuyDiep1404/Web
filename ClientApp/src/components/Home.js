@@ -55,11 +55,17 @@ export class Home extends React.Component {
       click:false,
       MaXuatBan:null,
       text:"",
-      MaSp:null,
+      
      Api: {
     message:"",
     severity:"",
     open:false,
+    MaSp:null,
+    TenSp:"",
+    GiaBan:null,
+    Mota:"",
+    AnhBia:"",
+    SoLuongTon:0,
     },
     ChuDe :[]
       
@@ -91,6 +97,20 @@ export class Home extends React.Component {
     })
     
   }
+  callback3  = (data) => {   
+ 
+    const newData = this.state;
+    { 
+      newData.Api.MaSp = data.maSp;
+      newData.Api.TenSp = data.tenSp;
+      newData.Api.GiaBan = data.giaBan;
+      newData.Api.Mota = data.mota;
+      newData.Api.AnhBia = data.anhBia;
+      newData.ApiSoLuongTon=data.soLuongTon;
+         this.setState(newData);
+    }   
+ 
+   }
   myFunction3(param)
   {
     const newData = this.state;   
@@ -105,6 +125,7 @@ export class Home extends React.Component {
        masp: this.state.Api.MaSp
       }
     })
+
 
   }
   handleClose( event,reason){

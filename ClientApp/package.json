@@ -24,6 +24,7 @@
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "react-easy-sort": "^0.2.1",
+    "react-image": "^4.0.3",
     "react-list-select": "^0.4.1",
     "react-list-view": "^1.0.0",
     "react-phone-input-material-ui": "^2.16.0",
