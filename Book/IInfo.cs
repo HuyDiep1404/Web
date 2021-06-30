@@ -9,7 +9,7 @@ namespace Web.Book
     public interface IInfo
     {
         IEnumerable<Sach1> GetCDVaNXB(string mcd, string mnxb);
-        IEnumerable<Sach1> GetMaSP(string masp);
+        Sach1 GetMaSP(string masp);
         Sach1 Masp(string masp);
         Sach1 Insert(Sach1 book);
         void Update(Sach1 book);

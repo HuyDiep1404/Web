@@ -123,6 +123,24 @@ namespace Web.Controllers
                 return Ok(nxb);
 
         }
-
+        [HttpGet("getMaSP")]
+        public IActionResult GetMaSP(string masp = null)
+        {
+            var sp = _info.GetMaSP(masp);
+            if (sp != null)
+                return Ok(sp);
+            else
+                return BadRequest(new { message = "khong tim thấy quyển sách cần tìm theo mã mã sách" });
+        }
+        
+            [HttpGet("masp")]
+        public IActionResult Masp(string masp = null)
+        {
+            var sp = _info.Masp(masp);
+            if (sp != null)
+                return Ok(sp);
+            else
+                return BadRequest(new { message = "khong tim thấy quyển sách cần tìm theo mã mã sách" });
+        }
     }
 }

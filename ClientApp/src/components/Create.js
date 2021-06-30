@@ -204,7 +204,7 @@ myFunction9(param){
  }
 handleSubmit()
 {
-  debugger;
+  
   this.checkpassword();
    this.checkemail();
    this.checkusername();
@@ -382,12 +382,12 @@ function FormName(props){
 />
 
         <TextField onChange={handleTextFieldChange6} type="password"
-        error={props.isError2}
+        error={props.isError2}//bật câu cảnh báo
         id="outlined-error-helper-text"
         label="Mật khẩu"
         defaultValue=""
         variant="outlined"
-        helperText={props.textError2}
+        helperText={props.textError2}//câu cảnh báo
 /> 
        
         <TextField onChange={handleTextFieldChange7} type="password"

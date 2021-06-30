@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@ant-design/icons": "^4.6.2",
     "@date-io/date-fns": "v1",
     "@material-ui/core": "^4.11.4",
     "@material-ui/data-grid": "^4.0.0-alpha.32",
@@ -14,6 +15,7 @@
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
     "bootstrap": "^4.6.0",
+    "clsx": "^1.1.1",
     "date-fns": "^2.22.1",
     "jquery": "^3.6.0",
     "material-ui": "^0.20.2",
@@ -22,6 +24,7 @@
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "react-easy-sort": "^0.2.1",
+    "react-image": "^4.0.3",
     "react-list-select": "^0.4.1",
     "react-list-view": "^1.0.0",
     "react-phone-input-material-ui": "^2.16.0",
@@ -29,6 +32,7 @@
     "react-router-bootstrap": "^0.25.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.4",
+    "react-simple-resizer": "^2.1.0",
     "reactstrap": "^8.9.0",
     "rimraf": "^2.6.2"
   },
