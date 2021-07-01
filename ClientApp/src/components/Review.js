@@ -79,9 +79,13 @@ const useStyles = makeStyles((theme) => ({
       this.handleTextFieldChange=this.handleTextFieldChange.bind(this);
       this.handleUpdate=this.handleUpdate.bind(this);
       
+      
     }
     onCart(){
       this.props.onCart(JSON.parse(localStorage.getItem('giohang')).length);
+    }
+    onStep(){
+      this.props.onStep(2);
     }
     handleClickOpen(param)
     {
@@ -212,7 +216,7 @@ const useStyles = makeStyles((theme) => ({
     callback  = (data) => {   
  
     const newData = this.state;
-    { 
+     
       newData.info.MaSp = data.maSp;
       newData.info.TenSp = data.tenSp;
       newData.info.GiaBan = data.giaBan;
@@ -220,7 +224,7 @@ const useStyles = makeStyles((theme) => ({
       newData.info.AnhBia = data.anhBia;
       newData.info.SoLuongTon=data.soLuongTon;
          this.setState(newData);
-    }   
+         this.onStep();   
  
    }
     calldetail()
