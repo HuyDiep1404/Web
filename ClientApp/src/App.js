@@ -38,7 +38,7 @@ export default class App extends Component {
   }
     handle()
       {  
-        this.state.count=JSON.parse(localStorage.getItem('giohang')).length;
+        this.state.count=JSON.parse(localStorage.getItem('giohang'))?.length;
              
 
       }
