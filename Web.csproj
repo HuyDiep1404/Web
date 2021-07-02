@@ -27,13 +27,13 @@
 
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
+    <Compile Remove="GioHang\**" />
     <Content Remove="$(SpaRoot)**" />
+    <Content Remove="GioHang\**" />
+    <EmbeddedResource Remove="GioHang\**" />
     <None Remove="$(SpaRoot)**" />
+    <None Remove="GioHang\**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="GioHang\" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
