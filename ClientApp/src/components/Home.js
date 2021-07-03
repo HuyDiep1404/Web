@@ -19,6 +19,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 import { Panorama } from '@material-ui/icons';
 import { Container, Section, Bar } from 'react-simple-resizer';
+//import Autocomplete from '@material-ui/lab/Autocomplete';
 
 const useStyles = makeStyles((theme) => ({
   
@@ -40,6 +41,13 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     marginRight: theme.spacing(2),
   },
+  /*option: {
+    fontSize: 15,
+    '& > span': {
+      marginRight: 10,
+      fontSize: 18,
+    },
+  },*/
 }));
 //viết component ben trong class
 export class Home extends React.Component {
@@ -263,6 +271,13 @@ url=`${url}?macd=${data1}`;
     FetchApi('GET', '/Values/getMaNXB', 
   { 'Content-Type': 'application/json' },null, this.callback2);
     }
+  }
+  countryToFlag(isoCode) {
+    return typeof String.fromCodePoint !== 'undefined'
+      ? isoCode
+          .toUpperCase()
+          .replace(/./g, (char) => String.fromCodePoint(char.charCodeAt(0) + 127397))
+      : isoCode;
   }
    //ham được goi trong render luôn luôn cập nhật 
   render () {
