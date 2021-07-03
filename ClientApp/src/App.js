@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router';
+import { Redirect,Link } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { Home } from './components/Home';
 import { FetchData } from './components/FetchData';
@@ -27,6 +28,8 @@ import './custom.css';
 import PersonIcon from '@material-ui/icons/Person';
 import DetailsIcon from '@material-ui/icons/Details';
 import clsx from 'clsx';
+import HomeIcon from '@material-ui/icons/Home';
+import MenuBookIcon from '@material-ui/icons/MenuBook';
 const StyledBadge = withStyles((theme) => ({
   badge: {
     right: -3,
@@ -84,7 +87,9 @@ export default class App extends Component {
     };
    this.onCart=this.onCart.bind(this);
    this.onStep=this.onStep.bind(this);
-   this.showCart=this.showCart.bind(this);
+  // this.onStep1=this.onStep1.bind(this);
+   //this.onStep2=this.onStep2.bind(this);
+  
   }
     handle()
       {  
@@ -100,36 +105,42 @@ export default class App extends Component {
       onStep(param){
         this.setState({activeStep :param});
       }
-      showCart()
-      {
-        this.props.history.push("/cart");
+     /*onStep1(param){
+        this.setState({activeStep :param});
       }
-  
+       onStep2(param){
+        this.setState({activeStep :param});
+      }*/
+      
      
+   
 
   render () {
     this.handle();
-    const arr=['Login', 'Book', 'Cart', 'Payment'];
+    const arr=['Login','Home' ,'Book', 'Cart', 'Payment'];
     return (
       <Layout>
 
         <div> 
           <FormName steps={arr} activeStep={this.state.activeStep} />
           <Tooltip title="Xem Giỏ Hàng">
-        <IconButton aria-label="cart" onClick={this.showCart}>
+          <Link to="/cart">
+        <IconButton aria-label="cart" >
       <StyledBadge badgeContent={this.state.count} color="secondary">
         <ShoppingCartIcon />
       </StyledBadge>
     </IconButton>
+    </Link>
       </Tooltip>
          </div>
-        <Route exact path='/' component={Home} />
+         
+        <Route exact path='/' render={(props) => <Home onStep={this.onStep}  {...props} />} />
         <Route path='/counter' component={Counter} />
         <Route path='/authenticate' component={Authenticate} />
         <Route path='/fetch-data' component={FetchData} />
         <Route path='/create' component={Create} />
         <Route path='/review' render={(props) => <Review onStep={this.onStep} onCart={this.onCart} {...props} />} />
-        <Route path='/cart' component={Cart} />
+        <Route path='/cart' render={(props) => <Cart onStep={this.onStep}  {...props} />} />
       </Layout>
     );
   }
@@ -163,9 +174,10 @@ function ColorlibStepIcon(props) {
 
   const icons = {
     1: <PersonIcon />,
-    2: <DetailsIcon />,
-    3: <AddShoppingCartIcon />,
-    4: <PaymentIcon />,
+    2: <HomeIcon />,
+    3: <MenuBookIcon />,
+    4: <AddShoppingCartIcon />,
+    5: <PaymentIcon />,
   };
 
   return (

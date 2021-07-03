@@ -213,7 +213,7 @@ handleSubmit()
     debugger;
   console.log(data);
   
- FetchApi('POST', 'https://localhost:5001/Values/create', 
+ FetchApi('POST', '/Values/create', 
   { 'Content-Type': 'application/json' },JSON.stringify({
   Hoten:data.customer.Hoten,
   NgaySinh:data.customer.NgaySinh,

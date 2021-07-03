@@ -125,7 +125,7 @@ handleSubmit()
   newData.customer.cir=true;
   this.setState(newData);
   console.log(newData);  
-  FetchApi('POST', 'https://localhost:5001/Values/authenticate', 
+  FetchApi('POST', '/Values/authenticate', 
   { 'Content-Type': 'application/json' },JSON.stringify({
   TaiKhoan:this.state.customer.TaiKhoan,
   MatKhau:this.state.customer.MatKhau

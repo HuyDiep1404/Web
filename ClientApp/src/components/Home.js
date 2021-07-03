@@ -74,6 +74,7 @@ export class Home extends React.Component {
     XuatBan:[]
     
   }
+  //nơi đặt hàm event
   this.myFunction1 = this.myFunction1.bind(this);
   this.myFunction2 = this.myFunction2.bind(this);
   this.myFunction3 = this.myFunction3.bind(this);
@@ -98,6 +99,7 @@ export class Home extends React.Component {
     })
     
   }
+  
   callback3  = (data) => {   
  
     const newData = this.state;
@@ -138,6 +140,10 @@ export class Home extends React.Component {
     data.Api.open=false;
     this.setState(data);
   };
+  onStep()
+  {
+    this.props.onStep(1);
+  }
   myFunction2(param)
   {
   
@@ -192,12 +198,13 @@ newData.text="";
     }
     
     callback1=(data)=>{ 
-    
+      this.onStep();
            const newData = this.state;// {...items}còn là 1 bộ hẹn giờ nếu ta không kèm theo điều kiện thì nó sẽ lập vô hạn      
         newData.ChuDe=data;
        
         //vì items ban đầu chưa có gì nên ta phả gán newData.contacts=data để truyền data vào      
-        this.setState(newData);//cập nhật lại dư liệu của cái trạng thái      
+        this.setState(newData);
+        //cập nhật lại dư liệu của cái trạng thái      
       
       }
       callback2=(data)=>{ 
@@ -215,7 +222,13 @@ newData.text="";
     if(data === null || data === undefined)
     {
       this.props.history.push("/authenticate");/*cach chuyen qua 1 trang khac */
+    }else
+    {
+      this.callapi();
+    this.callChuDe();
+    this.callXuatBan();
     }
+    
   }   
 callapi()
     {
@@ -224,7 +237,7 @@ callapi()
       const data = this.props.history.location.state?.xuatban;
 if(newData.book.length === 0 || newData.click)
 {  
-let url="https://localhost:5001/Values/getCDVaNXB";
+let url="/Values/getCDVaNXB";
   if(data1 != undefined){
 url=`${url}?macd=${data1}`;
   }
@@ -239,7 +252,7 @@ url=`${url}?macd=${data1}`;
     {
       if(this.state.ChuDe.length === 0)
       {
-        FetchApi('GET', 'https://localhost:5001/Values/getChuDe', 
+        FetchApi('GET', '/Values/getChuDe', 
   { 'Content-Type': 'application/json' },null, this.callback1);
 } 
   }
@@ -247,7 +260,7 @@ url=`${url}?macd=${data1}`;
     {
       if(this.state.XuatBan.length === 0)
       {
-    FetchApi('GET', 'https://localhost:5001/Values/getMaNXB', 
+    FetchApi('GET', '/Values/getMaNXB', 
   { 'Content-Type': 'application/json' },null, this.callback2);
     }
   }
@@ -257,9 +270,7 @@ url=`${url}?macd=${data1}`;
 let that=this;
    //console.log(cus);
     this.checkdata();
-    this.callapi();
-    this.callChuDe();
-    this.callXuatBan();
+    
     return (
       <div>
         

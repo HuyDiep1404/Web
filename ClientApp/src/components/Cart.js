@@ -173,11 +173,27 @@ export class Cart extends React.Component {
       this.setState(dataState);
         
       }
-      
+      onStep(){
+this.props.onStep(3)
+      }
+      checkdata()
+    { 
+    const data = this.props.history.location.state?.data;//nhan data tu trang khac
+    
+    if(data === null || data === undefined)
+    {
+      this.props.history.push("/authenticate");//cach chuyen qua 1 trang khac 
+    }
+  }   
+    
       
   //trong nay khoong duoc de ham lien quang den state
     //newData.reduce((total,i) => total+i.sl*i.GiaBan,0) total 1 biến i là phân tử thứ i, reduce là giảm , 0 là giá trị ban đầu 
   render(){
+    this.checkdata();
+setTimeout(() => {
+  this.onStep();
+}, 1000);
 
 return(
   <div>

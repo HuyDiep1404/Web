@@ -112,7 +112,6 @@ const useStyles = makeStyles((theme) => ({
     
     handleUpdate()
     {         
-      
       const dataState=this.state;
       const masp = this.props.history.location.state?.masp;
       const  data= this.props.history.location.state?.data.MaKh;
@@ -148,6 +147,7 @@ const useStyles = makeStyles((theme) => ({
       dataState.soluong=1;  
       this.setState(dataState);
     }
+
     handleTextFieldChange(param)
     {
       const Data=this.state;
@@ -232,17 +232,24 @@ const useStyles = makeStyles((theme) => ({
       const masp = this.props.history.location.state?.masp;
         if(this.state.info.MaSp === null && masp != undefined )
         {
-        FetchApi('GET', `https://localhost:5001/Values/getMaSP?masp=${masp}`, 
+        FetchApi('GET', `/Values/getMaSP?masp=${masp}`, 
         { 'Content-Type': 'application/json' },null, this.callback);
         }
-       /* else
-        {
-          this.props.history.replace("/");
-        }*/
+       
     }
+  checkdata()
+    { 
+    const data = this.props.history.location.state?.data;//nhan data tu trang khac
+    
+    if(data === null || data === undefined)
+    {
+      this.props.history.push("/authenticate");//cach chuyen qua 1 trang khac 
+    }
+  }   
     
     render () {
         this.calldetail();
+        this.checkdata();
         return(
         <div>
             {this.state.info.MaSp && <Detail MaSp={this.state.info.MaSp} TenSp={this.state.info.TenSp} GiaBan={this.state.info.GiaBan} Mota={this.state.info.Mota} 
