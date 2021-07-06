@@ -141,8 +141,8 @@ export default class App extends Component {
         <Route path='/fetch-data' component={FetchData} />
         <Route path='/create' component={Create} />
         <Route path='/review' render={(props) => <Review onStep={this.onStep} onCart={this.onCart} {...props} />} />
-        <Route path='/cart' render={(props) => <Cart onStep={this.onStep}  {...props} />} />
-        <Route path='/payment' component={Payment} />
+        <Route path='/cart' render={(props) => <Cart onStep={this.onStep} onCart={this.onCart}  {...props} />} />
+        <Route path='/payment' render={(props) => <Payment onStep={this.onStep}  onCart={this.onCart} {...props} />} />
       </Layout>
     );
   }

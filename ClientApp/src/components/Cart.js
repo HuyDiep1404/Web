@@ -107,7 +107,7 @@ export class Cart extends React.Component {
       let item = newData.filter(a => a.MaSp !== this.state.masp);//filter là bộ lọc lọc ra có thể là một mảng .
       //cách làm thay vì xóa ta thục hiện tìm mã khác mã truyền lại và lọc mạng đó khac array ban đầu rồi ta set lại mảng đó
       localStorage.setItem('giohang', JSON.stringify(item));
-     
+     this.onCart();
       const data= this.state;
       data.open1=false;
       data.click=true;
@@ -162,8 +162,9 @@ export class Cart extends React.Component {
         {
           data.soluong=item.sl;
           data.SoLuongTon=item.SoLuongTon;
+          
         }
-        
+        localStorage.setItem('giohang', JSON.stringify(newData));
       data.masp=param;
       data.open2=true;   
       this.setState(data);
@@ -173,6 +174,7 @@ export class Cart extends React.Component {
       {
         
         localStorage.clear();
+        this.onCart();
         const dataState=this.state;
         dataState.click=true;   
         dataState.open3=false;  
@@ -197,7 +199,11 @@ this.props.onStep(3)
     {
       this.props.history.push("/authenticate");//cach chuyen qua 1 trang khac 
     }
-  }   
+  } 
+  onCart(){
+    this.props.onCart(JSON.parse(localStorage.getItem('giohang'))?.length);
+   
+  }  
     componentDidMount(){
         this.onStep();
     }//ham này chỉ chạy khi đã chạy hết render.hàm này trong react
@@ -205,7 +211,7 @@ this.props.onStep(3)
   //trong nay khoong duoc de ham lien quang den state
     //newData.reduce((total,i) => total+i.sl*i.GiaBan,0) total 1 biến i là phân tử thứ i, reduce là giảm , 0 là giá trị ban đầu 
   render(){
-   // this.checkdata();
+    this.checkdata();
 
 
 return(

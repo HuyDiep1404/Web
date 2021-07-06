@@ -7,9 +7,9 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import DateFnsUtils from '@date-io/date-fns';
-import CreditCardIcon from '@material-ui/icons/CreditCard';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
+import Button from '@material-ui/core/Button';
+import Alert from "@material-ui/lab/Alert";
+import Snackbar from '@material-ui/core/Snackbar';
 import {
   MuiPickersUtilsProvider,
   KeyboardTimePicker,
@@ -50,10 +50,15 @@ export class Payment extends React.Component {
         isError:false,
         textError:"",
         message:"",
+        severity:"",
+        open:false,
+        //click:true,
+        
         NgayGiao:new Date(),
       }
        this.myFunction=this.myFunction.bind(this);
        this.handle=this.handle.bind(this);
+        this.handleClose=this.handleClose.bind(this);
     }
     
     myFunction(param)
@@ -76,12 +81,30 @@ export class Payment extends React.Component {
        
 
     }
-    callback(data)
+    onStep(){
+      this.props.onStep(4);
+    }
+    componentDidMount(){
+      this.onStep();
+  }
+    callback=(data)=>
     { 
-       
-        const newData=this.state;
-        newData.message=data.message;
+      const newData = this.state;  
+      newData.message=data.message;
+      newData.open=true;
+      
+        if(data.message=="đã tạo thành công")
+        {              
+            newData.severity="success";
         this.setState(newData);
+          
+      }
+      else
+      {
+            newData.severity="error";
+            this.setState(newData);
+      }
+        
     }
     handle()
     {
@@ -106,20 +129,52 @@ export class Payment extends React.Component {
         FetchApi('POST', 'Values/createBill', 
         { 'Content-Type': 'application/json' },JSON.stringify(model
             ), this.callback);
-            
+
+            localStorage.clear();      
+    
+      this.onCart();
            
             
     }
+    onCart(){
+      this.props.onCart(JSON.parse(localStorage.getItem('giohang'))?.length);
+   
+    }
+    handleClose( event,reason){
+      if (reason === 'clickaway') {
+        return;
+      }
+      const data = this.state;
+      data.open=false;
+      this.setState(data);
+    };
+    checkdata()
+    { 
+    const data = this.props.history.location.state?.data;//nhan data tu trang khac
+    
+    if(data === null || data === undefined)
+    {
+      this.props.history.push("/authenticate");//cach chuyen qua 1 trang khac 
+    }
+  }   
 
     
 
-    render()
-    {
+    render(){
+      let that=this;
+      this.checkdata();
         const customer=this.props.history.location.state?.data;
+        
     return(
         <div>
-            <ShowPayment date={this.state.date} isError={this.state.isError} textError={this.state.textError} customer={customer} NgayDat={this.state.NgayDat} myFunction={this.myFunction}
-            handle={this.handle} />
+            {<ShowPayment date={this.state.date} isError={this.state.isError} textError={this.state.textError} customer={customer} NgayDat={this.state.NgayDat} myFunction={this.myFunction}
+            handle={this.handle} />}
+             <Snackbar open={that.state.open} autoHideDuration={3000}  onClose={this.handleClose} >
+         <Alert onClose={this.handleClose} severity={that.state.severity}>
+           {that.state.message}
+         </Alert>
+        
+       </Snackbar>
         </div>
     );
     }
@@ -139,19 +194,19 @@ function ShowPayment(props){
               <StyledTableCell component="th" scope="row">
                 Họ tên khách hàng
               </StyledTableCell>
-              <StyledTableCell align="right">{props.customer.Hoten}</StyledTableCell>
+              <StyledTableCell align="right">{props.customer?.Hoten}</StyledTableCell>
             </StyledTableRow>
             <StyledTableRow >
               <StyledTableCell component="th" scope="row">
                 Địa chỉ
               </StyledTableCell>
-              <StyledTableCell align="right">{props.customer.Diachi}</StyledTableCell>
+              <StyledTableCell align="right">{props.customer?.Diachi}</StyledTableCell>
             </StyledTableRow>
             <StyledTableRow >
               <StyledTableCell component="th" scope="row">
                 Điện thoại
               </StyledTableCell>
-              <StyledTableCell align="right">{props.customer.SoDt}</StyledTableCell>
+              <StyledTableCell align="right">{props.customer?.SoDt}</StyledTableCell>
             </StyledTableRow>
             <StyledTableRow >
               <StyledTableCell component="th" scope="row">
@@ -185,11 +240,9 @@ function ShowPayment(props){
                 
               </StyledTableCell>
               <StyledTableCell align="right">
-              <Tooltip title="thanh toán ">
-<IconButton aria-label="payment" onClick={handle}>
-          <  CreditCardIcon />
-        </IconButton>     
-        </Tooltip>
+              <Button variant="contained" color="primary"  onClick={handle}>
+          Thanh toán
+        </Button> 
               </StyledTableCell>
               
             </StyledTableRow>

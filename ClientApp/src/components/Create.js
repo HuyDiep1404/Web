@@ -6,7 +6,7 @@ import Button from '@material-ui/core/Button';
 import FetchApi from './../../src/Api';
 import { useHistory } from "react-router-dom";
 import Alert from "@material-ui/lab/Alert";
-import Snackbar from '@material-ui/core/Snackbar'
+import Snackbar from '@material-ui/core/Snackbar';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ReactPhoneInput from 'react-phone-input-material-ui';
 import Grid from '@material-ui/core/Grid';
@@ -53,6 +53,7 @@ export class Create extends React.Component {
         MatKhau2:null,       
         Email:"",
         DiaChi:"",
+        open:false,
         message:"",
         textError:"",
         textError1:"",   
@@ -60,7 +61,7 @@ export class Create extends React.Component {
         isError3:false,
         isError2:false,
         isError:false,
-        open:false,
+       
         isError1:false,
         textError2:"",
         textError3:"",
