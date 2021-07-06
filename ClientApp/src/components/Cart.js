@@ -20,6 +20,7 @@ import Button from '@material-ui/core/Button';
 import EditIcon from '@material-ui/icons/Edit';
 import { TextField } from '@material-ui/core';
 import RemoveShoppingCartIcon from '@material-ui/icons/RemoveShoppingCart';
+import PaymentIcon from '@material-ui/icons/Payment';
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -69,6 +70,7 @@ export class Cart extends React.Component {
    this.handleTextFieldChange=this.handleTextFieldChange.bind(this);
    this.handleDeleteAll=this.handleDeleteAll.bind(this);
    this.handleClickOpenDeleteAll=this.handleClickOpenDeleteAll.bind(this);
+   this.handleClickOpenPayment=this.handleClickOpenPayment.bind(this);
     }
     handleClose()
     {
@@ -121,6 +123,17 @@ export class Cart extends React.Component {
       
       this.setState(data);
      
+      }
+      handleClickOpenPayment()
+      {
+
+        this.props.history.push({
+          pathname: '/payment',
+          state: {
+             data :this.props.history.location.state?.data//truyen lai customer vì nó không phải biến state nên không được lưu lại
+           
+          }
+        })
       }
       handleUpdate()
       {
@@ -201,7 +214,7 @@ return(
             handleClickOpenUpdate = {this.handleClickOpenUpdate} handleClickOpenUpdate={this.handleClickOpenUpdate} handleUpdate={this.handleUpdate} handleTextFieldChange={this.handleTextFieldChange}
             handleClickOpenDeleteAll={this.handleClickOpenDeleteAll} handleDeleteAll={this.handleDeleteAll}
             open1={this.state.open1} open2={this.state.open2} open3={this.state.open3} isError={this.state.isError} textError={this.state.textError} SoLuongTon={this.state.SoLuongTon} masp={this.state.masp}
-            soluong={this.state.soluong}/>}
+            soluong={this.state.soluong} handleClickOpenPayment={this.handleClickOpenPayment} />}
         </div>
 
 );
@@ -220,6 +233,8 @@ const handleTextFieldChange =(e) =>props.handleTextFieldChange(e.target.value);
 const handleUpdate=()=>props.handleUpdate();
 const handleClickOpenDeleteAll=()=>props.handleClickOpenDeleteAll();
 const handleDeleteAll=()=>props.handleDeleteAll();
+const handleClickOpenPayment=()=>props.handleClickOpenPayment();
+
 
 return (
   
@@ -355,7 +370,13 @@ return (
             <TableCell rowSpan={1} />
             
             <TableCell colSpan={1}>Tổng Tiền</TableCell>
-            <TableCell align="right" colSpan={5}>{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'VND' }).format(newData.reduce((total,i) => total+i.sl*i.GiaBan,0))}</TableCell>
+            <TableCell align="right" colSpan={5}>{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'VND' }).format(newData.reduce((total,i) => total+i.sl*i.GiaBan,0))}
+            <Tooltip title="thanh toán ">
+<IconButton aria-label="payment" onClick={handleClickOpenPayment}>
+          <  PaymentIcon />
+        </IconButton>     
+        </Tooltip>
+            </TableCell>
           </TableRow>
          
       </TableBody>

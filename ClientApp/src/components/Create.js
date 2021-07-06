@@ -95,6 +95,7 @@ myFunction1(param){
  
 }
 myFunction2(param){
+  console.log(param);
   const data = this.state;
   data.customer.NgaySinh=param;
 

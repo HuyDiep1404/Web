@@ -43,6 +43,8 @@ export class Authenticate extends  React.Component {
       MaKh:null,
     Hoten:"",
     TaiKhoan:"",
+    SoDt:"",
+    Diachi:"",
     MatKhau:"",
     message:"",
     severity:"",
@@ -74,6 +76,8 @@ data la gia tri ma api tra ve. khi api tra ve*/
       
         newData.customer.MaKh=data.maKh;
         newData.customer.Hoten=data.hoten;
+        newData.customer.SoDt=data.soDt;
+        newData.customer.Diachi=data.diachi;
         newData.customer.open=true;
         newData.customer.severity="success";
         newData.customer.message="đăng nhập user thành công";

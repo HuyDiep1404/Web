@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Web.Models;
 
-namespace Web.Services
+namespace Web.Services.Authenticate
 {
     public interface IDangnhap
     {
@@ -13,5 +13,8 @@ namespace Web.Services
 
         KhachHangb2 Create(KhachHangb2 customer);
         IEnumerable<KhachHangb2> Get();
+        IEnumerable<DonHang> GetDonHang();
+         DonHang CreateBill(DonHang bill);
+        Chittiet1 CreateDetail(Chittiet1 detail);
     }
 }

@@ -190,14 +190,15 @@ const useStyles = makeStyles((theme) => ({
       }*/
       showCart()
       {
-        this.props.history.push("/cart");
-        /*this.props.history.push({
+        //this.props.history.push("/cart");
+        this.props.history.push({
           pathname: '/cart',
           state: {
-            data: this.state.giohang//truyen lai customer vì nó không phải biến state nên không được lưu lại
+             data :this.props.history.location.state?.data//truyen lai customer vì nó không phải biến state nên không được lưu lại
            
           }
-        })*/
+        })
+        
       }
       backHome()
       {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Web.Models;
 
-namespace Web.Book
+namespace Web.Services.Book
 {
     public class Info: IInfo
     {
@@ -16,7 +16,12 @@ namespace Web.Book
         }
         public IEnumerable<Sach1> GetCDVaNXB(string mcd = null,string mnxb = null)
         {
-            return _context.Sach1s.Where(x => (x.MaChuDe == mcd || mcd == null) && (x.MaNxb == mnxb || mnxb == null));
+            return _context.Sach1s.Where(x => (x.MaChuDe == mcd || mcd == null) && (x.MaNxb
+            == mnxb || mnxb == null));
+        }
+        public IEnumerable<Sach1> Getsuggest(string tensp = null)
+        {
+            return _context.Sach1s.Where(x => (x.Mota.Contains(tensp)) || x.TenSp.Contains(tensp));//tensp là ký tự được truyền qua text box search
         }
         public Sach1 GetMaSP(string masp = null)
         {

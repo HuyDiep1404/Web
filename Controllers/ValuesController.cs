@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Web.Models;
 using Microsoft.Extensions.Configuration;
-using Web.Services;
+using Web.Services.Authenticate;
 using Web.ViewModels;
-using Web.Book;
+using Web.Services.Book;
 
 namespace Web.Controllers
 {
@@ -39,7 +39,9 @@ namespace Web.Controllers
 
                 {
                     MaKh = custumer.MaKh,
-                    Hoten = custumer.Hoten
+                    Hoten = custumer.Hoten,
+                    SoDt=custumer.SoDt,
+                    Diachi=custumer.DiaChi
                 }
                     );
 
@@ -96,6 +98,17 @@ namespace Web.Controllers
 
 
         //}
+        [HttpGet("getsuggest")]
+        public IActionResult Getsuggest(string tensp = null)
+        {
+            var book = _info.Getsuggest(tensp);
+            if (book.Any())
+                return Ok(book);
+            else
+                return BadRequest(new { message = "khong tim thấy quyển sách cần tìm " });
+
+
+        }
         [HttpGet("getCDVaNXB")]
         public IActionResult GetCDVaNXB(string macd = null, string maxb=null)
         {
@@ -142,5 +155,53 @@ namespace Web.Controllers
             else
                 return BadRequest(new { message = "khong tim thấy quyển sách cần tìm theo mã mã sách" });
         }
+        [HttpPost("createBill")]
+
+        public IActionResult CreateBill([FromBody] BillModel model)//RegisterModel là 1 viewmoel,
+        {
+            int c = _dangnhap.GetDonHang().Count();
+
+            var bill = new DonHang()//tao ra mot model gan gia tri cua viewmodel bang bien model
+            {
+               
+                MaHoaDon = "MHD0" + (c + 1),
+                NgayTao = model.NgayTao,
+                MaKh = model.MaKh,
+                NgayGiao = model.NgayGiao,
+                Dathanhtoan = model.Dathanhtoan,
+                Tinhtranggiaohang = model.Tinhtranggiaohang
+                
+
+            };   
+            try
+            {
+                // create user                
+                _dangnhap.CreateBill(bill);
+                for (int i = 0; i < model.Details1.Length; i++)
+                {
+                    var detail = new Chittiet1()//tao ra mot model gan gia tri cua viewmodel bang bien model
+                    {
+                        MaHd = bill.MaHoaDon,
+                        MaSp = model.Details1[i].MaSp,
+                        SoLuong = model.Details1[i].SoLuong,
+                        Dongia = model.Details1[i].Dongia
+                    };
+                    _dangnhap.CreateDetail(detail);
+                }               
+                return Ok(new
+                {
+                    message = "đã tạo thành công" //phai tao ra 1 đối tượng 
+                });
+            }
+            catch (Exception ex)
+            {
+                
+                return BadRequest(new
+                {
+                    message = ex.Message //phai tao ra 1 đối tượng 
+                });
+            }
+        }
+       
     }
 }

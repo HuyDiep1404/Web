@@ -9,6 +9,7 @@ import { Authenticate } from './components/Authenticate';
 import { Create } from './components/Create';
 import { Review } from './components/Review';
 import { Cart } from './components/Cart';
+import { Payment } from './components/Payment';
 import Badge from '@material-ui/core/Badge';
 import { withStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
@@ -141,6 +142,7 @@ export default class App extends Component {
         <Route path='/create' component={Create} />
         <Route path='/review' render={(props) => <Review onStep={this.onStep} onCart={this.onCart} {...props} />} />
         <Route path='/cart' render={(props) => <Cart onStep={this.onStep}  {...props} />} />
+        <Route path='/payment' component={Payment} />
       </Layout>
     );
   }

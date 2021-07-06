@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Web.Models;
 
-namespace Web.Services
+namespace Web.Services.Authenticate
 {
     public class Dangnhap:IDangnhap
     {
@@ -53,6 +53,27 @@ namespace Web.Services
         public IEnumerable<KhachHangb2> Get()
         {          
             return _context.KhachHangb2s;
+        }
+        public IEnumerable<DonHang> GetDonHang()
+        {
+            return _context.DonHangs;
+        }
+        public DonHang CreateBill(DonHang bill)
+        {
+            if(_context.DonHangs.Any(x => x.MaHoaDon == bill.MaHoaDon))
+
+                throw new Exception("Hóa đơn đã tồn tại " + bill.MaHoaDon + " đã tồn tại");
+            _context.DonHangs.Add(bill);
+            _context.SaveChanges();
+
+
+            return bill;
+        }
+        public Chittiet1 CreateDetail (Chittiet1 detail)
+        {
+            _context.Chittiet1s.Add(detail);
+            _context.SaveChanges();
+            return detail;
         }
     }
 }
