@@ -61,6 +61,7 @@ export class Payment extends React.Component {
        this.handle=this.handle.bind(this);
         this.handleClose=this.handleClose.bind(this);
         this.handleCancel=this.handleCancel.bind(this);
+        this.backhome=this.backhome.bind(this);
     }
     
     myFunction(param)
@@ -82,6 +83,15 @@ export class Payment extends React.Component {
        this.setState(data);
        
 
+    }
+    backhome()
+    {
+      this.props.history.replace({
+        pathname: '/',
+        state: {
+           data : this.props.history.location.state?.data
+        }
+      })
     }
     onStep(){
       this.props.onStep(4);
@@ -211,7 +221,7 @@ export class Payment extends React.Component {
     return(
         <div>
             <ShowPayment click2={this.state.click2} click1={this.state.click1} date={this.state.date} isError={this.state.isError} textError={this.state.textError} customer={customer} NgayDat={this.state.NgayDat} myFunction={this.myFunction}
-            handle={this.handle} handleCancel={this.handleCancel} />
+            handle={this.handle} handleCancel={this.handleCancel} backhome={this.backhome} />
              <Snackbar open={that.state.open} autoHideDuration={3000}  onClose={this.handleClose}  >
          <Alert onClose={this.handleClose} severity={that.state.severity}>
            {that.state.message}
@@ -228,8 +238,12 @@ function ShowPayment(props){
     const handleTextFieldChange = (e) => props.myFunction(e);
     const handle = () => props.handle();
     const handleCancel = () =>props.handleCancel();
+    const backhome=()=>props.backhome();
     return(
         <div>
+          <Button variant="contained" color="primary"  onClick={backhome}>
+          Home
+        </Button>
 <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="customized table">   
         <TableBody>

@@ -40,8 +40,8 @@ namespace Web.Controllers
                 {
                     MaKh = custumer.MaKh,
                     Hoten = custumer.Hoten,
-                    SoDt=custumer.SoDt,
-                    Diachi=custumer.DiaChi
+                    SoDt = custumer.SoDt,
+                    Diachi = custumer.DiaChi
                 }
                     );
 
@@ -76,7 +76,7 @@ namespace Web.Controllers
                 return Ok(new
                 {
                     message = "đã tạo thành công" //phai tao ra 1 đối tượng 
-                }) ;
+                });
             }
             catch (Exception ex)
             {
@@ -110,30 +110,30 @@ namespace Web.Controllers
 
         }
         [HttpGet("getCDVaNXB")]
-        public IActionResult GetCDVaNXB(string macd = null, string maxb=null)
+        public IActionResult GetCDVaNXB(string macd = null, string maxb = null)
         {
             var book = _info.GetCDVaNXB(macd, maxb);
             if (book.Any())
                 return Ok(book);
             else
-            return BadRequest(new { message = "khong tim thấy quyển sách cần tìm theo mã chủ đề và mã nhà xuất bản" });
+                return BadRequest(new { message = "khong tim thấy quyển sách cần tìm theo mã chủ đề và mã nhà xuất bản" });
 
         }
         [HttpGet("getChuDe")]
         public IActionResult GetChuDe()
         {
             var chude = _info.GetChuDe();
-           
-                return Ok(chude);
 
-         
+            return Ok(chude);
+
+
         }
         [HttpGet("getMaNXB")]
         public IActionResult GetMaNXB()
         {
             var nxb = _info.GetMaNXB();
-            
-                return Ok(nxb);
+
+            return Ok(nxb);
 
         }
         [HttpGet("getMaSP")]
@@ -145,8 +145,8 @@ namespace Web.Controllers
             else
                 return BadRequest(new { message = "khong tim thấy quyển sách cần tìm theo mã mã sách" });
         }
-        
-            [HttpGet("masp")]
+
+        [HttpGet("masp")]
         public IActionResult Masp(string masp = null)
         {
             var sp = _info.Masp(masp);
@@ -159,7 +159,7 @@ namespace Web.Controllers
 
         public IActionResult CreateBill([FromBody] BillModel model)//RegisterModel là 1 viewmoel,
         {
-              
+
             try
             {
                 int c = _dangnhap.GetDonHang().Count();
@@ -186,14 +186,14 @@ namespace Web.Controllers
                             SoLuong = model.Details1[i].SoLuong,
                             Dongia = model.Details1[i].Dongia
                         };
-                        if(_dangnhap.CreateDetail(detail) <= 0)
+                        if (_dangnhap.CreateDetail(detail) <= 0)
                         {
                             return NotFound(new
                             {
                                 message = "ko tạo thành công" //phai tao ra 1 đối tượng 
                             });
-                        }    
-                        
+                        }
+
                     }
                     return Ok(new
                     {
@@ -208,7 +208,7 @@ namespace Web.Controllers
             }
             catch (Exception ex)
             {
-                
+
                 return BadRequest(new
                 {
                     message = ex.Message //phai tao ra 1 đối tượng 
@@ -219,20 +219,20 @@ namespace Web.Controllers
         //neu so ngay dat bang ngay hien tai thi bang false
         [HttpGet("updateBill")]
 
-        public IActionResult UpdateBill(string mahd =null)//RegisterModel là 1 viewmoel,
+        public IActionResult UpdateBill(string mahd = null)//RegisterModel là 1 viewmoel,
         {
 
-            var bill = _dangnhap.GetByMaHD(mahd) ;//lay theo id
-            bill.Dathanhtoan =false;
+            var bill = _dangnhap.GetByMaHD(mahd);//lay theo id
+            bill.Dathanhtoan = false;
             try
             {
                 // update user 
                 _dangnhap.Update(bill);
-                return Ok(new 
+                return Ok(new
                 {
-                    Dathanhtoan=bill.Dathanhtoan,
+                    Dathanhtoan = bill.Dathanhtoan,
                     message = "đơn hàng đã được hủy"
-                }); 
+                });
             }
             catch (Exception ex)
             {
@@ -240,6 +240,19 @@ namespace Web.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpGet("historydonhang")]
 
-      }
+        public IActionResult historydonhang()//RegisterModel là 1 viewmoel,
+        {
+            var history = _dangnhap.GetDonHang();
+
+            return Ok(history);
+        }
+        [HttpGet("historychitiet")]
+        public IActionResult historychitiet(string mahd)
+        {
+            var history = _dangnhap.GetDetailByMaHD(mahd);
+            return Ok(history);
+        }
+    }
 }

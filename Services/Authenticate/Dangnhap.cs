@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Web.Models;
+using Web.Services.JoinTable;
 
 namespace Web.Services.Authenticate
 {
@@ -87,5 +88,14 @@ namespace Web.Services.Authenticate
             _context.SaveChanges();
 
         }
+        public IEnumerable<TableJoinResult> GetDetailByMaHD(string mahd)
+        {
+            
+            return (from i1 in _context.Chittiet1s 
+                    join j1 in _context.Sach1s on i1.MaSp equals j1.MaSp
+                    where i1.MaHd.Equals(mahd)
+                    select new TableJoinResult { Chittiet1 = i1, Sach1 = j1 });
+        }
+
     }
 }

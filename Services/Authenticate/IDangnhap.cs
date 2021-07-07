@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Web.Models;
+using Web.Services.JoinTable;
 
 namespace Web.Services.Authenticate
 {
@@ -20,8 +21,10 @@ namespace Web.Services.Authenticate
         void Update(DonHang bill);
 
         DonHang GetByMaHD(string mahd);
+        IEnumerable<TableJoinResult> GetDetailByMaHD(string mahd);
+        
 
 
 
-    }
+        }
 }
