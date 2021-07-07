@@ -42,7 +42,7 @@ export class Payment extends React.Component {
     constructor(props) {
       super(props);
       var today = new Date(),
-      date = today.getFullYear()+ '-' +(today.getMonth() + 1)+ '-' +  today.getDate();
+      date = new Date().toLocaleDateString();
       this.state=
       {
         date: date,
@@ -52,13 +52,15 @@ export class Payment extends React.Component {
         message:"",
         severity:"",
         open:false,
-        //click:true,
-        
+        click1:true,
+        click2:false,
+        mahd:null,
         NgayGiao:new Date(),
       }
        this.myFunction=this.myFunction.bind(this);
        this.handle=this.handle.bind(this);
         this.handleClose=this.handleClose.bind(this);
+        this.handleCancel=this.handleCancel.bind(this);
     }
     
     myFunction(param)
@@ -85,31 +87,40 @@ export class Payment extends React.Component {
       this.props.onStep(4);
     }
     componentDidMount(){
+      this.checkdata();
       this.onStep();
   }
     callback=(data)=>
     { 
       const newData = this.state;  
-      newData.message=data.message;
+      newData.message=data.message; 
+      newData.mahd=data.mahd;
+      
       newData.open=true;
       
-        if(data.message=="đã tạo thành công")
-        {              
+        if(data.mahd)
+        {               
+          newData.click2=true;
+          newData.click1=false;
             newData.severity="success";
         this.setState(newData);
           
       }
       else
       {
+        newData.click1=true;
+        newData.click2=false;
             newData.severity="error";
             this.setState(newData);
       }
-        
+      console.log(newData);
     }
     handle()
     {
      
       const data=this.state;
+     
+      
         const customer=this.props.history.location.state?.data;
         let newData= JSON.parse(localStorage.getItem('giohang')) ?? [];
         let model = {
@@ -148,6 +159,38 @@ export class Payment extends React.Component {
       data.open=false;
       this.setState(data);
     };
+  
+    callback1 = (data) =>
+    {
+      debugger;
+
+      console.log(data);
+      const newData=this.state;
+      newData.open=true;
+      if(data.dathanhtoan==false)
+      {
+        debugger;
+        newData.click1=false;
+        newData.click2=false;
+        newData.message=data.message;
+        newData.severity="success";
+        this.setState(newData);
+      }
+      else
+      {
+        newData.click1=false;
+        newData.click2=true;
+        newData.severity="error";
+        newData.message=data.message;
+        this.setState(newData);
+      }
+    }
+    handleCancel()
+    {
+  
+      FetchApi('GET',`/Values/updateBill?mahd=${this.state.mahd}`, 
+      { 'Content-Type': 'application/json' },null, this.callback1);
+    }
     checkdata()
     { 
     const data = this.props.history.location.state?.data;//nhan data tu trang khac
@@ -162,14 +205,14 @@ export class Payment extends React.Component {
 
     render(){
       let that=this;
-      this.checkdata();
+      
         const customer=this.props.history.location.state?.data;
         
     return(
         <div>
-            {<ShowPayment date={this.state.date} isError={this.state.isError} textError={this.state.textError} customer={customer} NgayDat={this.state.NgayDat} myFunction={this.myFunction}
-            handle={this.handle} />}
-             <Snackbar open={that.state.open} autoHideDuration={3000}  onClose={this.handleClose} >
+            <ShowPayment click2={this.state.click2} click1={this.state.click1} date={this.state.date} isError={this.state.isError} textError={this.state.textError} customer={customer} NgayDat={this.state.NgayDat} myFunction={this.myFunction}
+            handle={this.handle} handleCancel={this.handleCancel} />
+             <Snackbar open={that.state.open} autoHideDuration={3000}  onClose={this.handleClose}  >
          <Alert onClose={this.handleClose} severity={that.state.severity}>
            {that.state.message}
          </Alert>
@@ -184,6 +227,7 @@ function ShowPayment(props){
 
     const handleTextFieldChange = (e) => props.myFunction(e);
     const handle = () => props.handle();
+    const handleCancel = () =>props.handleCancel();
     return(
         <div>
 <TableContainer component={Paper}>
@@ -224,7 +268,7 @@ function ShowPayment(props){
   helperText={props.textError}
   error={props.isError}    
     variant="inline"
-    format="yyyy/MM/dd"
+    format="MM/dd/yyyy"
     margin="normal"
     id="date-picker-inline"
     label="Ngày Đặt"
@@ -240,9 +284,12 @@ function ShowPayment(props){
                 
               </StyledTableCell>
               <StyledTableCell align="right">
-              <Button variant="contained" color="primary"  onClick={handle}>
+              {props.click1&&<Button variant="contained" color="primary"  onClick={handle}>
           Thanh toán
-        </Button> 
+        </Button>} 
+        {props.click2 &&<Button variant="contained" color="primary"  onClick={handleCancel}>
+          Huỷ Đơn Thanh toán
+        </Button>}
               </StyledTableCell>
               
             </StyledTableRow>

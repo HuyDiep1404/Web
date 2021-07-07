@@ -14,5 +14,6 @@ namespace Web.ViewModels
         public bool? Dathanhtoan { get; set; }
         public bool? Tinhtranggiaohang { get; set; }
         public DetailModel[] Details1 { get; set; }
+
     }
 }

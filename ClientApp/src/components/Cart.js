@@ -205,13 +205,14 @@ this.props.onStep(3)
    
   }  
     componentDidMount(){
+      this.checkdata();
         this.onStep();
     }//ham này chỉ chạy khi đã chạy hết render.hàm này trong react
       
   //trong nay khoong duoc de ham lien quang den state
     //newData.reduce((total,i) => total+i.sl*i.GiaBan,0) total 1 biến i là phân tử thứ i, reduce là giảm , 0 là giá trị ban đầu 
   render(){
-    this.checkdata();
+    
 
 
 return(

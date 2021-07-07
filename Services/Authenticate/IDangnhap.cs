@@ -14,7 +14,14 @@ namespace Web.Services.Authenticate
         KhachHangb2 Create(KhachHangb2 customer);
         IEnumerable<KhachHangb2> Get();
         IEnumerable<DonHang> GetDonHang();
-         DonHang CreateBill(DonHang bill);
-        Chittiet1 CreateDetail(Chittiet1 detail);
+        int CreateBill(DonHang bill);
+        int CreateDetail(Chittiet1 detail);
+        
+        void Update(DonHang bill);
+
+        DonHang GetByMaHD(string mahd);
+
+
+
     }
 }

@@ -159,38 +159,51 @@ namespace Web.Controllers
 
         public IActionResult CreateBill([FromBody] BillModel model)//RegisterModel là 1 viewmoel,
         {
-            int c = _dangnhap.GetDonHang().Count();
-
-            var bill = new DonHang()//tao ra mot model gan gia tri cua viewmodel bang bien model
-            {
-               
-                MaHoaDon = "MHD0" + (c + 1),
-                NgayTao = model.NgayTao,
-                MaKh = model.MaKh,
-                NgayGiao = model.NgayGiao,
-                Dathanhtoan = model.Dathanhtoan,
-                Tinhtranggiaohang = model.Tinhtranggiaohang
-                
-
-            };   
+              
             try
             {
-                // create user                
-                _dangnhap.CreateBill(bill);
-                for (int i = 0; i < model.Details1.Length; i++)
+                int c = _dangnhap.GetDonHang().Count();
+                var bill = new DonHang()//tao ra mot model gan gia tri cua viewmodel bang bien model
                 {
-                    var detail = new Chittiet1()//tao ra mot model gan gia tri cua viewmodel bang bien model
+                    MaHoaDon = "MHD0" + (c + 1),
+                    NgayTao = model.NgayTao,
+                    MaKh = model.MaKh,
+                    NgayGiao = model.NgayGiao,
+                    Dathanhtoan = model.Dathanhtoan,
+                    Tinhtranggiaohang = model.Tinhtranggiaohang
+
+
+                };
+                // create user       
+                if (_dangnhap.CreateBill(bill) > 0)
+                {
+                    for (int i = 0; i < model.Details1.Length; i++)
                     {
-                        MaHd = bill.MaHoaDon,
-                        MaSp = model.Details1[i].MaSp,
-                        SoLuong = model.Details1[i].SoLuong,
-                        Dongia = model.Details1[i].Dongia
-                    };
-                    _dangnhap.CreateDetail(detail);
-                }               
-                return Ok(new
+                        var detail = new Chittiet1()//tao ra mot model gan gia tri cua viewmodel bang bien model
+                        {
+                            MaHd = bill.MaHoaDon,
+                            MaSp = model.Details1[i].MaSp,
+                            SoLuong = model.Details1[i].SoLuong,
+                            Dongia = model.Details1[i].Dongia
+                        };
+                        if(_dangnhap.CreateDetail(detail) <= 0)
+                        {
+                            return NotFound(new
+                            {
+                                message = "ko tạo thành công" //phai tao ra 1 đối tượng 
+                            });
+                        }    
+                        
+                    }
+                    return Ok(new
+                    {
+                        mahd = bill.MaHoaDon,
+                        message = "đã tạo thành công" //phai tao ra 1 đối tượng 
+                    });
+                }
+                return NotFound(new
                 {
-                    message = "đã tạo thành công" //phai tao ra 1 đối tượng 
+                    message = "ko tạo thành công" //phai tao ra 1 đối tượng 
                 });
             }
             catch (Exception ex)
@@ -202,6 +215,31 @@ namespace Web.Controllers
                 });
             }
         }
-       
-    }
+        //ghi chú get thì nên dùng cho select dữ liệu còn post thì nên dùng cho thay dổi dữ liệu
+        //neu so ngay dat bang ngay hien tai thi bang false
+        [HttpGet("updateBill")]
+
+        public IActionResult UpdateBill(string mahd =null)//RegisterModel là 1 viewmoel,
+        {
+
+            var bill = _dangnhap.GetByMaHD(mahd) ;//lay theo id
+            bill.Dathanhtoan =false;
+            try
+            {
+                // update user 
+                _dangnhap.Update(bill);
+                return Ok(new 
+                {
+                    Dathanhtoan=bill.Dathanhtoan,
+                    message = "đơn hàng đã được hủy"
+                }); 
+            }
+            catch (Exception ex)
+            {
+                // return error message if there was an exception
+                return BadRequest(ex.Message);
+            }
+        }
+
+      }
 }
