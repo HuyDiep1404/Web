@@ -66,23 +66,26 @@ export class Payment extends React.Component {
     
     myFunction(param)
     {
-        console.log(param);
+      console.log(param);
+
         const data=this.state;
         //cách chuyển từ kiểu string sang date new Date()
        if((new Date(param)) >= (new Date()))
        {
-    data.NgayGiao=param;
-    data.isError=false;
-    data.textError="";
+      data.NgayGiao = param;
+        data.isError = false;
+        data.textError = "";
+    
+    
+
        }
        else
        {
-        data.isError=true;
-        data.textError="ngày giao hang phải sau ngày đặt hàng"; 
+        data.isError = true;
+        data.textError = "ngày giao hang phải sau ngày đặt hàng"; 
        }
        this.setState(data);
-       
-
+ 
     }
     backhome()
     {
@@ -129,8 +132,8 @@ export class Payment extends React.Component {
     {
      
       const data=this.state;
-     
-      
+     if(data.isError===false)
+      {
         const customer=this.props.history.location.state?.data;
         let newData= JSON.parse(localStorage.getItem('giohang')) ?? [];
         let model = {
@@ -154,6 +157,8 @@ export class Payment extends React.Component {
             localStorage.clear();      
     
       this.onCart();
+      }
+        
            
             
     }
@@ -179,7 +184,7 @@ export class Payment extends React.Component {
       newData.open=true;
       if(data.dathanhtoan==false)
       {
-        debugger;
+        
         newData.click1=false;
         newData.click2=false;
         newData.message=data.message;
@@ -195,6 +200,7 @@ export class Payment extends React.Component {
         this.setState(newData);
       }
     }
+   
     handleCancel()
     {
   
@@ -220,7 +226,8 @@ export class Payment extends React.Component {
         
     return(
         <div>
-            <ShowPayment click2={this.state.click2} click1={this.state.click1} date={this.state.date} isError={this.state.isError} textError={this.state.textError} customer={customer} NgayDat={this.state.NgayDat} myFunction={this.myFunction}
+            <ShowPayment click2={this.state.click2} click1={this.state.click1} date={this.state.date} Ngaytao={this.state.Ngaytao} isError={this.state.isError}
+             textError={this.state.textError} customer={customer} NgayGiao={this.state.NgayGiao} myFunction={this.myFunction}
             handle={this.handle} handleCancel={this.handleCancel} backhome={this.backhome} />
              <Snackbar open={that.state.open} autoHideDuration={3000}  onClose={this.handleClose}  >
          <Alert onClose={this.handleClose} severity={that.state.severity}>
@@ -244,6 +251,7 @@ function ShowPayment(props){
           <Button variant="contained" color="primary"  onClick={backhome}>
           Home
         </Button>
+       {!props.click2&&!props.click1?"Đơn đã được hủy":""}
 <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="customized table">   
         <TableBody>
@@ -277,7 +285,7 @@ function ShowPayment(props){
                 Ngày giao
               </StyledTableCell>
               <StyledTableCell align="right">
-              <MuiPickersUtilsProvider utils={DateFnsUtils} >
+              {props.click1?<MuiPickersUtilsProvider utils={DateFnsUtils} >
   <KeyboardDatePicker
   helperText={props.textError}
   error={props.isError}    
@@ -285,14 +293,14 @@ function ShowPayment(props){
     format="MM/dd/yyyy"
     margin="normal"
     id="date-picker-inline"
-    label="Ngày Đặt"
     value={props.NgayGiao}
     onChange={handleTextFieldChange}
     KeyboardButtonProps={{
       'aria-label': 'change date',
     }}
   />
-   </MuiPickersUtilsProvider>            
+   </MuiPickersUtilsProvider>:new Date(props.NgayGiao).toLocaleDateString() }
+      
               </StyledTableCell>
               <StyledTableCell component="th" scope="row">
                 
@@ -302,7 +310,7 @@ function ShowPayment(props){
           Thanh toán
         </Button>} 
         {props.click2 &&<Button variant="contained" color="primary"  onClick={handleCancel}>
-          Huỷ Đơn Thanh toán
+          Huỷ Đơn 
         </Button>}
               </StyledTableCell>
               

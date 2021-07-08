@@ -9,6 +9,7 @@ import { Authenticate } from './components/Authenticate';
 import { Create } from './components/Create';
 import { Review } from './components/Review';
 import { Cart } from './components/Cart';
+import { HistoryBill } from './components/HistoryBill';
 import { Payment } from './components/Payment';
 import Badge from '@material-ui/core/Badge';
 import { withStyles } from '@material-ui/core/styles';
@@ -31,6 +32,7 @@ import DetailsIcon from '@material-ui/icons/Details';
 import clsx from 'clsx';
 import HomeIcon from '@material-ui/icons/Home';
 import MenuBookIcon from '@material-ui/icons/MenuBook';
+
 const StyledBadge = withStyles((theme) => ({
   badge: {
     right: -3,
@@ -143,6 +145,7 @@ export default class App extends Component {
         <Route path='/review' render={(props) => <Review onStep={this.onStep} onCart={this.onCart} {...props} />} />
         <Route path='/cart' render={(props) => <Cart onStep={this.onStep} onCart={this.onCart}  {...props} />} />
         <Route path='/payment' render={(props) => <Payment onStep={this.onStep}  onCart={this.onCart} {...props} />} />
+        <Route path='/hisrotyBill' component={HistoryBill} />
       </Layout>
     );
   }
