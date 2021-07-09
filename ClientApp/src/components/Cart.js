@@ -355,6 +355,7 @@ return (
 <IconButton aria-label="update" value={row.MaSp} onClick={handleClickOpenUpdate.bind(this,row.MaSp)}  >
           < EditIcon />
         </IconButton>     
+        
         </Tooltip>
         </StyledTableCell>
           </StyledTableRow>

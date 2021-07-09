@@ -177,9 +177,7 @@ export class Payment extends React.Component {
   
     callback1 = (data) =>
     {
-      debugger;
 
-      console.log(data);
       const newData=this.state;
       newData.open=true;
       if(data.dathanhtoan==false)
