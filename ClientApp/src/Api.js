@@ -24,6 +24,13 @@ import PropTypes from 'prop-types';
         callback(data);
       })
       .catch(e => console.log(e));
+      /*
+       fetch(url,requestOption)
+      .then(res => res.json())
+      .then((data) => {
+        callback(data);
+      })
+      .catch(e => console.log(e)); */
     
   
 }

@@ -18,7 +18,9 @@ import Popper from '@material-ui/core/Popper';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 import { Panorama } from '@material-ui/icons';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { Container, Section, Bar } from 'react-simple-resizer';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 const useStyles = makeStyles((theme) => ({
   
@@ -40,7 +42,9 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     marginRight: theme.spacing(2),
   },
+ 
 }));
+
 //viết component ben trong class
 export class Home extends React.Component {
   
@@ -49,6 +53,8 @@ export class Home extends React.Component {
     super(props);
     this.state={
       customer:null,
+      loading:false,
+      open:false,
       book :[
         
       ],
@@ -68,16 +74,22 @@ export class Home extends React.Component {
     AnhBia:"",
     SoLuongTon:0,
     },
+    Search:[],
     ChuDe :[]
       
   ,
     XuatBan:[]
     
+    
   }
+  //nơi đặt hàm event
   this.myFunction1 = this.myFunction1.bind(this);
   this.myFunction2 = this.myFunction2.bind(this);
   this.myFunction3 = this.myFunction3.bind(this);
   this.handleClose=this.handleClose.bind(this);
+  this.callsearch=this.callsearch(this);
+ // this.onOpen=this.onOpen(this);
+  //this.onClose=this.onClose(this);
 }
   
 
@@ -98,6 +110,7 @@ export class Home extends React.Component {
     })
     
   }
+  
   callback3  = (data) => {   
  
     const newData = this.state;
@@ -138,6 +151,11 @@ export class Home extends React.Component {
     data.Api.open=false;
     this.setState(data);
   };
+  onStep()
+  {
+    this.props.onStep(1);
+  }
+  
   myFunction2(param)
   {
   
@@ -192,12 +210,13 @@ newData.text="";
     }
     
     callback1=(data)=>{ 
-    
+      this.onStep();
            const newData = this.state;// {...items}còn là 1 bộ hẹn giờ nếu ta không kèm theo điều kiện thì nó sẽ lập vô hạn      
         newData.ChuDe=data;
        
         //vì items ban đầu chưa có gì nên ta phả gán newData.contacts=data để truyền data vào      
-        this.setState(newData);//cập nhật lại dư liệu của cái trạng thái      
+        this.setState(newData);
+        //cập nhật lại dư liệu của cái trạng thái      
       
       }
       callback2=(data)=>{ 
@@ -208,6 +227,13 @@ newData.text="";
         this.setState(newData);//cập nhật lại dư liệu của cái trạng thái      
       
       }
+      callback4 =(data)=>
+      {
+        const  newData=this.state;
+        newData.Search=data;     
+        newData.loading=false;
+        this.setState(newData);
+      }
     checkdata()
     { 
     const data = this.props.history.location.state?.data;//nhan data tu trang khac
@@ -215,7 +241,14 @@ newData.text="";
     if(data === null || data === undefined)
     {
       this.props.history.push("/authenticate");/*cach chuyen qua 1 trang khac */
+    }else
+    {
+      this.callapi();
+    this.callChuDe();
+    this.callXuatBan();
+    
     }
+    
   }   
 callapi()
     {
@@ -224,7 +257,7 @@ callapi()
       const data = this.props.history.location.state?.xuatban;
 if(newData.book.length === 0 || newData.click)
 {  
-let url="https://localhost:5001/Values/getCDVaNXB";
+let url="/Values/getCDVaNXB";
   if(data1 != undefined){
 url=`${url}?macd=${data1}`;
   }
@@ -239,7 +272,7 @@ url=`${url}?macd=${data1}`;
     {
       if(this.state.ChuDe.length === 0)
       {
-        FetchApi('GET', 'https://localhost:5001/Values/getChuDe', 
+        FetchApi('GET', '/Values/getChuDe', 
   { 'Content-Type': 'application/json' },null, this.callback1);
 } 
   }
@@ -247,27 +280,73 @@ url=`${url}?macd=${data1}`;
     {
       if(this.state.XuatBan.length === 0)
       {
-    FetchApi('GET', 'https://localhost:5001/Values/getMaNXB', 
+    FetchApi('GET', '/Values/getMaNXB', 
   { 'Content-Type': 'application/json' },null, this.callback2);
     }
   }
+  callsearch(param)
+  {
+
+    }
+   
+  
    //ham được goi trong render luôn luôn cập nhật 
   render () {
     const cus=this.props.history.location.state?.data;
-let that=this;
+    const stateData = this.state;
    //console.log(cus);
     this.checkdata();
-    this.callapi();
-    this.callChuDe();
-    this.callXuatBan();
+    let that = this;
     return (
       <div>
-        
+         <Autocomplete
+      id="asynchronous-demo"
+      style={{ width: 300 }}
+      open={that.state.open}
+      onInputChange={(event, newInputValue) => {
+        this.state.loading = this.state.open && this.state.Search.length === 0;
+   
+        console.log(that.state.loading);
+        if (!that.state.loading) {
+          return undefined;
+        }
+        FetchApi('GET', `/Values/getsuggest?tensp=${newInputValue}`, 
+      { 'Content-Type': 'application/json' },null, that.callback4);
+      }}
+      onOpen={() => {
+        stateData.open=true;
+        that.setState(stateData);
+      }}
+      onClose={() => {
+        stateData.open=false;
+        that.setState(stateData);
+      }}
+      getOptionSelected={(option, value) => option.maSp === value.maSp}
+      getOptionLabel={(option) => (`${option.maSp} - ${option.tenSp}`)}
+      options={that.state.Search}
+      loading={that.stateloading}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          label="Asynchronous"
+          variant="outlined"
+          InputProps={{
+            ...params.InputProps,
+            endAdornment: (
+              <React.Fragment>
+                {that.state.loading ? <CircularProgress color="inherit" size={20} /> : null}
+                {params.InputProps.endAdornment}
+              </React.Fragment>
+            ),
+          }}
+        />
+      )}
+    />
 
-          <FormName book = {this.state.book} customer = {cus} ChuDe = {this.state.ChuDe} XuatBan = {this.state.XuatBan}
+          <FormName  book = {this.state.book} customer = {cus} ChuDe = {this.state.ChuDe} XuatBan = {this.state.XuatBan} Search={this.state.Search} 
            selectCd={this.props.history.location.state?.chude} selectXb = {this.props.history.location.state?.xuatban}
-          text={this.state.text} myFunction1={this.myFunction1} myFunction3={this.myFunction3} myFunction2={this.myFunction2}/>        
-         <Snackbar open={that.state.Api.open} autoHideDuration={3000}  onClose={this.handleClose} >
+          text={this.state.text} myFunction1={this.myFunction1} myFunction3={this.myFunction3} myFunction2={this.myFunction2} />        
+         <Snackbar open={that.state.Api.open} autoHideDuration={3000}  onClose={this.handleClose}   >
          <Alert onClose={this.handleClose} severity={that.state.Api.severity}>
            {that.state.Api.message}
          </Alert>
@@ -282,11 +361,14 @@ let that=this;
       const classes = useStyles();
     let cde=props.ChuDe?.find(a => a.maChuDe === props.selectCd);
     let xban=props.XuatBan?.find(a => a.maNxb === props.selectXb);
- 
+  
+
+
     //<h3>{(cde||cde==null)?cde.tenChuDe:xban.tenXb}</h3>
    const handleTextFieldChange1=(value, i) => props.myFunction1(value);
    const handleTextFieldChange2=(value, i) => props.myFunction2(value);
    const handleTextFieldChange3=(value) => props.myFunction3(value);
+ 
     return (
       <div className={classes.root}>
   

@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Web.Models;
+using Web.Services.JoinTable;
 
-namespace Web.Services
+namespace Web.Services.Authenticate
 {
     public class Dangnhap:IDangnhap
     {
@@ -54,5 +55,47 @@ namespace Web.Services
         {          
             return _context.KhachHangb2s;
         }
+        public IEnumerable<DonHang> GetDonHang()
+        {
+            return _context.DonHangs;
+        }
+
+        public DonHang GetByMaHD(string mahd)
+        {
+            return _context.DonHangs.Find(mahd);
+        }
+
+        public int CreateBill(DonHang bill)
+        {
+            if(_context.DonHangs.Any(x => x.MaHoaDon == bill.MaHoaDon))
+
+                throw new Exception("Hóa đơn đã tồn tại " + bill.MaHoaDon + " đã tồn tại");
+            _context.DonHangs.Add(bill);
+            return _context.SaveChanges();
+        }
+        public int CreateDetail (Chittiet1 detail)
+        {
+            _context.Chittiet1s.Add(detail);
+           return _context.SaveChanges();
+            
+        }
+        public void Update(DonHang bill)
+        {
+            var mahd = _context.DonHangs.Find(bill.MaHoaDon);
+            if (mahd == null)
+                throw new Exception("không tìm thấy Hóa đơn này");
+            _context.DonHangs.Update(mahd);
+            _context.SaveChanges();
+
+        }
+        public IEnumerable<TableJoinResult> GetDetailByMaHD(string mahd)
+        {
+            
+            return (from i1 in _context.Chittiet1s 
+                    join j1 in _context.Sach1s on i1.MaSp equals j1.MaSp
+                    where i1.MaHd.Equals(mahd)
+                    select new TableJoinResult { Chittiet1 = i1, Sach1 = j1 });
+        }
+
     }
 }

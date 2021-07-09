@@ -19,6 +19,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import EditIcon from '@material-ui/icons/Edit';
 import { TextField } from '@material-ui/core';
+import RemoveShoppingCartIcon from '@material-ui/icons/RemoveShoppingCart';
+import PaymentIcon from '@material-ui/icons/Payment';
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -55,6 +57,7 @@ export class Cart extends React.Component {
        click:true,
        open1:false,
        open2:false,
+       open3:false,
        isError:false,
        soluong:1,
           textError:""
@@ -65,12 +68,16 @@ export class Cart extends React.Component {
  this.handleClickOpenUpdate=this.handleClickOpenUpdate.bind(this);
    this.handleUpdate=this.handleUpdate.bind(this);
    this.handleTextFieldChange=this.handleTextFieldChange.bind(this);
+   this.handleDeleteAll=this.handleDeleteAll.bind(this);
+   this.handleClickOpenDeleteAll=this.handleClickOpenDeleteAll.bind(this);
+   this.handleClickOpenPayment=this.handleClickOpenPayment.bind(this);
     }
     handleClose()
     {
       const data= this.state;
       data.open1=false;
       data.open2=false;
+      data.open3=false;
       this.setState(data);
 
     }
@@ -100,7 +107,7 @@ export class Cart extends React.Component {
       let item = newData.filter(a => a.MaSp !== this.state.masp);//filter là bộ lọc lọc ra có thể là một mảng .
       //cách làm thay vì xóa ta thục hiện tìm mã khác mã truyền lại và lọc mạng đó khac array ban đầu rồi ta set lại mảng đó
       localStorage.setItem('giohang', JSON.stringify(item));
-     
+     this.onCart();
       const data= this.state;
       data.open1=false;
       data.click=true;
@@ -116,6 +123,17 @@ export class Cart extends React.Component {
       
       this.setState(data);
      
+      }
+      handleClickOpenPayment()
+      {
+
+        this.props.history.push({
+          pathname: '/payment',
+          state: {
+             data :this.props.history.location.state?.data//truyen lai customer vì nó không phải biến state nên không được lưu lại
+           
+          }
+        })
       }
       handleUpdate()
       {
@@ -144,27 +162,66 @@ export class Cart extends React.Component {
         {
           data.soluong=item.sl;
           data.SoLuongTon=item.SoLuongTon;
+          
         }
-        
+        localStorage.setItem('giohang', JSON.stringify(newData));
       data.masp=param;
       data.open2=true;   
       this.setState(data);
       
       }
+      handleDeleteAll()
+      {
+        
+        localStorage.clear();
+        this.onCart();
+        const dataState=this.state;
+        dataState.click=true;   
+        dataState.open3=false;  
+      this.setState(dataState);
+      }
 
-
-      
+      handleClickOpenDeleteAll()
+      {
+        const dataState=this.state;
+        dataState.open3=true;    
+      this.setState(dataState);
+        
+      }
+      onStep(){
+this.props.onStep(3)
+      }
+      checkdata()
+    { 
+    const data = this.props.history.location.state?.data;//nhan data tu trang khac
+    
+    if(data === null || data === undefined)
+    {
+      this.props.history.push("/authenticate");//cach chuyen qua 1 trang khac 
+    }
+  } 
+  onCart(){
+    this.props.onCart(JSON.parse(localStorage.getItem('giohang'))?.length);
+   
+  }  
+    componentDidMount(){
+      this.checkdata();
+        this.onStep();
+    }//ham này chỉ chạy khi trước render.hàm này trong react
       
   //trong nay khoong duoc de ham lien quang den state
     //newData.reduce((total,i) => total+i.sl*i.GiaBan,0) total 1 biến i là phân tử thứ i, reduce là giảm , 0 là giá trị ban đầu 
   render(){
+    
+
 
 return(
   <div>
-            {this.state.click &&<ShowCart handleDelete={this.handleDelete} handleClickOpenDelete={this.handleClickOpenDelete} handleClose={this.handleClose}
+            {this.state.click &&<ShowCart handleDelete={this.handleDelete} handleClickOpenDelete={this.handleClickOpenDelete} handleClose={this.handleClose} handleDeleteAll={this.handleDeleteAll}
             handleClickOpenUpdate = {this.handleClickOpenUpdate} handleClickOpenUpdate={this.handleClickOpenUpdate} handleUpdate={this.handleUpdate} handleTextFieldChange={this.handleTextFieldChange}
-            open1={this.state.open1} open2={this.state.open2} isError={this.state.isError} textError={this.state.textError} SoLuongTon={this.state.SoLuongTon} masp={this.state.masp}
-            soluong={this.state.soluong}/>}
+            handleClickOpenDeleteAll={this.handleClickOpenDeleteAll} handleDeleteAll={this.handleDeleteAll}
+            open1={this.state.open1} open2={this.state.open2} open3={this.state.open3} isError={this.state.isError} textError={this.state.textError} SoLuongTon={this.state.SoLuongTon} masp={this.state.masp}
+            soluong={this.state.soluong} handleClickOpenPayment={this.handleClickOpenPayment} />}
         </div>
 
 );
@@ -181,10 +238,37 @@ const handleDelete =() => props.handleDelete();
 const handleClickOpenUpdate=(value) => props.handleClickOpenUpdate(value);
 const handleTextFieldChange =(e) =>props.handleTextFieldChange(e.target.value);
 const handleUpdate=()=>props.handleUpdate();
+const handleClickOpenDeleteAll=()=>props.handleClickOpenDeleteAll();
+const handleDeleteAll=()=>props.handleDeleteAll();
+const handleClickOpenPayment=()=>props.handleClickOpenPayment();
+
+
 return (
   
   <div>
-    
+    <Dialog
+        open={props.open3}
+        
+        keepMounted
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-slide-title"
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle id="alert-dialog-slide-title">{"cảnh báo"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            Bạn có muốn xóa tất cả sản phẩm trong giỏ hàng không?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            không
+          </Button>
+          <Button onClick={handleDeleteAll} color="primary">
+            có
+          </Button>
+        </DialogActions>
+      </Dialog>
     <Dialog
         open={props.open1}
         
@@ -267,19 +351,40 @@ return (
           < DeleteIcon />
         </IconButton>     
         </Tooltip>
-        <Tooltip title="Cập nhật">
+        <Tooltip title="Cập Nhật Số Lượng">
 <IconButton aria-label="update" value={row.MaSp} onClick={handleClickOpenUpdate.bind(this,row.MaSp)}  >
           < EditIcon />
         </IconButton>     
+        
         </Tooltip>
         </StyledTableCell>
           </StyledTableRow>
         ))}
         <TableRow>
+          
+          <TableCell rowSpan={1} />
+          
+          <TableCell colSpan={1}>
+          <Tooltip title="Xóa Giỏ Hàng">
+<IconButton aria-label="removeall" onClick={handleClickOpenDeleteAll}>
+          <  RemoveShoppingCartIcon />
+        </IconButton>     
+        </Tooltip>
+          </TableCell>
+         
+        </TableRow>
+        <TableRow>
+          
             <TableCell rowSpan={1} />
             
             <TableCell colSpan={1}>Tổng Tiền</TableCell>
-            <TableCell align="right" colSpan={5}>{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'VND' }).format(newData.reduce((total,i) => total+i.sl*i.GiaBan,0))}</TableCell>
+            <TableCell align="right" colSpan={5}>{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'VND' }).format(newData.reduce((total,i) => total+i.sl*i.GiaBan,0))}
+            <Tooltip title="thanh toán ">
+<IconButton aria-label="payment" onClick={handleClickOpenPayment}>
+          <  PaymentIcon />
+        </IconButton>     
+        </Tooltip>
+            </TableCell>
           </TableRow>
          
       </TableBody>

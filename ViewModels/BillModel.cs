@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 
-#nullable disable
-
-namespace Web.Models
+namespace Web.ViewModels
 {
-    public partial class DonHang
+    public class BillModel
     {
-        public string MaHoaDon { get; set; }
         public DateTime? NgayTao { get; set; }
         public string MaKh { get; set; }
         public DateTime? NgayGiao { get; set; }
-        public bool? Dathanhtoan { get; set; }//true thì còn hiệu lực,false thì đơn hàng đã hủy
+        public bool? Dathanhtoan { get; set; }
         public bool? Tinhtranggiaohang { get; set; }
+        public DetailModel[] Details1 { get; set; }
+
     }
 }

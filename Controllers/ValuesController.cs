@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Web.Models;
 using Microsoft.Extensions.Configuration;
-using Web.Services;
+using Web.Services.Authenticate;
 using Web.ViewModels;
-using Web.Book;
+using Web.Services.Book;
 
 namespace Web.Controllers
 {
@@ -39,7 +39,9 @@ namespace Web.Controllers
 
                 {
                     MaKh = custumer.MaKh,
-                    Hoten = custumer.Hoten
+                    Hoten = custumer.Hoten,
+                    SoDt = custumer.SoDt,
+                    Diachi = custumer.DiaChi
                 }
                     );
 
@@ -74,7 +76,7 @@ namespace Web.Controllers
                 return Ok(new
                 {
                     message = "đã tạo thành công" //phai tao ra 1 đối tượng 
-                }) ;
+                });
             }
             catch (Exception ex)
             {
@@ -96,31 +98,42 @@ namespace Web.Controllers
 
 
         //}
+        [HttpGet("getsuggest")]
+        public IActionResult Getsuggest(string tensp = null)
+        {
+            var book = _info.Getsuggest(tensp);
+            if (book.Any())
+                return Ok(book);
+            else
+                return BadRequest(new { message = "khong tim thấy quyển sách cần tìm " });
+
+
+        }
         [HttpGet("getCDVaNXB")]
-        public IActionResult GetCDVaNXB(string macd = null, string maxb=null)
+        public IActionResult GetCDVaNXB(string macd = null, string maxb = null)
         {
             var book = _info.GetCDVaNXB(macd, maxb);
             if (book.Any())
                 return Ok(book);
             else
-            return BadRequest(new { message = "khong tim thấy quyển sách cần tìm theo mã chủ đề và mã nhà xuất bản" });
+                return BadRequest(new { message = "khong tim thấy quyển sách cần tìm theo mã chủ đề và mã nhà xuất bản" });
 
         }
         [HttpGet("getChuDe")]
         public IActionResult GetChuDe()
         {
             var chude = _info.GetChuDe();
-           
-                return Ok(chude);
 
-         
+            return Ok(chude);
+
+
         }
         [HttpGet("getMaNXB")]
         public IActionResult GetMaNXB()
         {
             var nxb = _info.GetMaNXB();
-            
-                return Ok(nxb);
+
+            return Ok(nxb);
 
         }
         [HttpGet("getMaSP")]
@@ -132,8 +145,8 @@ namespace Web.Controllers
             else
                 return BadRequest(new { message = "khong tim thấy quyển sách cần tìm theo mã mã sách" });
         }
-        
-            [HttpGet("masp")]
+
+        [HttpGet("masp")]
         public IActionResult Masp(string masp = null)
         {
             var sp = _info.Masp(masp);
@@ -141,6 +154,105 @@ namespace Web.Controllers
                 return Ok(sp);
             else
                 return BadRequest(new { message = "khong tim thấy quyển sách cần tìm theo mã mã sách" });
+        }
+        [HttpPost("createBill")]
+
+        public IActionResult CreateBill([FromBody] BillModel model)//RegisterModel là 1 viewmoel,
+        {
+
+            try
+            {
+                int c = _dangnhap.GetDonHang().Count();
+                var bill = new DonHang()//tao ra mot model gan gia tri cua viewmodel bang bien model
+                {
+                    MaHoaDon = "MHD0" + (c + 1),
+                    NgayTao = model.NgayTao,
+                    MaKh = model.MaKh,
+                    NgayGiao = model.NgayGiao,
+                    Dathanhtoan = model.Dathanhtoan,
+                    Tinhtranggiaohang = model.Tinhtranggiaohang
+
+
+                };
+                // create user       
+                if (_dangnhap.CreateBill(bill) > 0)
+                {
+                    for (int i = 0; i < model.Details1.Length; i++)
+                    {
+                        var detail = new Chittiet1()//tao ra mot model gan gia tri cua viewmodel bang bien model
+                        {
+                            MaHd = bill.MaHoaDon,
+                            MaSp = model.Details1[i].MaSp,
+                            SoLuong = model.Details1[i].SoLuong,
+                            Dongia = model.Details1[i].Dongia
+                        };
+                        if (_dangnhap.CreateDetail(detail) <= 0)
+                        {
+                            return NotFound(new
+                            {
+                                message = "ko tạo thành công" //phai tao ra 1 đối tượng 
+                            });
+                        }
+
+                    }
+                    return Ok(new
+                    {
+                        mahd = bill.MaHoaDon,
+                        message = "đã tạo thành công" //phai tao ra 1 đối tượng 
+                    });
+                }
+                return NotFound(new
+                {
+                    message = "ko tạo thành công" //phai tao ra 1 đối tượng 
+                });
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(new
+                {
+                    message = ex.Message //phai tao ra 1 đối tượng 
+                });
+            }
+        }
+        //ghi chú get thì nên dùng cho select dữ liệu còn post thì nên dùng cho thay dổi dữ liệu
+        //neu so ngay dat bang ngay hien tai thi bang false
+        [HttpGet("updateBill")]
+
+        public IActionResult UpdateBill(string mahd = null)//RegisterModel là 1 viewmoel,
+        {
+
+            var bill = _dangnhap.GetByMaHD(mahd);//lay theo id
+            bill.Dathanhtoan = false;
+            try
+            {
+                // update user 
+                _dangnhap.Update(bill);
+                return Ok(new
+                {
+                    Dathanhtoan = bill.Dathanhtoan,
+                    message = "đơn hàng đã được hủy"
+                });
+            }
+            catch (Exception ex)
+            {
+                // return error message if there was an exception
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpGet("historydonhang")]
+
+        public IActionResult historydonhang()//RegisterModel là 1 viewmoel,
+        {
+            var history = _dangnhap.GetDonHang();
+
+            return Ok(history);
+        }
+        [HttpGet("historychitiet")]
+        public IActionResult historychitiet(string mahd)
+        {
+            var history = _dangnhap.GetDetailByMaHD(mahd);
+            return Ok(history);
         }
     }
 }

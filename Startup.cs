@@ -8,8 +8,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Web.Models;
-using Web.Services;
-using Web.Book;
+using Web.Services.Authenticate;
+using Web.Services.Book;
 
 namespace Web
 {

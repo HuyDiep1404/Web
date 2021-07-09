@@ -79,9 +79,13 @@ const useStyles = makeStyles((theme) => ({
       this.handleTextFieldChange=this.handleTextFieldChange.bind(this);
       this.handleUpdate=this.handleUpdate.bind(this);
       
+      
     }
     onCart(){
       this.props.onCart(JSON.parse(localStorage.getItem('giohang')).length);
+    }
+    onStep(){
+      this.props.onStep(2);
     }
     handleClickOpen(param)
     {
@@ -108,7 +112,6 @@ const useStyles = makeStyles((theme) => ({
     
     handleUpdate()
     {         
-      
       const dataState=this.state;
       const masp = this.props.history.location.state?.masp;
       const  data= this.props.history.location.state?.data.MaKh;
@@ -144,6 +147,7 @@ const useStyles = makeStyles((theme) => ({
       dataState.soluong=1;  
       this.setState(dataState);
     }
+
     handleTextFieldChange(param)
     {
       const Data=this.state;
@@ -186,14 +190,15 @@ const useStyles = makeStyles((theme) => ({
       }*/
       showCart()
       {
-        this.props.history.push("/cart");
-        /*this.props.history.push({
+        //this.props.history.push("/cart");
+        this.props.history.push({
           pathname: '/cart',
           state: {
-            data: this.state.giohang//truyen lai customer vì nó không phải biến state nên không được lưu lại
+             data :this.props.history.location.state?.data//truyen lai customer vì nó không phải biến state nên không được lưu lại
            
           }
-        })*/
+        })
+        
       }
       backHome()
       {
@@ -212,7 +217,7 @@ const useStyles = makeStyles((theme) => ({
     callback  = (data) => {   
  
     const newData = this.state;
-    { 
+     
       newData.info.MaSp = data.maSp;
       newData.info.TenSp = data.tenSp;
       newData.info.GiaBan = data.giaBan;
@@ -220,7 +225,7 @@ const useStyles = makeStyles((theme) => ({
       newData.info.AnhBia = data.anhBia;
       newData.info.SoLuongTon=data.soLuongTon;
          this.setState(newData);
-    }   
+         this.onStep();   
  
    }
     calldetail()
@@ -228,17 +233,24 @@ const useStyles = makeStyles((theme) => ({
       const masp = this.props.history.location.state?.masp;
         if(this.state.info.MaSp === null && masp != undefined )
         {
-        FetchApi('GET', `https://localhost:5001/Values/getMaSP?masp=${masp}`, 
+        FetchApi('GET', `/Values/getMaSP?masp=${masp}`, 
         { 'Content-Type': 'application/json' },null, this.callback);
         }
-       /* else
-        {
-          this.props.history.replace("/");
-        }*/
+       
     }
+  checkdata()
+    { 
+    const data = this.props.history.location.state?.data;//nhan data tu trang khac
+    
+    if(data === null || data === undefined)
+    {
+      this.props.history.push("/authenticate");//cach chuyen qua 1 trang khac 
+    }
+  }   
     
     render () {
         this.calldetail();
+        this.checkdata();
         return(
         <div>
             {this.state.info.MaSp && <Detail MaSp={this.state.info.MaSp} TenSp={this.state.info.TenSp} GiaBan={this.state.info.GiaBan} Mota={this.state.info.Mota} 
