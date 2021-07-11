@@ -4,6 +4,7 @@ import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
+import TableFooter from '@material-ui/core/TableFooter';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
@@ -15,6 +16,9 @@ import Snackbar from '@material-ui/core/Snackbar';
 import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
+import TablePagination from '@material-ui/core/TablePagination';
+
+
 const StyledTableCell = withStyles((theme) => ({
     head: {
       backgroundColor: theme.palette.common.black,
@@ -47,10 +51,14 @@ export class HistoryBill extends React.Component {
         open:false,
         severity:"",
         message:"",
-        click:false
+        click:false,
+        page:0,
+        rowsPerPage:5,
       }
        this.handleCancel=this.handleCancel.bind(this);
        this.handleClose=this.handleClose.bind(this);
+       this.handleChangePage=this.handleChangePage.bind(this);
+       this.handleChangeRowsPerPage=this.handleChangeRowsPerPage.bind(this);
     }
   
     handleCancel(value)
@@ -90,7 +98,21 @@ export class HistoryBill extends React.Component {
       data.open=false;
       this.setState(data);
     };
-  
+    handleChangePage (event, newPage){
+      console.log(event,newPage);
+       const newData=this.state;
+       newData.page=newPage;
+       this.setState(newData)
+      
+    };
+     handleChangeRowsPerPage (event) {
+       console.log(event);
+       const newData=this.state;
+       newData.rowsPerPage=(parseInt(event,10));
+       newData.page=0;
+       this.setState(newData);
+      
+    };
     callhistory()
     {
      
@@ -103,11 +125,13 @@ export class HistoryBill extends React.Component {
     render()
     {
       let that=this;
+      console.log(this.state.bill.length);
         this.callhistory();
         return(
             <div>
-              <ShowHistory bill={this.state.bill} handleCancel={this.handleCancel}
-            />
+              {(this.state.bill.length > 0) && <ShowHistory bill={this.state.bill} handleCancel={this.handleCancel}
+            page={this.state.page} rowsPerPage={this.state.rowsPerPage} handleChangePage={this.handleChangePage} handleChangeRowsPerPage={this.handleChangeRowsPerPage}/>
+        }
             <Snackbar open={that.state.open} autoHideDuration={3000}  onClose={this.handleClose} >
          <Alert onClose={this.handleClose} severity={that.state.severity}>
            {that.state.message}
@@ -122,6 +146,12 @@ export class HistoryBill extends React.Component {
 function ShowHistory(props){
     const classes = withStyles();
     const handleCancel = (value) =>props.handleCancel(value);
+    const handleChangePage=(e,newpage)=> {
+      console.log(newpage);
+      props.handleChangePage(e,newpage);}
+    const handleChangeRowsPerPage=(e)=>{
+      console.log(e.target);
+      props.handleChangeRowsPerPage(e.target.value);}
     const white = {
       backgroundColor: 'white'
       }
@@ -130,8 +160,9 @@ function ShowHistory(props){
       backgroundColor: 'blue'
       }
     return(
-        <div>
-<TableContainer component={Paper}>
+      <div className={classes.root}>
+    
+<TableContainer>
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
           <TableRow>
@@ -144,14 +175,15 @@ function ShowHistory(props){
           </TableRow>
         </TableHead>
         <TableBody>
-          {props.bill.map((row) => (
-            <TableRow key={row.maHoaDon} style={!row.dathanhtoan ? blue : white}  >
+          {(props.bill.slice(props.page * props.rowsPerPage, props.page * props.rowsPerPage + props.rowsPerPage)
+          ).map((row, index) => (
+            <TableRow key={index} style={!row.dathanhtoan ? blue : white}  >
               <TableCell component="th" scope="row">
                 {row.maHoaDon}
               </TableCell>
               <TableCell align="right">{new Date(row.ngayTao).toLocaleDateString()}</TableCell>
               <TableCell align="right">{new Date(row.ngayGiao).toLocaleDateString()}</TableCell>
-              <TableCell align="right">{row.dathanhtoan?(row.tinhtranggiaohang?"đơn đang được giao":"đã thanh toán "):"đã hủy"}</TableCell>
+              <TableCell align="right">{row.dathanhtoan?(row.tinhtranggiaohang?"Đã giao":"Đã thanh toán"):"Đã hủy"}</TableCell>
               <TableCell align="right">
                 
               {(row.dathanhtoan && !row.tinhtranggiaohang)&&<Tooltip title="Hủy">
@@ -166,6 +198,16 @@ function ShowHistory(props){
         </TableBody>
       </Table>
     </TableContainer>
+    <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={props.bill.length}
+          rowsPerPage={props.rowsPerPage}
+          page={props.page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+       
         </div>
     );
 }
