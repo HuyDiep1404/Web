@@ -21,7 +21,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 const StyledTableCell = withStyles((theme) => ({
     head: {
-      backgroundColor: theme.palette.common.aqua,
+      backgroundColor: theme.palette.common.black,
       color: theme.palette.common.white,
     },
     body: {
@@ -123,11 +123,14 @@ export class HistoryBill extends React.Component {
     };
     callhistory()
     {
+      debugger;
       const data = this.props.history.location.state?.data;//nhan data tu trang khac
-    
-      if(data === null || data === undefined)
+    console.log(data.maKh);
+      if(data)
       {
-      if(this.state.bill.length === 0||this.state.click){
+      if(this.state.bill.length === 0||this.state.click)
+      {
+        debugger;
         FetchApi('GET',`/Values/historydonhang?makh=${data.MaKh}`,
         { 'Content-Type': 'application/json' },null, this.callback);
       }

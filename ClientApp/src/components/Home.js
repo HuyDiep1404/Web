@@ -88,7 +88,7 @@ export class Home extends React.Component {
   this.myFunction3 = this.myFunction3.bind(this);
   this.handleClose=this.handleClose.bind(this);
   this.callsearch=this.callsearch(this);
-  //this.handlehistory=this.handlehistory(this);
+  this.handlehistory=this.handlehistory.bind(this);
  // this.onOpen=this.onOpen(this);
   //this.onClose=this.onClose(this);
 }
@@ -251,15 +251,15 @@ newData.text="";
     }
     
   }   
-  /*handlehistory()
+  handlehistory()
   {
     this.props.history.push({//history la 1 mảng ,replace thảy đổi bên trong mảng
-      pathname: '/hisrotydonhang',
+      pathname: '/hisrotyBill',
       state: {
         data: this.props.history.location.state?.data     
       }
     })
-  }*/
+  }
 callapi()
     {
       const newData=this.state;
@@ -299,16 +299,21 @@ url=`${url}?macd=${data1}`;
 
     }
    
-  
+    componentDidMount(){
+      this.checkdata();
+  }
    //ham được goi trong render luôn luôn cập nhật 
   render () {
     const cus=this.props.history.location.state?.data;
     const stateData = this.state;
    //console.log(cus);
-    this.checkdata();
+    
     let that = this;
     return (
       <div>
+          <div><Button variant="contained" color="primary"  onClick={this.handlehistory}>
+          Lịch Sử Đơn Hàng
+        </Button> </div>
          <Autocomplete
       id="asynchronous-demo"
       style={{ width: 300 }}
@@ -352,12 +357,10 @@ url=`${url}?macd=${data1}`;
         />
       )}
     />
- <Button variant="contained" color="primary"  onClick={this.handlehistory}>
-          Lịch Sử Đơn Hàng
-        </Button> 
+ 
           <FormName  book = {this.state.book} customer = {cus} ChuDe = {this.state.ChuDe} XuatBan = {this.state.XuatBan} Search={this.state.Search} 
            selectCd={this.props.history.location.state?.chude} selectXb = {this.props.history.location.state?.xuatban}
-          text={this.state.text} myFunction1={this.myFunction1} myFunction3={this.myFunction3} myFunction2={this.myFunction2} handlehistory={this.handlehistory}/>        
+          text={this.state.text} myFunction1={this.myFunction1} myFunction3={this.myFunction3} myFunction2={this.myFunction2} />        
          <Snackbar open={that.state.Api.open} autoHideDuration={3000}  onClose={this.handleClose}   >
          <Alert onClose={this.handleClose} severity={that.state.Api.severity}>
            {that.state.Api.message}
@@ -380,14 +383,14 @@ url=`${url}?macd=${data1}`;
    const handleTextFieldChange1=(value, i) => props.myFunction1(value);
    const handleTextFieldChange2=(value, i) => props.myFunction2(value);
    const handleTextFieldChange3=(value) => props.myFunction3(value);
-   //const handlehistory=()=>props.handlehistory();
+   const handlehistory=()=>props.handlehistory();
  
     return (
       <div className={classes.root}>
   
         <h1>Hello, {props.customer?.Hoten}!</h1> 
        <h2>{ props.text}  {(cde)?.tenChuDe}  {(xban)?.tenXb }</h2>
-      
+     
        <Container>
     <Section style={{ background: '#d3d3d3' }} size={150}>
     <Paper className={classes.paper}>       
