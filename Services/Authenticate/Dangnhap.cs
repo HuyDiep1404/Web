@@ -59,6 +59,11 @@ namespace Web.Services.Authenticate
         {
             return _context.DonHangs;
         }
+        public IEnumerable<DonHang> GetDonHanghistory(string makh)
+        {
+            return _context.DonHangs.Where(i => i.MaKh == makh);
+        }
+
 
         public DonHang GetByMaHD(string mahd)
         {

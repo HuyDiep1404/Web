@@ -242,9 +242,9 @@ namespace Web.Controllers
         }
         [HttpGet("historydonhang")]
 
-        public IActionResult historydonhang()//RegisterModel là 1 viewmoel,
+        public IActionResult historydonhang(string makh)//RegisterModel là 1 viewmoel,
         {
-            var history = _dangnhap.GetDonHang();
+            var history = _dangnhap.GetDonHanghistory(makh);
 
             return Ok(history);
         }

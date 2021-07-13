@@ -7,9 +7,9 @@ import FetchApi from './../../src/Api';
 import { useHistory } from "react-router-dom";
 import Alert from "@material-ui/lab/Alert";
 import Snackbar from '@material-ui/core/Snackbar'
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
-import GridListTileBar from '@material-ui/core/GridListTileBar';
+import ImageList from '@material-ui/core/ImageList';
+import ImageListItem from '@material-ui/core/ImageListItem';
+import ImageListItemBar from '@material-ui/core/ImageListItemBar';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import IconButton from '@material-ui/core/IconButton';
 import InfoIcon from '@material-ui/icons/Info';
@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'hidden',
     backgroundColor: theme.palette.background.paper,
   },
-  gridList: {
+  imageList: {
     width: 900,
     height: 750,
   },
@@ -88,6 +88,7 @@ export class Home extends React.Component {
   this.myFunction3 = this.myFunction3.bind(this);
   this.handleClose=this.handleClose.bind(this);
   this.callsearch=this.callsearch(this);
+  //this.handlehistory=this.handlehistory(this);
  // this.onOpen=this.onOpen(this);
   //this.onClose=this.onClose(this);
 }
@@ -250,6 +251,15 @@ newData.text="";
     }
     
   }   
+  /*handlehistory()
+  {
+    this.props.history.push({//history la 1 mảng ,replace thảy đổi bên trong mảng
+      pathname: '/hisrotydonhang',
+      state: {
+        data: this.props.history.location.state?.data     
+      }
+    })
+  }*/
 callapi()
     {
       const newData=this.state;
@@ -342,10 +352,12 @@ url=`${url}?macd=${data1}`;
         />
       )}
     />
-
+ <Button variant="contained" color="primary"  onClick={this.handlehistory}>
+          Lịch Sử Đơn Hàng
+        </Button> 
           <FormName  book = {this.state.book} customer = {cus} ChuDe = {this.state.ChuDe} XuatBan = {this.state.XuatBan} Search={this.state.Search} 
            selectCd={this.props.history.location.state?.chude} selectXb = {this.props.history.location.state?.xuatban}
-          text={this.state.text} myFunction1={this.myFunction1} myFunction3={this.myFunction3} myFunction2={this.myFunction2} />        
+          text={this.state.text} myFunction1={this.myFunction1} myFunction3={this.myFunction3} myFunction2={this.myFunction2} handlehistory={this.handlehistory}/>        
          <Snackbar open={that.state.Api.open} autoHideDuration={3000}  onClose={this.handleClose}   >
          <Alert onClose={this.handleClose} severity={that.state.Api.severity}>
            {that.state.Api.message}
@@ -368,13 +380,14 @@ url=`${url}?macd=${data1}`;
    const handleTextFieldChange1=(value, i) => props.myFunction1(value);
    const handleTextFieldChange2=(value, i) => props.myFunction2(value);
    const handleTextFieldChange3=(value) => props.myFunction3(value);
+   //const handlehistory=()=>props.handlehistory();
  
     return (
       <div className={classes.root}>
   
         <h1>Hello, {props.customer?.Hoten}!</h1> 
        <h2>{ props.text}  {(cde)?.tenChuDe}  {(xban)?.tenXb }</h2>
-     
+      
        <Container>
     <Section style={{ background: '#d3d3d3' }} size={150}>
     <Paper className={classes.paper}>       
@@ -393,14 +406,13 @@ url=`${url}?macd=${data1}`;
        </Paper>
     </Section>    
     <Section style={{ background: '#d3d3d3' }} minSize={200} >
-    <GridList cellHeight={200} className={classes.gridList} cols={4}>
-          <GridListTile key="Subheader" cols={4} style={{ height: 'auto' }}>
-            <ListSubheader component="div">December</ListSubheader>
-          </GridListTile>
+    <ImageList rowHeight={200} className={classes.imageList} cols={4}>
+          <ImageListItem  key="Subheader" cols={4} style={{ height: 'auto' }}>
+          </ImageListItem >
           {props.book.map((data) => (
-            <GridListTile key={data.maSp}>
+            <ImageListItem  key={data.maSp}>
               <img src={data.anhBia} alt={data.tenSp} />
-              <GridListTileBar
+              <ImageListItemBar
                 title={data.tenSp}//ten của khung lơn trong ô, chú ý key khong được giống nhau 
                 subtitle={<span>mô tả: {data.mota}</span>}//ten khung nho trong ô
                 actionIcon={
@@ -409,9 +421,9 @@ url=`${url}?macd=${data1}`;
                   </IconButton>
                 }
               />
-            </GridListTile>
+            </ImageListItem >
           ))}
-        </GridList>
+        </ImageList>
     </Section>
   </Container>
       

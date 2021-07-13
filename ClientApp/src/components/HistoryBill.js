@@ -17,11 +17,11 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import TablePagination from '@material-ui/core/TablePagination';
-
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const StyledTableCell = withStyles((theme) => ({
     head: {
-      backgroundColor: theme.palette.common.black,
+      backgroundColor: theme.palette.common.aqua,
       color: theme.palette.common.white,
     },
     body: {
@@ -40,6 +40,12 @@ const StyledTableCell = withStyles((theme) => ({
       },
     },
   }))(TableRow);
+
+  const useStyles = makeStyles({
+    table: {
+      minWidth: 700,
+    },
+  });
 export class HistoryBill extends React.Component {
   
     static displayName = HistoryBill.name;
@@ -54,6 +60,7 @@ export class HistoryBill extends React.Component {
         click:false,
         page:0,
         rowsPerPage:5,
+        cir:true,
       }
        this.handleCancel=this.handleCancel.bind(this);
        this.handleClose=this.handleClose.bind(this);
@@ -87,6 +94,7 @@ export class HistoryBill extends React.Component {
     callback=(data)=>{
         const newData=this.state;
         newData.bill=data;
+        newData.cir=false;
         newData.click=false;
         this.setState(data);
     }
@@ -115,11 +123,15 @@ export class HistoryBill extends React.Component {
     };
     callhistory()
     {
-     
+      const data = this.props.history.location.state?.data;//nhan data tu trang khac
+    
+      if(data === null || data === undefined)
+      {
       if(this.state.bill.length === 0||this.state.click){
-        FetchApi('GET','/Values/historydonhang',
+        FetchApi('GET',`/Values/historydonhang?makh=${data.MaKh}`,
         { 'Content-Type': 'application/json' },null, this.callback);
       }
+    }
         
     }
     render()
@@ -132,6 +144,7 @@ export class HistoryBill extends React.Component {
               {(this.state.bill.length > 0) && <ShowHistory bill={this.state.bill} handleCancel={this.handleCancel}
             page={this.state.page} rowsPerPage={this.state.rowsPerPage} handleChangePage={this.handleChangePage} handleChangeRowsPerPage={this.handleChangeRowsPerPage}/>
         }
+        {that.state.cir && <CircularProgress />}  
             <Snackbar open={that.state.open} autoHideDuration={3000}  onClose={this.handleClose} >
          <Alert onClose={this.handleClose} severity={that.state.severity}>
            {that.state.message}
@@ -144,7 +157,7 @@ export class HistoryBill extends React.Component {
     }
 }
 function ShowHistory(props){
-    const classes = withStyles();
+    const classes = useStyles();
     const handleCancel = (value) =>props.handleCancel(value);
     const handleChangePage=(e,newpage)=> {
       console.log(newpage);
@@ -156,8 +169,8 @@ function ShowHistory(props){
       backgroundColor: 'white'
       }
       
-      const blue ={
-      backgroundColor: 'blue'
+      const gray ={
+      backgroundColor: 'gray'
       }
     return(
       <div className={classes.root}>
@@ -166,25 +179,25 @@ function ShowHistory(props){
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell>Mã đơn hàng</TableCell>
-            <TableCell align="right">Ngày Tạo</TableCell>
-            <TableCell align="right">Ngày Giao</TableCell>
-            <TableCell align="right">Tình trạng</TableCell>
-            <TableCell align="right">Thao Tác</TableCell>
+            <StyledTableCell>Mã đơn hàng</StyledTableCell>
+            <StyledTableCell align="right">Ngày Tạo</StyledTableCell>
+            <StyledTableCell align="right">Ngày Giao</StyledTableCell>
+            <StyledTableCell align="right">Tình trạng</StyledTableCell>
+            <StyledTableCell align="right">Thao Tác</StyledTableCell>
 
           </TableRow>
         </TableHead>
         <TableBody>
           {(props.bill.slice(props.page * props.rowsPerPage, props.page * props.rowsPerPage + props.rowsPerPage)
           ).map((row, index) => (
-            <TableRow key={index} style={!row.dathanhtoan ? blue : white}  >
-              <TableCell component="th" scope="row">
+            <TableRow key={index} style={!row.dathanhtoan ? gray : white}  >
+              <StyledTableCell component="th" scope="row">
                 {row.maHoaDon}
-              </TableCell>
-              <TableCell align="right">{new Date(row.ngayTao).toLocaleDateString()}</TableCell>
-              <TableCell align="right">{new Date(row.ngayGiao).toLocaleDateString()}</TableCell>
-              <TableCell align="right">{row.dathanhtoan?(row.tinhtranggiaohang?"Đã giao":"Đã thanh toán"):"Đã hủy"}</TableCell>
-              <TableCell align="right">
+              </StyledTableCell>
+              <StyledTableCell align="right">{new Date(row.ngayTao).toLocaleDateString()}</StyledTableCell>
+              <StyledTableCell align="right">{new Date(row.ngayGiao).toLocaleDateString()}</StyledTableCell>
+              <StyledTableCell align="right">{row.dathanhtoan?(row.tinhtranggiaohang?"Đã giao":"Đã thanh toán"):"Đã hủy"}</StyledTableCell>
+              <StyledTableCell align="right">
                 
               {(row.dathanhtoan && !row.tinhtranggiaohang)&&<Tooltip title="Hủy">
 <IconButton aria-label="update" value={row.maHoaDon} onClick={handleCancel.bind(this,row.maHoaDon)}  >
@@ -192,7 +205,7 @@ function ShowHistory(props){
         </IconButton>
         
         </Tooltip>}
-              </TableCell>
+              </StyledTableCell>
             </TableRow>
           ))}
         </TableBody>

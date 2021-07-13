@@ -17,9 +17,10 @@
     "bootstrap": "^4.6.0",
     "clsx": "^1.1.1",
     "date-fns": "^2.22.1",
+    "eslint": "^7.30.0",
     "jquery": "^3.6.0",
     "material-ui": "^0.20.2",
-    "merge": "^1.2.1",
+    "merge": "^2.1.1",
     "oidc-client": "^1.11.5",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
@@ -31,7 +32,7 @@
     "react-phone-number-input": "^3.1.23",
     "react-router-bootstrap": "^0.25.0",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "^3.4.4",
+    "react-scripts": "^4.0.3",
     "react-simple-resizer": "^2.1.0",
     "reactstrap": "^8.9.0",
     "rimraf": "^2.6.2"
@@ -39,7 +40,6 @@
   "devDependencies": {
     "ajv": "^6.12.6",
     "cross-env": "^5.2.0",
-    "eslint": "^6.8.0",
     "eslint-config-react-app": "^5.2.1",
     "eslint-plugin-flowtype": "^4.7.0",
     "eslint-plugin-import": "^2.23.4",
