@@ -241,7 +241,7 @@ const useStyles = makeStyles((theme) => ({
   checkdata()
     { 
     const data = this.props.history.location.state?.data;//nhan data tu trang khac
-    
+    console.log(data);
     if(data === null || data === undefined)
     {
       this.props.history.push("/authenticate");//cach chuyen qua 1 trang khac 

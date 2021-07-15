@@ -238,7 +238,7 @@ newData.text="";
     checkdata()
     { 
     const data = this.props.history.location.state?.data;//nhan data tu trang khac
-    
+    console.log(data);
     if(data === null || data === undefined)
     {
       this.props.history.push("/authenticate");/*cach chuyen qua 1 trang khac */
@@ -253,10 +253,22 @@ newData.text="";
   }   
   handlehistory()
   {
+    /*let newData= JSON.parse(localStorage.getItem('user')) ?? [];
+    if(newData.length == 0)
+    {
+      let item=this.props.history.location.state?.data;
+      newData.push(item);
+      localStorage.setItem('user', JSON.stringify(newData))
+      console.log(item);
+    }*/
+    
+    
+    //this.props.history.push("/hisrotyBill");
     this.props.history.push({//history la 1 mảng ,replace thảy đổi bên trong mảng
-      pathname: '/hisrotyBill',
+      pathname: 'hisrotyBill',
       state: {
-        data: this.props.history.location.state?.data     
+        data: this.props.history.location.state?.data,
+        
       }
     })
   }

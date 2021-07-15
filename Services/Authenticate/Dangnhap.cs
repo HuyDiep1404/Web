@@ -63,6 +63,13 @@ namespace Web.Services.Authenticate
         {
             return _context.DonHangs.Where(i => i.MaKh == makh);
         }
+        public IEnumerable<DonHang> GetDonHanghistory(string makh,DateTime? ngaygiao,DateTime? ngaytao = null, bool? dathanhtoan =null,bool? tinhtranggiaohang=null)
+        {
+            return _context.DonHangs.Where(i => (i.MaKh == makh) &&((i.NgayGiao == ngaygiao|| ngaygiao == null)
+            &&(i.NgayTao == ngaytao || ngaytao == null) && (i.Dathanhtoan == dathanhtoan||dathanhtoan == null)
+            &&(i.Tinhtranggiaohang == tinhtranggiaohang||tinhtranggiaohang == null)));
+        }
+        
 
 
         public DonHang GetByMaHD(string mahd)

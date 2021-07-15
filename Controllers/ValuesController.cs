@@ -30,21 +30,26 @@ namespace Web.Controllers
         [HttpPost("authenticate")]
         public IActionResult Authenticate([FromBody] AuthenticateModel model)// hàm Authenticate như hàm login
         {
-            var custumer = _dangnhap.Authenticate(model.TaiKhoan, model.MatKhau);//nhận username và password nhập vào từ body
+            try
+            {
+                var custumer = _dangnhap.Authenticate(model.TaiKhoan, model.MatKhau);//nhận username và password nhập vào từ body
 
-            if (custumer == null)
-                return BadRequest(new { message = "Username or password is incorrect" });
-            else
-                return Ok(new
+                if (custumer == null)
+                    return BadRequest(new { message = "Username or password is incorrect" });
+                else
+                    return Ok(new
 
-                {
-                    MaKh = custumer.MaKh,
-                    Hoten = custumer.Hoten,
-                    SoDt = custumer.SoDt,
-                    Diachi = custumer.DiaChi
-                }
-                    );
-
+                    {
+                        MaKh = custumer.MaKh,
+                        Hoten = custumer.Hoten,
+                        SoDt = custumer.SoDt,
+                        Diachi = custumer.DiaChi
+                    }
+                        );
+            }catch(Exception ex)
+            {
+                return BadRequest(new { message = ex.Message + ex.InnerException?.Message });
+            }
 
         }
 
@@ -242,9 +247,9 @@ namespace Web.Controllers
         }
         [HttpGet("historydonhang")]
 
-        public IActionResult historydonhang(string makh)//RegisterModel là 1 viewmoel,
+        public IActionResult historydonhang(string makh, DateTime? ngaygiao, DateTime? ngaytao = null, bool? dathanhtoan = null, bool? tinhtranggiaohang = null)//RegisterModel là 1 viewmoel,
         {
-            var history = _dangnhap.GetDonHanghistory(makh);
+            var history = _dangnhap.GetDonHanghistory(makh, ngaygiao, ngaytao, dathanhtoan, tinhtranggiaohang);
 
             return Ok(history);
         }
