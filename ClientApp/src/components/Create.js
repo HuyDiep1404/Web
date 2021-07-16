@@ -179,8 +179,7 @@ myFunction9(param){
 
         
  callback=(data)=>{
-   
-   debugger;
+
   const newData = this.state;  
   newData.customer.message=data.message;
   newData.customer.open=true;

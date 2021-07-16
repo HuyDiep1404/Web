@@ -1,5 +1,5 @@
 import React,  { Component }  from 'react';
-import { withStyles, makeStyles,alpha  } from '@material-ui/core/styles';
+import { withStyles, makeStyles, alpha  } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -23,6 +23,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import Grid from '@material-ui/core/Grid';
 
 import {
   MuiPickersUtilsProvider,
@@ -88,10 +89,12 @@ export class HistoryBill extends React.Component {
         Dathanhtoan:null,
         Tinhtranggiaohang:null,
         open1:false,
-
         open3:false,
         value:0,
+        cart:[],
        
+        
+      
       }
        this.handleCancel=this.handleCancel.bind(this);
        this.handleClose=this.handleClose.bind(this);
@@ -153,22 +156,39 @@ export class HistoryBill extends React.Component {
         newData.click=false;
         this.setState(data);
     }
-    callback2=(data)=>
+    callback2=(data1)=>
     {
-      debugger;
       const newData=this.state;
-      newData.cart=data;
+      newData.cart=data1;
       this.setState(newData);
-      if(newData.cart.length>0)
+    
+      let data2= JSON.parse(localStorage.getItem('giohangdathanhtoan')) ?? [];
+       
+      for(let i=0;i<data1.length;i++)
       {
-        let data1= JSON.parse(localStorage.getItem('giohang')) ?? [];
-        let item= newData.cart;
-        data1.push(item);
-        localStorage.setItem('giohang', JSON.stringify(data1));
-        console.log(data1);
+        let item={
+         
+            MaSp:data1[i].sach1.maSp,
+            TenSP:data1[i].sach1.tenSp,
+              GiaBan:data1[i].sach1.giaBan,
+              Mota:data1[i].sach1.mota,
+              NgayCapNhat:data1[i].sach1.ngayCapNhat,
+              AnhBia:data1[i].sach1.anhBia,
+              SoLuongTon:data1[i].sach1.soLuongTon,
+              SoLuong:data1[i].chittiet1.soLuong,
+              Dongia:data1[i].chittiet1.soLuong
       }
-      
-     
+      data2.push(item);
+        localStorage.setItem('giohangdathanhtoan', JSON.stringify(data2));  
+      }
+      this.props.history.push({
+        pathname: '/historyDetail',
+        state: {
+           data :this.props.history.location.state?.data//truyen lai customer vì nó không phải biến state nên không được lưu lại
+         
+        }
+      })
+   
     }
     handleClose( event,reason){
       if (reason === 'clickaway') {
@@ -269,7 +289,6 @@ export class HistoryBill extends React.Component {
      
       if(data)
       {
-        debugger;
       if((this.state.bill.length === 0 && this.state.NgayGiao==null && this.state.NgayDat == null
         && this.state.Dathanhtoan == null && this.state.Tinhtranggiaohang==null)||this.state.click)
       {
@@ -379,6 +398,7 @@ function ShowHistory(props){
         </DialogActions>
       </Dialog>
             <MuiPickersUtilsProvider  utils={DateFnsUtils} >
+            <Grid container justifyContent="space-around">
   <KeyboardDatePicker
  
     variant="inline"
@@ -405,10 +425,8 @@ function ShowHistory(props){
     KeyboardButtonProps={{
       'aria-label': 'change date',
     }}
-  />
-   </MuiPickersUtilsProvider>
-
-           
+  /></Grid>
+   </MuiPickersUtilsProvider>          
             
          
       <FormControl className={classes.formControl}>
@@ -471,11 +489,11 @@ function ShowHistory(props){
         </IconButton>
         
         </Tooltip>}
-        <Tooltip title="Chi tiết">
+        {(row.dathanhtoan && !row.tinhtranggiaohang)&&<Tooltip title="Chi tiết">
 <IconButton aria-label="detail" value={row.maHoaDon} onClick={handleDetail.bind(this,row.maHoaDon)} >
           < DetailsIcon />
         </IconButton>     
-        </Tooltip>
+        </Tooltip>}
 
               </StyledTableCell>
             </TableRow>

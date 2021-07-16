@@ -32,7 +32,7 @@ import DetailsIcon from '@material-ui/icons/Details';
 import clsx from 'clsx';
 import HomeIcon from '@material-ui/icons/Home';
 import MenuBookIcon from '@material-ui/icons/MenuBook';
-
+import { HistoryDetail } from './components/HistoryDetail';
 const StyledBadge = withStyles((theme) => ({
   badge: {
     right: -3,
@@ -146,6 +146,7 @@ export default class App extends Component {
         <Route path='/cart' render={(props) => <Cart onStep={this.onStep} onCart={this.onCart}  {...props} />} />
         <Route path='/payment' render={(props) => <Payment onStep={this.onStep}  onCart={this.onCart} {...props} />} />
         <Route path='/hisrotyBill' component={HistoryBill} />
+        <Route path='/historyDetail' component={HistoryDetail} />
       </Layout>
     );
   }

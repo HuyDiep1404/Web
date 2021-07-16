@@ -44,9 +44,9 @@ const useStyles = makeStyles({
     minWidth: 700,
   },
 });
-export class Cart extends React.Component {
+export class HistoryDetail extends React.Component {
   
-    static displayName = Cart.name;
+    static displayName = HistoryDetail.name;
     constructor(props) {
       super(props);
       this.state=
@@ -103,10 +103,10 @@ export class Cart extends React.Component {
     handleDelete()
     {
       
-      let newData= JSON.parse(localStorage.getItem('giohang')) ?? [];
+      let newData= JSON.parse(localStorage.getItem('giohangdathanhtoan')) ?? [];
       let item = newData.filter(a => a.MaSp !== this.state.masp);//filter là bộ lọc lọc ra có thể là một mảng .
       //cách làm thay vì xóa ta thục hiện tìm mã khác mã truyền lại và lọc mạng đó khac array ban đầu rồi ta set lại mảng đó
-      localStorage.setItem('giohang', JSON.stringify(item));
+      localStorage.setItem('giohangdathanhtoan', JSON.stringify(item));
      this.onCart();
       const data= this.state;
       data.open1=false;
@@ -138,14 +138,14 @@ export class Cart extends React.Component {
       handleUpdate()
       {
         const dataState=this.state;
-        let newData= JSON.parse(localStorage.getItem('giohang')) ?? [];    
+        let newData= JSON.parse(localStorage.getItem('giohangdathanhtoan')) ?? [];    
         let item=newData.find(a => a.MaSp == dataState.masp);
         if(item)
         {
           item.sl=dataState.soluong;
         }
        
-        localStorage.setItem('giohang', JSON.stringify(newData));
+        localStorage.setItem('giohangdathanhtoan', JSON.stringify(newData));
         dataState.click=true;
         dataState.open2=false;
       
@@ -155,7 +155,7 @@ export class Cart extends React.Component {
       {
      
       const data= this.state;
-        let newData= JSON.parse(localStorage.getItem('giohang')) ?? [];    
+        let newData= JSON.parse(localStorage.getItem('giohangdathanhtoan')) ?? [];    
         let item=newData.find(a => a.MaSp == param);
         if(item)
         {
@@ -163,7 +163,7 @@ export class Cart extends React.Component {
           data.SoLuongTon=item.SoLuongTon;
           
         }
-        localStorage.setItem('giohang', JSON.stringify(newData));
+        localStorage.setItem('giohangdathanhtoan', JSON.stringify(newData));
       data.masp=param;
       data.open2=true;   
       this.setState(data);
@@ -187,9 +187,7 @@ export class Cart extends React.Component {
       this.setState(dataState);
         
       }
-      onStep(){
-this.props.onStep(3)
-      }
+    
       checkdata()
     { 
     const data = this.props.history.location.state?.data;//nhan data tu trang khac
@@ -198,21 +196,13 @@ this.props.onStep(3)
     {
       this.props.history.push("/authenticate");//cach chuyen qua 1 trang khac 
     }
-  } 
-  onCart(){
-    this.props.onCart(JSON.parse(localStorage.getItem('giohang'))?.length);
-   
   }  
-    componentDidMount(){
-      this.checkdata();
-        this.onStep();
-    }//ham này chỉ chạy khi trước render.hàm này trong react
+  //ham này chỉ chạy khi trước render.hàm này trong react
       
   //trong nay khoong duoc de ham lien quang den state
     //newData.reduce((total,i) => total+i.sl*i.GiaBan,0) total 1 biến i là phân tử thứ i, reduce là giảm , 0 là giá trị ban đầu 
   render(){
-    
-
+    this.checkdata();
 
 return(
   <div>
@@ -229,7 +219,7 @@ return(
 }
 function ShowCart(props){
   const classes = useStyles();
-  let newData= JSON.parse(localStorage.getItem('giohang')) ?? [];
+  let newData= JSON.parse(localStorage.getItem('giohangdathanhtoan')) ?? [];
   let tax=0.1;
   const handleClickOpenDelete=(value) => props.handleClickOpenDelete(value);
 const handleDelete =() => props.handleDelete();
