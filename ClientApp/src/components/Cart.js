@@ -154,7 +154,7 @@ export class Cart extends React.Component {
       }
       handleClickOpenUpdate(param)
       {
-      console.log(param);
+     
       const data= this.state;
         let newData= JSON.parse(localStorage.getItem('giohang')) ?? [];    
         let item=newData.find(a => a.MaSp == param);

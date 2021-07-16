@@ -1,5 +1,5 @@
 import React,  { Component }  from 'react';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
+import { withStyles, makeStyles,alpha  } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -31,7 +31,12 @@ import {
 } from '@material-ui/pickers';
 import SearchIcon from '@material-ui/icons/Search';
 import { createFalse } from 'typescript';
-import { useHistory } from "react-router-dom";
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DetailsIcon from '@material-ui/icons/Details';
 const StyledTableCell = withStyles((theme) => ({
     head: {
       backgroundColor: theme.palette.common.black,
@@ -68,6 +73,8 @@ export class HistoryBill extends React.Component {
       super(props);
       this.state=
       {
+        cart:null,
+        Mahd:null,
         bill:[],
         open:false,
         severity:"",
@@ -81,6 +88,8 @@ export class HistoryBill extends React.Component {
         Dathanhtoan:null,
         Tinhtranggiaohang:null,
         open1:false,
+
+        open3:false,
         value:0,
        
       }
@@ -92,19 +101,35 @@ export class HistoryBill extends React.Component {
        this.handleTextFieldChange2=this.handleTextFieldChange2.bind(this);
        this.search=this.search.bind(this);
        this.handleMenulist=this.handleMenulist.bind(this);
-       
+       this.handleDelete=this.handleDelete.bind(this);
        this.handleOpen1=this.handleOpen1.bind(this);
        this.handleClose1=this.handleClose1.bind(this);
+       this.handleDetail=this.handleDetail.bind(this);
       }
-  
-    handleCancel(value)
+      handleDelete(value)
+      {
+        const data=this.state;
+        data.Mahd=value;
+        data.open3=true;
+        this.setState(data);
+      }
+    handleCancel()
     {
-      FetchApi('GET',`/Values/updateBill?mahd=${value}`, 
+      
+      FetchApi('GET',`/Values/updateBill?mahd=${this.state.Mahd}`, 
       { 'Content-Type': 'application/json' },null, this.callback1);
+    }
+    handleDetail(value)
+    {
+      console.log(value);
+      FetchApi('GET',`/Values/historychitiet?mahd=${value}`, 
+      { 'Content-Type': 'application/json' },null, this.callback2);
+
     }
     callback1=(data)=>{
       const newData=this.state;
       newData.open=true;
+      newData.open3=false;
       if(data.dathanhtoan==false)
       {
         newData.click=true;
@@ -127,6 +152,23 @@ export class HistoryBill extends React.Component {
         newData.cir=false;
         newData.click=false;
         this.setState(data);
+    }
+    callback2=(data)=>
+    {
+      debugger;
+      const newData=this.state;
+      newData.cart=data;
+      this.setState(newData);
+      if(newData.cart.length>0)
+      {
+        let data1= JSON.parse(localStorage.getItem('giohang')) ?? [];
+        let item= newData.cart;
+        data1.push(item);
+        localStorage.setItem('giohang', JSON.stringify(data1));
+        console.log(data1);
+      }
+      
+     
     }
     handleClose( event,reason){
       if (reason === 'clickaway') {
@@ -153,8 +195,7 @@ export class HistoryBill extends React.Component {
     };
     handleMenulist(value)
     {
-      debugger;
-      console.log(value);
+    
       const newData=this.state;
       if(value == 1)//đã thanh toán
       {
@@ -183,10 +224,11 @@ export class HistoryBill extends React.Component {
       newData.value=value;
       this.setState(newData);
     }
-    handleClose1()
+    handleClose1()//đóng droplist and 
     {
       const data=this.state;
       data.open1=false;
+      data.open3=false;
       this.setState(data);
     }
     handleOpen1()
@@ -217,39 +259,17 @@ export class HistoryBill extends React.Component {
       const data= this.props.history.location.state?.data;
       newData.click=true;
       this.setState(newData);
-     /* let url="/Values/historychitiet";
-      if(data)
-      {
-        url=`${url}?makh=${data.MaKh}`;
-        if(!newData.NgayGiao)
-        {
-          url=`${url}&ngaygiao=${newData.NgayGiao}`;
-        }
-        if(!newData.NgayDat)
-        {
-          url=`${url}&ngaytao==${newData.NgayDat}`;
-        }
-        if(newData.Dathanhtoan != null)
-        {
-          url=`${url}&dathanhtoan=${newData.Dathanhtoan}`;
-        }
-        if(newData.tinhtranggiaohang != null)
-        {
-          url=`${url}&tinhtranggiaohang=${newData.tinhtranggiaohang}`;
-        }
-        FetchApi('GET', url, 
-        { 'Content-Type': 'application/json' },null, this.callback1);
-      }*/
-      
+     
     }
     callhistory()
     {
     
       const data= this.props.history.location.state?.data;
       const newData=this.state;
-      //const data = JSON.parse(localStorage.getItem('user'));//nhan data tu trang khac
+     
       if(data)
       {
+        debugger;
       if((this.state.bill.length === 0 && this.state.NgayGiao==null && this.state.NgayDat == null
         && this.state.Dathanhtoan == null && this.state.Tinhtranggiaohang==null)||this.state.click)
       {
@@ -294,8 +314,8 @@ export class HistoryBill extends React.Component {
               {((this.state.bill.length > 0)||(this.state.NgayGiao||this.state.NgayDat||this.state.Dathanhtoan!=null||this.state.Tinhtranggiaohang!=null))  && <ShowHistory bill={this.state.bill} handleCancel={this.handleCancel}
             page={this.state.page} rowsPerPage={this.state.rowsPerPage} handleChangePage={this.handleChangePage} handleChangeRowsPerPage={this.handleChangeRowsPerPage}
             handleTextFieldChange1={this.handleTextFieldChange1} handleTextFieldChange2={this.handleTextFieldChange2} search={this.search} handleMenulist={this.handleMenulist}
-            NgayGiao={this.state.NgayGiao} NgayDat={this.state.NgayDat} handleChange={this.handleChange} open1={this.state.open1}
-            value={this.state.value} handleClose1={this.handleClose1} handleOpen1={this.handleOpen1}/>
+            NgayGiao={this.state.NgayGiao} NgayDat={this.state.NgayDat} handleChange={this.handleChange} open1={this.state.open1} open3={this.state.open3}
+            value={this.state.value} handleClose1={this.handleClose1} handleOpen1={this.handleOpen1} handleDelete={this.handleDelete} handleDetail={this.handleDetail}/>
         }
         {that.state.cir && <CircularProgress />}  
             <Snackbar open={that.state.open} autoHideDuration={3000}  onClose={this.handleClose} >
@@ -311,7 +331,7 @@ export class HistoryBill extends React.Component {
 }
 function ShowHistory(props){
     const classes = useStyles();
-    const handleCancel = (value) =>props.handleCancel(value);
+    const handleCancel = () =>props.handleCancel();
     const handleChangePage=(e,newpage)=> {
   
       props.handleChangePage(e,newpage);}
@@ -322,9 +342,10 @@ function ShowHistory(props){
       const handleMenulist = (e) =>props.handleMenulist(e.target.value);
       const handleTextFieldChange1 = (e)=>props.handleTextFieldChange1(e);
       const handleTextFieldChange2 = (e)=>props.handleTextFieldChange2(e);
-      
+      const handleDelete=(value)=>props.handleDelete(value);
       const handleOpen1=()=>props.handleOpen1();
       const handleClose1=()=>props.handleClose1();
+      const handleDetail=(e)=>props.handleDetail(e);
     const white = {
       backgroundColor: 'white'
       }
@@ -334,8 +355,30 @@ function ShowHistory(props){
       }
     return(
       <div className={classes.root}>
-    
-            Ngày đặt<MuiPickersUtilsProvider id="1" utils={DateFnsUtils} >
+    <Dialog
+        open={props.open3}
+        
+        keepMounted
+        onClose={handleClose1}
+        aria-labelledby="alert-dialog-slide-title"
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle id="alert-dialog-slide-title">{"cảnh báo"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            Bạn có muốn xóa tất cả sản phẩm trong giỏ hàng không?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose1} color="primary">
+            không
+          </Button>
+          <Button onClick={handleCancel} color="primary">
+            có
+          </Button>
+        </DialogActions>
+      </Dialog>
+            <MuiPickersUtilsProvider  utils={DateFnsUtils} >
   <KeyboardDatePicker
  
     variant="inline"
@@ -343,19 +386,20 @@ function ShowHistory(props){
     margin="normal"
     id="date-picker-inline"
     value={props.NgayDat}
+    label="Ngày đặt"
     onChange={handleTextFieldChange2}
     KeyboardButtonProps={{
       'aria-label': 'change date',
     }}
   />
-   </MuiPickersUtilsProvider>
-              Ngày Giao<MuiPickersUtilsProvider  utils={DateFnsUtils} >
   <KeyboardDatePicker
     
     variant="inline"
     format="dd/MM/yyyy"
     margin="normal"
     id="2"
+
+    label="Ngày Giao"
     value={props.NgayGiao}
     onChange={handleTextFieldChange1}
     KeyboardButtonProps={{
@@ -386,10 +430,13 @@ function ShowHistory(props){
            <MenuItem  value={3} >Đã hủy</MenuItem>                                                   
            </Select>
       </FormControl>
-           
-            <Button variant="contained" color="primary"  onClick={search}>
-          tìm kiếm
-        </Button>   
+      <Tooltip title="Tìm kiếm">
+<IconButton aria-label="update" onClick={search} >
+          < SearchIcon />
+        </IconButton>     
+        </Tooltip>
+                
+              
 <TableContainer>
       <Table className={classes.table} aria-label="simple table">
       
@@ -419,11 +466,17 @@ function ShowHistory(props){
               <StyledTableCell align="right">
                 
               {(row.dathanhtoan && !row.tinhtranggiaohang)&&<Tooltip title="Hủy">
-<IconButton aria-label="update" value={row.maHoaDon} onClick={handleCancel.bind(this,row.maHoaDon)}  >
+<IconButton aria-label="update" value={row.maHoaDon} onClick={handleDelete.bind(this,row.maHoaDon)}  >
           < DeleteIcon />
         </IconButton>
         
         </Tooltip>}
+        <Tooltip title="Chi tiết">
+<IconButton aria-label="detail" value={row.maHoaDon} onClick={handleDetail.bind(this,row.maHoaDon)} >
+          < DetailsIcon />
+        </IconButton>     
+        </Tooltip>
+
               </StyledTableCell>
             </TableRow>
           ))}

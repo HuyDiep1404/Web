@@ -75,9 +75,6 @@ export class Payment extends React.Component {
       data.NgayGiao = param;
         data.isError = false;
         data.textError = "";
-    
-    
-
        }
        else
        {
@@ -85,7 +82,6 @@ export class Payment extends React.Component {
         data.textError = "ngày giao hang phải sau ngày đặt hàng"; 
        }
        this.setState(data);
- 
     }
     backhome()
     {
