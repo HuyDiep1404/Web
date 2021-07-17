@@ -48,17 +48,6 @@ const StyledTableCell = withStyles((theme) => ({
     },
   }))(TableCell);
   
-  const StyledTableRow = withStyles((theme) => ({
-  
-    root: {
-      '&:nth-of-type(odd)': {
-        backgroundColor: theme.palette.action.hover,
-      },
-      table: {
-        minWidth: 650,
-      },
-    },
-  }))(TableRow);
 
   const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -176,7 +165,7 @@ export class HistoryBill extends React.Component {
               AnhBia:data1[i].sach1.anhBia,
               SoLuongTon:data1[i].sach1.soLuongTon,
               SoLuong:data1[i].chittiet1.soLuong,
-              Dongia:data1[i].chittiet1.soLuong
+              Dongia:data1[i].chittiet1.dongia
       }
       data2.push(item);
         localStorage.setItem('giohangdathanhtoan', JSON.stringify(data2));  

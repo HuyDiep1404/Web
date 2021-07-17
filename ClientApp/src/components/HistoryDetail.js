@@ -84,7 +84,7 @@ export class HistoryDetail extends React.Component {
     
     handleTextFieldChange(param)
     {
-      let newData= JSON.parse(localStorage.getItem('giohang')) ?? [];
+      let newData= JSON.parse(localStorage.getItem('giohangdathanhtoan')) ?? [];
       let item = newData.find(a => a.MaSp == this.state.masp);
       const Data=this.state;
       if(param>item.SoLuongTon)
@@ -107,7 +107,7 @@ export class HistoryDetail extends React.Component {
       let item = newData.filter(a => a.MaSp !== this.state.masp);//filter là bộ lọc lọc ra có thể là một mảng .
       //cách làm thay vì xóa ta thục hiện tìm mã khác mã truyền lại và lọc mạng đó khac array ban đầu rồi ta set lại mảng đó
       localStorage.setItem('giohangdathanhtoan', JSON.stringify(item));
-     this.onCart();
+     
       const data= this.state;
       data.open1=false;
       data.click=true;
@@ -142,7 +142,7 @@ export class HistoryDetail extends React.Component {
         let item=newData.find(a => a.MaSp == dataState.masp);
         if(item)
         {
-          item.sl=dataState.soluong;
+          item.SoLuong=dataState.soluong;
         }
        
         localStorage.setItem('giohangdathanhtoan', JSON.stringify(newData));
@@ -150,6 +150,7 @@ export class HistoryDetail extends React.Component {
         dataState.open2=false;
       
       this.setState(dataState);
+      
       }
       handleClickOpenUpdate(param)
       {
@@ -159,7 +160,7 @@ export class HistoryDetail extends React.Component {
         let item=newData.find(a => a.MaSp == param);
         if(item)
         {
-          data.soluong=item.sl;
+          data.soluong=item.SoLuong;
           data.SoLuongTon=item.SoLuongTon;
           
         }
@@ -173,7 +174,6 @@ export class HistoryDetail extends React.Component {
       {
         
         localStorage.clear();
-        this.onCart();
         const dataState=this.state;
         dataState.click=true;   
         dataState.open3=false;  
@@ -214,7 +214,7 @@ return(
         </div>
 
 );
-}    
+}     
     
 }
 function ShowCart(props){
@@ -327,12 +327,12 @@ return (
             <StyledTableCell  scope="row">
               {row.MaSp}
             </StyledTableCell>
-            <StyledTableCell align="right">{row.TenSp}</StyledTableCell>
+            <StyledTableCell align="right">{row.TenSP}</StyledTableCell>
             <StyledTableCell align="right" ><img  width="60"height="60"src={row.AnhBia} /></StyledTableCell>
             <StyledTableCell align="right">{row.Mota}</StyledTableCell>
-            <StyledTableCell align="right">{row.sl}</StyledTableCell>
+            <StyledTableCell align="right">{row.SoLuong}</StyledTableCell>  
             <StyledTableCell align="right">{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'VND' }).format(row.GiaBan) }</StyledTableCell>
-            <StyledTableCell align="right">{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'VND' }).format(row.GiaBan*row.sl)}</StyledTableCell>
+            <StyledTableCell align="right">{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'VND' }).format(newData.reduce((total,i) => total+i.SoLuong*i.GiaBan,0))}</StyledTableCell>
             <StyledTableCell align="right">
               
         <Tooltip title="Xóa">
@@ -367,7 +367,7 @@ return (
             <TableCell rowSpan={1} />
             
             <TableCell colSpan={1}>Tổng Tiền</TableCell>
-            <TableCell align="right" colSpan={5}>{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'VND' }).format(newData.reduce((total,i) => total+i.sl*i.GiaBan,0))}
+            <TableCell align="right" colSpan={5}>{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'VND' }).format(newData.reduce((total,i) => total+i.SoLuong*i.GiaBan,0))}
             <Tooltip title="thanh toán ">
 <IconButton aria-label="payment" onClick={handleClickOpenPayment}>
           <  PaymentIcon />

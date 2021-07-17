@@ -18,14 +18,15 @@ namespace Web.Services.Authenticate
         IEnumerable<DonHang> GetDonHanghistory(string makh, DateTime? ngaygiao, DateTime? ngaytao = null, bool? dathanhtoan = null, bool? tinhtranggiaohang = null);
         int CreateBill(DonHang bill);
         int CreateDetail(Chittiet1 detail);
-        
-        void Update(DonHang bill);
+
+        int Update(DonHang bill);
 
         DonHang GetByMaHD(string mahd);
         IEnumerable<TableJoinResult> GetDetailByMaHD(string mahd);
-        
 
+        int Deletechittiet(string mahd);
+        int Updatechittiet(Chittiet1 chittiet);
+        Chittiet1 GetByDetail(string mahd,string masp);
 
-
-        }
+    }
 }

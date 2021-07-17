@@ -199,6 +199,7 @@ namespace Web.Controllers
                             });
                         }
 
+
                     }
                     return Ok(new
                     {
@@ -258,6 +259,92 @@ namespace Web.Controllers
         {
             var history = _dangnhap.GetDetailByMaHD(mahd);
             return Ok(history);
+        }
+        [HttpGet("deletechitiet")]
+        public IActionResult deletechitiet(string mahd)
+        {
+            _dangnhap.Deletechittiet(mahd);
+            return Ok(new
+            {
+                message = "đơn hàng đã được hủy"
+            });
+        }
+        [HttpPost("uppdatechitiet")]
+        /*public IActionResult UpdateDetail(string mahd = null,int? soluong=null)
+        {
+
+            var bill = _dangnhap.GetByDetail(mahd);
+            bill.SoLuong = soluong;
+            try
+            {
+                // update user 
+                _dangnhap.Updatechittiet(bill);
+                return Ok(new
+                {
+                    SoLuong = bill.SoLuong,
+                    message = "đơn hàng đã được cập nhật"
+                });
+            }
+            catch (Exception ex)
+            {
+                // return error message if there was an exception
+                return BadRequest(ex.Message);
+            }
+        }*/
+        public IActionResult UpdateeBill([FromBody] UpdateBillModel model)//RegisterModel là 1 viewmoel,
+        {
+
+            try
+            {
+                var bill = _dangnhap.GetByMaHD(model.MaHoaDon);
+                {
+                    bill.MaHoaDon = model.MaHoaDon;
+                    bill.NgayTao = model.NgayTao;
+                    bill.MaKh = model.MaKh;
+                    bill.NgayGiao = model.NgayGiao;
+                    
+                };
+                // create user       
+                if (_dangnhap.Update(bill) > 0)
+                {
+                    for (int i = 0; i < model.Details1.Length; i++)
+                    {
+                        var detail = _dangnhap.GetByDetail(model.MaHoaDon, model.Details1[i].MaSp);//tao ra mot model gan gia tri cua viewmodel bang bien model
+                        {
+                            detail.MaHd = bill.MaHoaDon;
+                            detail.MaSp = model.Details1[i].MaSp;
+                            detail.SoLuong = model.Details1[i].SoLuong;
+                            detail.Dongia = model.Details1[i].Dongia;
+                        };
+                        if (_dangnhap.Updatechittiet(detail) <= 0)
+                        {
+                            return NotFound(new
+                            {
+                                message = "cập nhật ko thành công" //phai tao ra 1 đối tượng 
+                            });
+                        }
+
+
+                    }
+                    return Ok(new
+                    {
+                        mahd = bill.MaHoaDon,
+                        message = "cập nhật thành công" //phai tao ra 1 đối tượng 
+                    });
+                }
+                return NotFound(new
+                {
+                    message = "cập nhật ko thành công" //phai tao ra 1 đối tượng 
+                });
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(new
+                {
+                    message = ex.Message //phai tao ra 1 đối tượng 
+                });
+            }
         }
     }
 }
