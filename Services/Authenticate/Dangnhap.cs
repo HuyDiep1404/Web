@@ -100,6 +100,14 @@ namespace Web.Services.Authenticate
             return _context.SaveChanges();
 
         }
+        public int Delete(DonHang mahd)
+        {
+            var hd = _context.DonHangs.Find(mahd.MaHoaDon);
+            if (hd == null)
+                throw new Exception("không tìm thấy Hóa đơn này");
+            _context.DonHangs.Remove(hd);
+            return _context.SaveChanges();
+        }
         public IEnumerable<TableJoinResult> GetDetailByMaHD(string mahd)
         {
             
@@ -108,17 +116,14 @@ namespace Web.Services.Authenticate
                     where i1.MaHd.Equals(mahd)
                     select new TableJoinResult { Chittiet1 = i1, Sach1 = j1 });
         }
-        public int Deletechittiet(string mahd)
+        public int Deletechittiet(Chittiet1 mahd)
         {
-            var hd = _context.Chittiet1s.Find(mahd);
-            if (hd == null)
-                throw new Exception("không tìm thấy Hóa đơn này");
-            _context.Chittiet1s.Remove(hd);
+            _context.Chittiet1s.Remove(mahd);
             return _context.SaveChanges();
         }
         public int Updatechittiet(Chittiet1 chittiet)
         {
-            var mahd = _context.Chittiet1s.Find(chittiet.MaHd);
+            var mahd = _context.Chittiet1s.Find(chittiet.MaHd, chittiet.MaSp);
             if (mahd == null)
                 throw new Exception("không tìm thấy Hóa đơn này");
             _context.Chittiet1s.Update(mahd);
@@ -127,6 +132,10 @@ namespace Web.Services.Authenticate
         public Chittiet1 GetByDetail(string mahd,string masp)
         {
             return _context.Chittiet1s.Find(mahd, masp);
+        }
+        public IEnumerable<Chittiet1> GetByDetailCount(string mahd)
+        {
+            return _context.Chittiet1s.Where(i => i.MaHd == mahd);
         }
 
     }

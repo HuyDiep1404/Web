@@ -21,6 +21,8 @@ import EditIcon from '@material-ui/icons/Edit';
 import { TextField } from '@material-ui/core';
 import RemoveShoppingCartIcon from '@material-ui/icons/RemoveShoppingCart';
 import PaymentIcon from '@material-ui/icons/Payment';
+import Alert from "@material-ui/lab/Alert";
+import Snackbar from '@material-ui/core/Snackbar';
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -51,6 +53,8 @@ export class HistoryDetail extends React.Component {
       super(props);
       this.state=
       {
+        mahd:null,
+        cur:[],
         soluong:1,
         SoLuongTon:0,
         masp:null,
@@ -58,9 +62,13 @@ export class HistoryDetail extends React.Component {
        open1:false,
        open2:false,
        open3:false,
+       open4:false,
+       message4:"",
+       severity:"",
        isError:false,
        soluong:1,
-          textError:""
+          textError:"",
+          Dathanhtoan:null
       }
       this.handleDelete=this.handleDelete.bind(this);
       this.handleClose=this.handleClose.bind(this);
@@ -71,7 +79,8 @@ export class HistoryDetail extends React.Component {
    this.handleDeleteAll=this.handleDeleteAll.bind(this);
    this.handleClickOpenDeleteAll=this.handleClickOpenDeleteAll.bind(this);
    this.handleClickOpenPayment=this.handleClickOpenPayment.bind(this);
-    }
+  this.handleClose1=this.handleClose1.bind(this);  
+  }
     handleClose()
     {
       const data= this.state;
@@ -112,6 +121,12 @@ export class HistoryDetail extends React.Component {
       data.open1=false;
       data.click=true;
       this.setState(data);
+//đảy masp vào mảng localstirage
+      let delete1 = JSON.parse(localStorage.getItem('delete')) ?? [];
+      let item1={ MaSp:data.masp};
+      delete1.push(item1);
+    localStorage.setItem('delete', JSON.stringify(delete1));  
+    
     }
     
     handleClickOpenDelete(param)
@@ -124,21 +139,96 @@ export class HistoryDetail extends React.Component {
       this.setState(data);
      
       }
+      callback=(data)=>
+      {//khi hủy bill
+        const newData=this.state;
+        if(!data.Dathanhtoan)
+        {
+          newData.message4=data.message;//message khi hủy trả về
+          newData.Dathanhtoan=data.Dathanhtoan;
+          newData.open4=true;
+          newData.severity="success";
+          this.setState(newData);
+          localStorage.clear();
+        }
+        else
+        {
+          newData.message4=data.message;//message khi hủy trả về
+          newData.open4=false;
+          newData.severity="error";
+          this.setState(newData);
+        }
+        
+      }
       handleClickOpenPayment()
       {
-
-        this.props.history.push({
-          pathname: '/payment',
-          state: {
-             data :this.props.history.location.state?.data//truyen lai customer vì nó không phải biến state nên không được lưu lại
-           
+        debugger;
+        const data= this.props.history.location.state?.data;
+        const  Mahd =this.props.history.location.state?.Mahd;
+        let donhang= JSON.parse(localStorage.getItem('donhang')) ?? [];
+        let infobill=donhang.find(i =>i.maHoaDon==Mahd)
+        let cartupdate=JSON.parse(localStorage.getItem('giohangdathanhtoan')) ?? [];
+        let newData= JSON.parse(localStorage.getItem('delete')) ?? [];
+          if(newData.length>0)
+          { 
+           let model1 = {
+            MaHoaDon:Mahd,
+               Dathanhtoan:false,
+               Details1: newData.map(a => ({
+                MaHoaDon:Mahd,
+               MaSp:a.MaSp,
+           }))};
+           FetchApi('POST', '/Values/deleteBill', 
+           { 'Content-Type': 'application/json' },JSON.stringify(model1
+               ), this.callback);
           }
-        })
+          if(cartupdate.length>0)
+          {
+            let model2 =
+            {
+              MaHoaDon:infobill.maHoaDon,
+              NgayTao:infobill.ngayTao,
+              MaKh:infobill.maKh,
+              NgayGiao:infobill.ngayGiao,
+              Dathanhtoan:infobill.dathanhtoan,
+              Tinhtranggiaohang:infobill.tinhtranggiaohang,
+              Details1:cartupdate.map(i =>({
+                  MaHd:Mahd,
+                  MaSp:i.MaSp,
+                  SoLuong:i.SoLuong,
+                  Dongia:i.GiaBan}))
+            };
+            console.log(model2);
+            FetchApi('POST', '/Values/uppdatechitiet', 
+            { 'Content-Type': 'application/json' },JSON.stringify(model2), this.callback3);
+          }
+
+          
+      }
+      callback3 = (data) =>{
+        const newData=this.state;
+        if(data.mahd!=null)
+        {
+          newData.message4=data.message;//message khi hủy trả về
+          newData.mahd=data.mahd;
+          newData.open4=true;
+          newData.severity="success";
+          this.setState(newData);
+          localStorage.clear();
+        }
+        else
+        {
+          newData.message4=data.message;//message khi hủy trả về
+          newData.open4=false;
+          newData.severity="error";
+          this.setState(newData);
+        }
       }
       handleUpdate()
       {
         const dataState=this.state;
         let newData= JSON.parse(localStorage.getItem('giohangdathanhtoan')) ?? [];    
+      
         let item=newData.find(a => a.MaSp == dataState.masp);
         if(item)
         {
@@ -157,6 +247,7 @@ export class HistoryDetail extends React.Component {
      
       const data= this.state;
         let newData= JSON.parse(localStorage.getItem('giohangdathanhtoan')) ?? [];    
+        
         let item=newData.find(a => a.MaSp == param);
         if(item)
         {
@@ -197,20 +288,35 @@ export class HistoryDetail extends React.Component {
       this.props.history.push("/authenticate");//cach chuyen qua 1 trang khac 
     }
   }  
+  handleClose1( event,reason)//đóng của alert
+  {
+    if (reason === 'clickaway') {
+      return;
+    }
+    const data = this.state;
+    data.open4=false;
+    this.setState(data);
+  };
   //ham này chỉ chạy khi trước render.hàm này trong react
       
   //trong nay khoong duoc de ham lien quang den state
     //newData.reduce((total,i) => total+i.sl*i.GiaBan,0) total 1 biến i là phân tử thứ i, reduce là giảm , 0 là giá trị ban đầu 
   render(){
+    let that=this;
     this.checkdata();
-
+    const data= this.props.history.location.state?.data;
 return(
   <div>
             {this.state.click &&<ShowCart handleDelete={this.handleDelete} handleClickOpenDelete={this.handleClickOpenDelete} handleClose={this.handleClose} handleDeleteAll={this.handleDeleteAll}
-            handleClickOpenUpdate = {this.handleClickOpenUpdate} handleClickOpenUpdate={this.handleClickOpenUpdate} handleUpdate={this.handleUpdate} handleTextFieldChange={this.handleTextFieldChange}
-            handleClickOpenDeleteAll={this.handleClickOpenDeleteAll} handleDeleteAll={this.handleDeleteAll}
+            handleClickOpenUpdate = {this.handleClickOpenUpdate} cur={data} handleClickOpenUpdate={this.handleClickOpenUpdate} handleUpdate={this.handleUpdate} handleTextFieldChange={this.handleTextFieldChange}
+            handleClickOpenDeleteAll={this.handleClickOpenDeleteAll} handleDeleteAll={this.handleDeleteAll} Dathanhtoan={this.state.Dathanhtoan}
             open1={this.state.open1} open2={this.state.open2} open3={this.state.open3} isError={this.state.isError} textError={this.state.textError} SoLuongTon={this.state.SoLuongTon} masp={this.state.masp}
             soluong={this.state.soluong} handleClickOpenPayment={this.handleClickOpenPayment} />}
+        <Snackbar open={that.state.open4} autoHideDuration={3000}  onClose={this.handleClose1} >
+         <Alert onClose={this.handleClose1} severity4={that.state.severity4}>
+           {that.state.message4}
+         </Alert>      
+       </Snackbar>
         </div>
 
 );
@@ -218,8 +324,12 @@ return(
     
 }
 function ShowCart(props){
+
   const classes = useStyles();
   let newData= JSON.parse(localStorage.getItem('giohangdathanhtoan')) ?? [];
+  let donhang= JSON.parse(localStorage.getItem('donhang')) ?? [];
+  const ngayTao= donhang.map(a=>a.ngayTao);
+  const ngayGiao=donhang.map(a=>a.ngayGiao);
   let tax=0.1;
   const handleClickOpenDelete=(value) => props.handleClickOpenDelete(value);
 const handleDelete =() => props.handleDelete();
@@ -235,6 +345,56 @@ const handleClickOpenPayment=()=>props.handleClickOpenPayment();
 return (
   
   <div>
+
+<TableContainer component={Paper}>
+      <Table className={classes.table} aria-label="customized table">   
+      <TableHead>
+        <TableRow>
+          <StyledTableCell>Thông tin Bill</StyledTableCell>
+        </TableRow>
+      </TableHead>
+        <TableBody>
+        
+        <StyledTableRow >
+              <StyledTableCell component="th" scope="row">
+                Họ tên khách hàng
+              </StyledTableCell>
+              <StyledTableCell align="right">{props.cur.Hoten}</StyledTableCell>
+            </StyledTableRow>
+            <StyledTableRow >
+              <StyledTableCell component="th" scope="row">
+                Địa chỉ
+              </StyledTableCell>
+              <StyledTableCell align="right">{props.cur.Diachi}</StyledTableCell></StyledTableRow>
+            <StyledTableRow >
+              <StyledTableCell component="th" scope="row">
+                Điện thoại
+              </StyledTableCell>
+              <StyledTableCell align="right">{props.cur.SoDt}</StyledTableCell>
+            </StyledTableRow>
+            
+            <StyledTableRow >
+              <StyledTableCell component="th" scope="row">
+                Ngày đặt
+              </StyledTableCell>
+              <StyledTableCell align="right">{new Date(ngayTao).toLocaleDateString()}</StyledTableCell>
+            </StyledTableRow>
+            <StyledTableRow >
+              <StyledTableCell component="th" scope="row">
+                Ngày giao
+              </StyledTableCell>
+              <StyledTableCell align="right">{new Date(ngayGiao).toLocaleDateString()}</StyledTableCell>
+              <StyledTableCell component="th" scope="row">
+                
+              </StyledTableCell>
+             
+              
+            </StyledTableRow>
+           
+        </TableBody>
+      </Table>
+    </TableContainer>
+    
     <Dialog
         open={props.open3}
         
@@ -307,7 +467,7 @@ return (
           </Button>
         </DialogActions>
       </Dialog>
-<TableContainer component={Paper}>
+{newData.length>0&&<TableContainer component={Paper}>
     <Table className={classes.table} aria-label="customized table">
       <TableHead>
         <TableRow>
@@ -332,7 +492,7 @@ return (
             <StyledTableCell align="right">{row.Mota}</StyledTableCell>
             <StyledTableCell align="right">{row.SoLuong}</StyledTableCell>  
             <StyledTableCell align="right">{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'VND' }).format(row.GiaBan) }</StyledTableCell>
-            <StyledTableCell align="right">{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'VND' }).format(newData.reduce((total,i) => total+i.SoLuong*i.GiaBan,0))}</StyledTableCell>
+            <StyledTableCell align="right">{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'VND' }).format(row.SoLuong*row.GiaBan)}</StyledTableCell>
             <StyledTableCell align="right">
               
         <Tooltip title="Xóa">
@@ -379,7 +539,7 @@ return (
       </TableBody>
 
     </Table>
-  </TableContainer>
+  </TableContainer>}
 
 
   </div>

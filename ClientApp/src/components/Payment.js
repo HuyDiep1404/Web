@@ -137,7 +137,7 @@ export class Payment extends React.Component {
             MaKh:customer.MaKh,
             NgayGiao:data.NgayGiao,
             Dathanhtoan:true,   
-            Tinhtranggiaohang:true,
+            Tinhtranggiaohang:false,
             Details1: newData.map(a => ({
             MaSp:a.MaSp,
             SoLuong:a.sl,
@@ -223,7 +223,7 @@ export class Payment extends React.Component {
             <ShowPayment click2={this.state.click2} click1={this.state.click1} date={this.state.date} Ngaytao={this.state.Ngaytao} isError={this.state.isError}
              textError={this.state.textError} customer={customer} NgayGiao={this.state.NgayGiao} myFunction={this.myFunction}
             handle={this.handle} handleCancel={this.handleCancel} backhome={this.backhome} />
-             <Snackbar open={that.state.open} autoHideDuration={3000}  onClose={this.handleClose}  >
+             <Snackbar open4={that.state.open4} autoHideDuration={3000}  onClose={this.handleClose}  >
          <Alert onClose={this.handleClose} severity={that.state.severity}>
            {that.state.message}
          </Alert>

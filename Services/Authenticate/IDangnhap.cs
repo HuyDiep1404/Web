@@ -20,13 +20,14 @@ namespace Web.Services.Authenticate
         int CreateDetail(Chittiet1 detail);
 
         int Update(DonHang bill);
+        int Delete(DonHang mahd);
 
         DonHang GetByMaHD(string mahd);
         IEnumerable<TableJoinResult> GetDetailByMaHD(string mahd);
 
-        int Deletechittiet(string mahd);
+        int Deletechittiet(Chittiet1 mahd);
         int Updatechittiet(Chittiet1 chittiet);
         Chittiet1 GetByDetail(string mahd,string masp);
-
+        IEnumerable<Chittiet1>  GetByDetailCount(string mahd);
     }
 }

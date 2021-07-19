@@ -13,6 +13,6 @@ namespace Web.ViewModels
         public DateTime? NgayGiao { get; set; }
         public bool? Dathanhtoan { get; set; }
         public bool? Tinhtranggiaohang { get; set; }
-        public DetailModel[] Details1 { get; set; }
+        public DetailUpdateModel[] Details1 { get; set; }
     }
 }

@@ -15,6 +15,7 @@ import Alert from "@material-ui/lab/Alert";
 import Snackbar from '@material-ui/core/Snackbar';
 import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
+import EditIcon from '@material-ui/icons/Edit';
 import Tooltip from '@material-ui/core/Tooltip';
 import TablePagination from '@material-ui/core/TablePagination';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -31,7 +32,7 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 import SearchIcon from '@material-ui/icons/Search';
-import { createFalse } from 'typescript';
+import { createFalse, getConstantValue } from 'typescript';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -81,6 +82,8 @@ export class HistoryBill extends React.Component {
         open3:false,
         value:0,
         cart:[],
+        bill:[],
+        donhang:[]
        
         
       
@@ -98,24 +101,44 @@ export class HistoryBill extends React.Component {
        this.handleClose1=this.handleClose1.bind(this);
        this.handleDetail=this.handleDetail.bind(this);
       }
+      
       handleDelete(value)
       {
         const data=this.state;
         data.Mahd=value;
         data.open3=true;
         this.setState(data);
+        
+       
+       
+
+
       }
     handleCancel()
     {
       
       FetchApi('GET',`/Values/updateBill?mahd=${this.state.Mahd}`, 
       { 'Content-Type': 'application/json' },null, this.callback1);
+     
+       
+      
     }
     handleDetail(value)
     {
       console.log(value);
+      const data = this.state;
+      data.Mahd=value;
+      this.setState(data);  
+
+let mahd=data.bill.find(a=> a.maHoaDon == value);
+let newData= JSON.parse(localStorage.getItem('donhang')) ?? [];
+let item=mahd;
+newData.push(item);
+localStorage.setItem('donhang', JSON.stringify(newData));  
+
       FetchApi('GET',`/Values/historychitiet?mahd=${value}`, 
       { 'Content-Type': 'application/json' },null, this.callback2);
+     
 
     }
     callback1=(data)=>{
@@ -150,7 +173,8 @@ export class HistoryBill extends React.Component {
       const newData=this.state;
       newData.cart=data1;
       this.setState(newData);
-    
+
+     
       let data2= JSON.parse(localStorage.getItem('giohangdathanhtoan')) ?? [];
        
       for(let i=0;i<data1.length;i++)
@@ -161,22 +185,24 @@ export class HistoryBill extends React.Component {
             TenSP:data1[i].sach1.tenSp,
               GiaBan:data1[i].sach1.giaBan,
               Mota:data1[i].sach1.mota,
-              NgayCapNhat:data1[i].sach1.ngayCapNhat,
               AnhBia:data1[i].sach1.anhBia,
               SoLuongTon:data1[i].sach1.soLuongTon,
+              MaHd:data1[i].chittiet1.maHd,
               SoLuong:data1[i].chittiet1.soLuong,
               Dongia:data1[i].chittiet1.dongia
       }
       data2.push(item);
         localStorage.setItem('giohangdathanhtoan', JSON.stringify(data2));  
       }
+      console.log(this.state.Mahd);
       this.props.history.push({
         pathname: '/historyDetail',
         state: {
-           data :this.props.history.location.state?.data//truyen lai customer vì nó không phải biến state nên không được lưu lại
-         
+           data : this.props.history.location.state?.data,//truyen lai customer vì nó không phải biến state nên không được lưu lại
+           Mahd : this.state.Mahd
         }
       })
+     
    
     }
     handleClose( event,reason){
@@ -353,7 +379,7 @@ function ShowHistory(props){
       const handleDelete=(value)=>props.handleDelete(value);
       const handleOpen1=()=>props.handleOpen1();
       const handleClose1=()=>props.handleClose1();
-      const handleDetail=(e)=>props.handleDetail(e);
+      const handleDetail=(value)=>props.handleDetail(value);
     const white = {
       backgroundColor: 'white'
       }
@@ -437,12 +463,10 @@ function ShowHistory(props){
            <MenuItem  value={3} >Đã hủy</MenuItem>                                                   
            </Select>
       </FormControl>
-      <Tooltip title="Tìm kiếm">
-<IconButton aria-label="update" onClick={search} >
-          < SearchIcon />
-        </IconButton>     
-        </Tooltip>
-                
+
+        <Button variant="contained" color="primary"  onClick={search}>
+        Search
+        </Button>     
               
 <TableContainer>
       <Table className={classes.table} aria-label="simple table">
@@ -480,7 +504,7 @@ function ShowHistory(props){
         </Tooltip>}
         {(row.dathanhtoan && !row.tinhtranggiaohang)&&<Tooltip title="Chi tiết">
 <IconButton aria-label="detail" value={row.maHoaDon} onClick={handleDetail.bind(this,row.maHoaDon)} >
-          < DetailsIcon />
+          <EditIcon />
         </IconButton>     
         </Tooltip>}
 

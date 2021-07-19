@@ -46,7 +46,8 @@ namespace Web.Controllers
                         Diachi = custumer.DiaChi
                     }
                         );
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return BadRequest(new { message = ex.Message + ex.InnerException?.Message });
             }
@@ -260,15 +261,13 @@ namespace Web.Controllers
             var history = _dangnhap.GetDetailByMaHD(mahd);
             return Ok(history);
         }
-        [HttpGet("deletechitiet")]
-        public IActionResult deletechitiet(string mahd)
+        [HttpGet("historydonhangdelete")]
+        public IActionResult historydonhangdelete(string mahd)
         {
-            _dangnhap.Deletechittiet(mahd);
-            return Ok(new
-            {
-                message = "đơn hàng đã được hủy"
-            });
+            var history = _dangnhap.GetByMaHD(mahd);
+            return Ok(history);
         }
+
         [HttpPost("uppdatechitiet")]
         /*public IActionResult UpdateDetail(string mahd = null,int? soluong=null)
         {
@@ -302,7 +301,8 @@ namespace Web.Controllers
                     bill.NgayTao = model.NgayTao;
                     bill.MaKh = model.MaKh;
                     bill.NgayGiao = model.NgayGiao;
-                    
+                    bill.Dathanhtoan = model.Dathanhtoan;
+                    bill.Tinhtranggiaohang = model.Tinhtranggiaohang;
                 };
                 // create user       
                 if (_dangnhap.Update(bill) > 0)
@@ -346,5 +346,55 @@ namespace Web.Controllers
                 });
             }
         }
+        [HttpPost("deleteBill")]
+
+
+
+        public IActionResult DeleteBill([FromBody] DeleteDetailAndBillModel model)//RegisterModel là 1 viewmoel,
+        {
+
+            try
+            {
+                var donHang = _dangnhap.GetByMaHD(model.MaHoaDon);
+                donHang.Dathanhtoan = model.Dathanhtoan;
+                if (_dangnhap.Update(donHang) >0)
+                {
+                    
+                    for (int i = 0; i < model.Details1.Length; i++)
+                    {
+                        var detail = _dangnhap.GetByDetail(model.Details1[i].MaHoaDon, model.Details1[i].MaSp);
+                        if(detail ==null)
+                        {
+                            return NotFound(new
+                            {
+                                message = "hủy không thành công đơn hàng" //phai tao ra 1 đối tượng 
+                            });
+
+                        }
+                        _dangnhap.Deletechittiet(detail);    
+                    }
+                    return Ok(new
+                    {
+                        Dathanhtoan = donHang.Dathanhtoan,
+                        message = "đơn hàng đã được hủy"
+                    });
+                }
+                return NotFound(new
+                {
+                    message = "hủy không thành công đơn hàng" //phai tao ra 1 đối tượng 
+                });
+               
+            }
+            catch (Exception ex)
+            {
+                // return error message if there was an exception
+                return BadRequest(ex.Message);
+            }
+
+        }
     }
+
+
+
 }
+

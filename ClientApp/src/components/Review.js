@@ -132,15 +132,9 @@ const useStyles = makeStyles((theme) => ({
           Mota:dataState.info.Mota,
           AnhBia:dataState.info.AnhBia,
           SoLuongTon:dataState.info.SoLuongTon
-
         };
-      
       newData.push(item);
-
-
-      
-      }
-      
+      }    
       localStorage.setItem('giohang', JSON.stringify(newData));
      this.onCart();
       dataState.open=false;
@@ -186,7 +180,7 @@ const useStyles = makeStyles((theme) => ({
         newData.push(item);
       }
      localStorage.setItem('giohang', JSON.stringify(newData));
-     console.log(newData);
+    
       }*/
       showCart()
       {
@@ -241,7 +235,7 @@ const useStyles = makeStyles((theme) => ({
   checkdata()
     { 
     const data = this.props.history.location.state?.data;//nhan data tu trang khac
-    console.log(data);
+    
     if(data === null || data === undefined)
     {
       this.props.history.push("/authenticate");//cach chuyen qua 1 trang khac 
