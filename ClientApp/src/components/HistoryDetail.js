@@ -23,7 +23,12 @@ import RemoveShoppingCartIcon from '@material-ui/icons/RemoveShoppingCart';
 import PaymentIcon from '@material-ui/icons/Payment';
 import Alert from "@material-ui/lab/Alert";
 import Snackbar from '@material-ui/core/Snackbar';
-
+import DateFnsUtils from '@date-io/date-fns';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardTimePicker,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
 const StyledTableCell = withStyles((theme) => ({
   head: {
     backgroundColor: theme.palette.common.black,
@@ -53,6 +58,7 @@ export class HistoryDetail extends React.Component {
       super(props);
       this.state=
       {
+        NgayGiao:null,
         mahd:null,
         cur:[],
         soluong:1,
@@ -78,8 +84,9 @@ export class HistoryDetail extends React.Component {
    this.handleTextFieldChange=this.handleTextFieldChange.bind(this);
    this.handleDeleteAll=this.handleDeleteAll.bind(this);
    this.handleClickOpenDeleteAll=this.handleClickOpenDeleteAll.bind(this);
-   this.handleClickOpenPayment=this.handleClickOpenPayment.bind(this);
-  this.handleClose1=this.handleClose1.bind(this);  
+   this.handle=this.handle.bind(this);
+  this.handleClose1=this.handleClose1.bind(this);
+  this.handleTextFieldChangeNgayGiao=this.handleTextFieldChangeNgayGiao.bind(this);
   }
     handleClose()
     {
@@ -160,7 +167,7 @@ export class HistoryDetail extends React.Component {
         }
         
       }
-      handleClickOpenPayment()
+      handle()
       {
         debugger;
         const data= this.props.history.location.state?.data;
@@ -184,12 +191,13 @@ export class HistoryDetail extends React.Component {
           }
           if(cartupdate.length>0)
           {
+           
             let model2 =
             {
               MaHoaDon:infobill.maHoaDon,
               NgayTao:infobill.ngayTao,
               MaKh:infobill.maKh,
-              NgayGiao:infobill.ngayGiao,
+              NgayGiao:this.state.NgayGiao,
               Dathanhtoan:infobill.dathanhtoan,
               Tinhtranggiaohang:infobill.tinhtranggiaohang,
               Details1:cartupdate.map(i =>({
@@ -198,15 +206,16 @@ export class HistoryDetail extends React.Component {
                   SoLuong:i.SoLuong,
                   Dongia:i.GiaBan}))
             };
-            console.log(model2);
+            
             FetchApi('POST', '/Values/uppdatechitiet', 
             { 'Content-Type': 'application/json' },JSON.stringify(model2), this.callback3);
           }
 
-          
+          this.props.history.push("/historyBill"); 
       }
       callback3 = (data) =>{
         const newData=this.state;
+        debugger;
         if(data.mahd!=null)
         {
           newData.message4=data.message;//message khi hủy trả về
@@ -264,19 +273,19 @@ export class HistoryDetail extends React.Component {
       handleDeleteAll()
       {
         
-        localStorage.clear();
+        /*localStorage.clear();
         const dataState=this.state;
         dataState.click=true;   
         dataState.open3=false;  
-      this.setState(dataState);
+      this.setState(dataState);*/
       }
 
       handleClickOpenDeleteAll()
       {
-        const dataState=this.state;
+        /*const dataState=this.state;
         dataState.open3=true;    
       this.setState(dataState);
-        
+        */
       }
     
       checkdata()
@@ -297,6 +306,31 @@ export class HistoryDetail extends React.Component {
     data.open4=false;
     this.setState(data);
   };
+  handleTextFieldChangeNgayGiao(param)
+  {
+
+   const data=this.state;
+      //cách chuyển từ kiểu string sang date new Date()
+      const  Mahd =this.props.history.location.state?.Mahd;
+        let donhang= JSON.parse(localStorage.getItem('donhang')) ?? [];
+        let infobill=donhang.find(i =>i.maHoaDon==Mahd)
+        if((new Date(param)) >= infobill.ngayTao)
+     {
+      data.NgayGiao = param;
+      data.isError = false;
+      data.textError = "";
+      this.setState(data); 
+     }
+     else
+     {
+      data.isError = true;
+      data.textError = "ngày giao hang phải sau ngày đặt hàng"; 
+      this.setState(data); 
+    }
+  }
+ 
+      
+  
   //ham này chỉ chạy khi trước render.hàm này trong react
       
   //trong nay khoong duoc de ham lien quang den state
@@ -309,9 +343,10 @@ return(
   <div>
             {this.state.click &&<ShowCart handleDelete={this.handleDelete} handleClickOpenDelete={this.handleClickOpenDelete} handleClose={this.handleClose} handleDeleteAll={this.handleDeleteAll}
             handleClickOpenUpdate = {this.handleClickOpenUpdate} cur={data} handleClickOpenUpdate={this.handleClickOpenUpdate} handleUpdate={this.handleUpdate} handleTextFieldChange={this.handleTextFieldChange}
-            handleClickOpenDeleteAll={this.handleClickOpenDeleteAll} handleDeleteAll={this.handleDeleteAll} Dathanhtoan={this.state.Dathanhtoan}
+            handleClickOpenDeleteAll={this.handleClickOpenDeleteAll} handleDeleteAll={this.handleDeleteAll} Dathanhtoan={this.state.Dathanhtoan} handleTextFieldChangeNgayGiao={this.handleTextFieldChangeNgayGiao}
             open1={this.state.open1} open2={this.state.open2} open3={this.state.open3} isError={this.state.isError} textError={this.state.textError} SoLuongTon={this.state.SoLuongTon} masp={this.state.masp}
-            soluong={this.state.soluong} handleClickOpenPayment={this.handleClickOpenPayment} />}
+            NgayGiao={this.state.NgayGiao} isError={this.state.isError}
+            soluong={this.state.soluong} handle={this.handle} />} textError={this.state.textError}
         <Snackbar open={that.state.open4} autoHideDuration={3000}  onClose={this.handleClose1} >
          <Alert onClose={this.handleClose1} severity4={that.state.severity4}>
            {that.state.message4}
@@ -339,8 +374,8 @@ const handleTextFieldChange =(e) =>props.handleTextFieldChange(e.target.value);
 const handleUpdate=()=>props.handleUpdate();
 const handleClickOpenDeleteAll=()=>props.handleClickOpenDeleteAll();
 const handleDeleteAll=()=>props.handleDeleteAll();
-const handleClickOpenPayment=()=>props.handleClickOpenPayment();
-
+const handle=()=>props.handle();
+const handleTextFieldChangeNgayGiao=(param)=>props.handleTextFieldChangeNgayGiao(param);
 
 return (
   
@@ -350,7 +385,7 @@ return (
       <Table className={classes.table} aria-label="customized table">   
       <TableHead>
         <TableRow>
-          <StyledTableCell>Thông tin Bill</StyledTableCell>
+          <StyledTableCell colSpan={2}>Thông tin Bill</StyledTableCell>
         </TableRow>
       </TableHead>
         <TableBody>
@@ -383,14 +418,24 @@ return (
               <StyledTableCell component="th" scope="row">
                 Ngày giao
               </StyledTableCell>
-              <StyledTableCell align="right">{new Date(ngayGiao).toLocaleDateString()}</StyledTableCell>
-              <StyledTableCell component="th" scope="row">
-                
-              </StyledTableCell>
-             
-              
+              <StyledTableCell align="right">
+              <MuiPickersUtilsProvider utils={DateFnsUtils} >
+  <KeyboardDatePicker
+  helperText={props.textError}
+  error={props.isError}    
+    variant="inline"
+    format="MM/dd/yyyy"
+    margin="normal"
+    id="date-picker-inline"
+    value={(props.NgayGiao!=null)?new Date(props.NgayGiao).toLocaleDateString():new Date(ngayGiao).toLocaleDateString()}
+    onChange={handleTextFieldChangeNgayGiao}
+    KeyboardButtonProps={{
+      'aria-label': 'change date',
+    }}
+  />
+   </MuiPickersUtilsProvider>
+      </StyledTableCell>
             </StyledTableRow>
-           
         </TableBody>
       </Table>
     </TableContainer>
@@ -510,9 +555,7 @@ return (
           </StyledTableRow>
         ))}
         <TableRow>
-          
           <TableCell rowSpan={1} />
-          
           <TableCell colSpan={1}>
           <Tooltip title="Xóa Giỏ Hàng">
 <IconButton aria-label="removeall" onClick={handleClickOpenDeleteAll}>
@@ -528,11 +571,10 @@ return (
             
             <TableCell colSpan={1}>Tổng Tiền</TableCell>
             <TableCell align="right" colSpan={5}>{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'VND' }).format(newData.reduce((total,i) => total+i.SoLuong*i.GiaBan,0))}
-            <Tooltip title="thanh toán ">
-<IconButton aria-label="payment" onClick={handleClickOpenPayment}>
-          <  PaymentIcon />
-        </IconButton>     
-        </Tooltip>
+           
+        <Button variant="contained" color="primary"  onClick={handle}>
+          Thanh toán
+        </Button>
             </TableCell>
           </TableRow>
          

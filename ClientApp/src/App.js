@@ -11,6 +11,7 @@ import { Review } from './components/Review';
 import { Cart } from './components/Cart';
 import { HistoryBill } from './components/HistoryBill';
 import { Payment } from './components/Payment';
+import { ManageBook } from './components/ManageBook';
 import Badge from '@material-ui/core/Badge';
 import { withStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
@@ -90,8 +91,7 @@ export default class App extends Component {
     };
    this.onCart=this.onCart.bind(this);
    this.onStep=this.onStep.bind(this);
-  // this.onStep1=this.onStep1.bind(this);
-   //this.onStep2=this.onStep2.bind(this);
+
   
   }
     handle()
@@ -108,12 +108,7 @@ export default class App extends Component {
       onStep(param){
         this.setState({activeStep :param});
       }
-     /*onStep1(param){
-        this.setState({activeStep :param});
-      }
-       onStep2(param){
-        this.setState({activeStep :param});
-      }*/
+     
       
      
    
@@ -147,6 +142,7 @@ export default class App extends Component {
         <Route path='/payment' render={(props) => <Payment onStep={this.onStep}  onCart={this.onCart} {...props} />} />
         <Route path='/hisrotyBill' component={HistoryBill} />
         <Route path='/historyDetail' component={HistoryDetail} />
+        <Route path='/manageBook' component={ManageBook} />
       </Layout>
     );
   }

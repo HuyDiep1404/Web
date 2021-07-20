@@ -31,35 +31,31 @@ namespace Web.Services.Book
         {
             return _context.Sach1s.First(x=>x.MaSp == masp);
         }
-        public Sach1 Insert(Sach1 book)
+        public int Insert(Sach1 book)
         {
             
             _context.Sach1s.Add(book);
-            _context.SaveChanges();
+            return _context.SaveChanges();
 
 
-            return book;
+            
         }
-        public void Update(Sach1 book)
+        public int Update(Sach1 book)
         {
             var masp = _context.Sach1s.Find(book.MaSp);
             if (masp == null)
                 throw new Exception("không tìm thấy sản phẩm này");
-          
-                
-
             _context.Sach1s.Update(masp);
-            _context.SaveChanges();
+            return _context.SaveChanges();
 
         }
-        public void Delete(string masp)
+        public int Delete(Sach1 book)
         {
-            var book = _context.Sach1s.Find(masp);
-            if (book != null)
-            {
-                _context.Sach1s.Remove(book);
-                _context.SaveChanges();
-            }
+            var masp = _context.Sach1s.Find(book.MaSp);
+            if (masp == null)
+                throw new Exception("không tìm thấy sản phẩm này");
+            _context.Sach1s.Remove(masp);
+                return _context.SaveChanges();
         }
         public IEnumerable<Nhaxb> GetMaNXB()
         {

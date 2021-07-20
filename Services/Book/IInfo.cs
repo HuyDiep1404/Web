@@ -12,9 +12,9 @@ namespace Web.Services.Book
         IEnumerable<Sach1> Getsuggest(string tensp);
         Sach1 GetMaSP(string masp);
         Sach1 Masp(string masp);
-        Sach1 Insert(Sach1 book);
-        void Update(Sach1 book);
-        void Delete(string masp);
+        int Insert(Sach1 book);
+        int Update(Sach1 book);
+        int Delete(Sach1 book);
         IEnumerable<Nhaxb> GetMaNXB();
         IEnumerable<ChuDe> GetChuDe();
     }
