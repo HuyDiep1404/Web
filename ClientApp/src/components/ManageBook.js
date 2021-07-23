@@ -19,9 +19,18 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import EditIcon from '@material-ui/icons/Edit';
 import { TextField } from '@material-ui/core';
-import RemoveShoppingCartIcon from '@material-ui/icons/RemoveShoppingCart';
-import PaymentIcon from '@material-ui/icons/Payment';
-
+import DateFnsUtils from '@date-io/date-fns';
+import Alert from "@material-ui/lab/Alert";
+import Snackbar from '@material-ui/core/Snackbar';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardTimePicker,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
+import MenuItem from '@material-ui/core/MenuItem';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
 const StyledTableCell = withStyles((theme) => ({
   head: {
     backgroundColor: theme.palette.common.black,
@@ -58,12 +67,34 @@ export class ManageBook extends React.Component {
         SoLuongTon:0,
         MaSp:null,
        click:true,
+       open:false,
        open1:false,
        open2:false,
        open3:false,
+       open4:false,
+       open5:false,
        isError:false,
        soluong:1,
           textError:"",
+          severity:"",
+          click1:false,
+          isError6:false,
+          textError6:"",
+          isError3:false,
+          textError3:"",
+          alert:false,
+          severity:"",
+          Update:{
+        MaSp:null,
+        TenSp:null,
+        GiaBan:null,
+        Mota:null,   
+        NgayCapNhat:null,
+        AnhBia:null,
+        SoLuongTon:null,
+        MaChuDe:null,
+        MaNxb:null
+          }
           
       }
       this.handleDelete=this.handleDelete.bind(this);
@@ -71,61 +102,110 @@ export class ManageBook extends React.Component {
       this.handleClickOpenDelete=this.handleClickOpenDelete.bind(this);
  this.handleClickOpenUpdate=this.handleClickOpenUpdate.bind(this);
    this.handleUpdate=this.handleUpdate.bind(this);
-   this.handleTextFieldChange=this.handleTextFieldChange.bind(this);
-  
-   
+   this.handleOpen1=this.handleOpen1.bind();
+   this.handleTextFieldChange7=this.handleTextFieldChange7.bind(this);
+   this.handleTextFieldChange6=this.handleTextFieldChange6.bind(this);
+   this.handleTextFieldChange5=this.handleTextFieldChange5.bind(this);
+   this.handleTextFieldChange2=this.handleTextFieldChange2.bind(this);
+   this.handleTextFieldChange3=this.handleTextFieldChange3.bind(this);
+   this.handleTextFieldChange4=this.handleTextFieldChange4.bind(this);
+   this.handleClose1=this.handleClose1.bind(this);
+   this.handleClose2=this.handleClose2.bind(this);
+   this.handleMenulist1=this.handleMenulist1.bind(this);
+   this.handleMenulist2=this.handleMenulist2.bind(this);
+   this.handleOpen2=this.handleOpen2.bind(this);
+   this.handleCancel=this.handleCancel.bind(this);
     }
-    handleClose()
+    handleMenulist1()
+    {
+
+    }
+    handleMenulist2()
+    {
+
+    }
+    handleCancel()
     {
       const data= this.state;
       data.open1=false;
       data.open2=false;
-      data.open3=false;
       this.setState(data);
     }
-    
-    handleTextFieldChange(param)
+    handleClose1()
     {
-      let newData= JSON.parse(localStorage.getItem('giohang')) ?? [];
-      let item = newData.find(a => a.MaSp == this.state.masp);
-      const Data=this.state;
-      if(param>item.SoLuongTon)
-      {
-        Data.isError=true;
-        Data.textError="vui lòng nhập lại số lượng vì số lượng vượt quá số lượng tồn";
+      const data= this.state;
+      data.open1=false;
+      data.open2=false;
+      this.setState(data);
+    }
+    handleClose2()
+    {
+      const data= this.state;
+      data.open5=false;
+      this.setState(data);
+    }
+    handleClose( event,reason)//đóng của alert
+    {
+      if (reason === 'clickaway') {
+        return;
       }
-      else
-      {
-        Data.isError=false;
-        Data.textError="";
-        Data.soluong=param; 
-      }
-      this.setState(Data);
-      }
+      const data = this.state;
+      data.open=false;
+      this.setState(data);
+    };
+    
     handleDelete()
     {
-      
-      /*
-      let item = newData.filter(a => a.MaSp !== this.state.masp);//filter là bộ lọc lọc ra có thể là một mảng .
-      //cách làm thay vì xóa ta thục hiện tìm mã khác mã truyền lại và lọc mạng đó khac array ban đầu rồi ta set lại mảng đó    
-      data.open1=false;
+      debugger;
+      const data=this.state;
+      data.open3=false;
       data.click=true;
-      this.setState(data);*/
-      FetchApi('GET', '/Values/getCDVaNXB', 
-        { 'Content-Type': 'application/json' },null, this.callback1);
+      this.setState(data);
+      let model = {
+        MaSp:this.state.MaSp,
+        TenSp:null,
+        GiaBan:null,
+        Mota:null,   
+        NgayCapNhat:null,
+        AnhBia:null,
+        SoLuongTon:null,
+        MaChuDe:null,
+        MaNxb:null
+    };   
+      FetchApi('POST', '/Values/deleteBook',
+      { 'Content-Type': 'application/json' }
+      ,JSON.stringify(model), this.callback1);
+         
     }
     callback1=(data)=>
     {
       const newData=this.state;
-      newData.
+      if(data.alert)
+        {
+          newData.open=true;
+          newData.severity="success";
+          newData.message=data.message;
+          newData.click1=false;
+      this.setState(newData);
+        }
+        else
+        {         
+          newData.open=true;
+          newData.severity="";
+          newData.message=data.message;
+          newData.click1=false;
+      this.setState(newData);
+        }
+     
     }
     
     handleClickOpenDelete(param)
     {
+      debugger;
      
       const data= this.state;
       data.MaSp=param;
-      data.open1=true;
+      data.open3=true;
       
       this.setState(data);
      
@@ -133,6 +213,21 @@ export class ManageBook extends React.Component {
     
       handleUpdate()
       {
+        const data=this.state;
+        let model = {
+          MaSp:data.masp,
+          TenSp:data.Update.TenSp,
+          GiaBan:data.Update.GiaBan,
+          Mota:data.Update.Mota,   
+          NgayCapNhat:data.Update.Mota,
+          AnhBia:data.Update.Mota,
+          SoLuongTon:data.Update.Mota,
+          MaChuDe:data.Update.Mota,
+          MaNxb:data.Update.Mota
+      };   
+      FetchApi('POST', '/Values/updateBill', 
+      { 'Content-Type': 'application/json' },JSON.stringify(model
+          ), this.callback4);
        /* const dataState=this.state;
         let newData= JSON.parse(localStorage.getItem('giohang')) ?? [];    
         let item=newData.find(a => a.MaSp == dataState.masp);
@@ -147,23 +242,99 @@ export class ManageBook extends React.Component {
       
       this.setState(dataState);*/
       }
+      callback4=(data)=>{
+        const newData=this.state;
+        if(data.alert)
+        {
+          newData.open=true;
+          newData.severity="success";
+          newData.message=data.message;
+          this.setState(newData);
+        }
+        else
+        {
+          newData.open=true;
+          newData.severity="error";
+          newData.message="";
+          this.setState(newData);
+        }
+      }
       handleClickOpenUpdate(param)
       {
-     const data= this.state;
-        let newData= JSON.parse(localStorage.getItem('UpdateManageBook')) ?? [];    
-        let item=newData.find(a => a.MaSp == param);
-        if(item)
-        {
-          data.soluong=item.sl;
-          data.SoLuongTon=item.SoLuongTon;
-          
-        }
-        localStorage.setItem('UpdateManageBook', JSON.stringify(newData));
+      const data= this.state;
       data.masp=param;
-      data.open2=true;   
+      data.open4=true;   
       this.setState(data);
+      let sach=data.book.find(a=> a.maSp == param);
+      let newData= JSON.parse(localStorage.getItem('Sach')) ?? [];
+      let item=sach;
+      newData.push(item);
+      localStorage.setItem('Sach', JSON.stringify(newData));  
       
       }
+      handleOpen1()
+      {
+        const data=this.state;
+        data.open1=true;
+        this.setState(data);
+      }
+      handleOpen2()
+      {
+        const data=this.state;
+        data.open2=true;
+        this.setState(data);
+      }
+      handleTextFieldChange2(e)
+      {
+        const data=this.state;
+        data.Update.TenSp=e;
+        this.setState(data);
+      }
+      handleTextFieldChange3(e)
+      {
+        
+        const data=this.state;
+        if(e>0)
+        {
+          data.Update.GiaBan=e;
+          data.isError3=false;
+          data.textError3="";
+        this.setState(data);
+        }
+        else
+        {
+          data.Update.GiaBan=null;
+          data.isError3=true;
+          data.textError3="giá bán phải lớn hơn 0";
+          this.setState(data);
+        }
+        
+        
+      }
+      handleTextFieldChange4(e)
+      {
+        const data=this.state;
+        data.Update.Mota=e;
+        this.setState(data);
+      }
+      handleTextFieldChange5(e)
+      {
+        const data=this.state;
+        let newData= JSON.parse(localStorage.getItem('Sach')) ?? [];
+        let sach=newData.book.find(x=>x.MaSp == this.state.masp);
+        sach.ngayCapNhat=e;
+        localStorage.setItem('Sach', JSON.stringify(newData)); 
+        data.Update.NgayCapNhat=e;
+        this.setState(data);
+      }
+      handleTextFieldChange6(e)
+      {
+        const data=this.state;
+        data.Update.AnhBia=e;
+        this.setState(data);
+      }
+      handleTextFieldChange7(e)
+      {}
       
  
       checkdata()
@@ -179,17 +350,52 @@ export class ManageBook extends React.Component {
   {
       const newData=this.state;
       newData.book=data;
+      newData.click1=false;
       this.setState(newData);
   }
   callapi()
   {
-    if(this.state.book.length == 0)
+    if(this.state.book.length == 0||this.state.click1)
       {
         FetchApi('GET', '/Values/getCDVaNXB', 
         { 'Content-Type': 'application/json' },null, this.callback);
       }
     
   }
+  callback3=(data)=>{ 
+    this.onStep();
+         const newData = this.state;// {...items}còn là 1 bộ hẹn giờ nếu ta không kèm theo điều kiện thì nó sẽ lập vô hạn      
+      newData.ChuDe=data;
+     
+      //vì items ban đầu chưa có gì nên ta phả gán newData.contacts=data để truyền data vào      
+      this.setState(newData);
+      //cập nhật lại dư liệu của cái trạng thái      
+    
+    }
+    callback2=(data)=>{ 
+  
+         const newData = this.state;// {...items}còn là 1 bộ hẹn giờ nếu ta không kèm theo điều kiện thì nó sẽ lập vô hạn      
+      newData.XuatBan=data;
+      //vì items ban đầu chưa có gì nên ta phả gán newData.contacts=data để truyền data vào      
+      this.setState(newData);//cập nhật lại dư liệu của cái trạng thái      
+    
+    }
+  callChuDe()
+  {
+    if(this.state.ChuDe.length === 0)
+    {
+      FetchApi('GET', '/Values/getChuDe', 
+{ 'Content-Type': 'application/json' },null, this.callback3);
+} 
+}
+  callXuatBan()
+  {
+    if(this.state.XuatBan.length === 0)
+    {
+  FetchApi('GET', '/Values/getMaNXB', 
+{ 'Content-Type': 'application/json' },null, this.callback2);
+  }
+}
 
    //ham này chỉ chạy khi trước render.hàm này trong react
       
@@ -198,39 +404,56 @@ export class ManageBook extends React.Component {
   render(){
     this.checkdata();
     this.callapi();
+    const that=this;
 
 
 return(
   <div>
-            {this.state.click &&<ShowCart  book={this.state.book} handleDelete={this.handleDelete} handleClickOpenDelete={this.handleClickOpenDelete} handleClose={this.handleClose} handleDeleteAll={this.handleDeleteAll}
-            handleClickOpenUpdate = {this.handleClickOpenUpdate} handleClickOpenUpdate={this.handleClickOpenUpdate} handleUpdate={this.handleUpdate} handleTextFieldChange={this.handleTextFieldChange}
-            open1={this.state.open1} open2={this.state.open2} open3={this.state.open3} isError={this.state.isError} textError={this.state.textError} SoLuongTon={this.state.SoLuongTon} masp={this.state.masp}
-            soluong={this.state.soluong} />}
+            {this.state.click &&<Show handleCancel={this.handleCancel} XuatBan={this.state.XuatBan} ChuDe={this.state.ChuDe} book={this.state.book} handleDelete={this.handleDelete} handleClickOpenDelete={this.handleClickOpenDelete} handleClose={this.handleClose} handleDeleteAll={this.handleDeleteAll}
+            handleClickOpenUpdate = {this.handleClickOpenUpdate} handleClickOpenUpdate={this.handleClickOpenUpdate} handleUpdate={this.handleUpdate} click1={this.state.click1} isError3={this.state.isError3} textError3={this.state.textError3}
+            open1={this.state.open1} open2={this.state.open2} open3={this.state.open3} open4={this.state.open4} isError={this.state.isError} textError={this.state.textError}  masp={this.state.masp} handleTextFieldChange2={this.handleTextFieldChange2} handleTextFieldChange7={this.handleTextFieldChange7}
+            handleTextFieldChange3={this.handleTextFieldChange3}  handleTextFieldChange4={this.handleTextFieldChange4}  handleTextFieldChange5={this.handleTextFieldChange5} handleUpdate={this.handleUpdate} handleOpen1={this.handleOpen1}
+            soluong={this.state.soluong} handleMenulist1={this.handleMenulist1} handleMenulist2={this.handleMenulist2} handleClose2={this.handleClose2} handleOpen2={this.handleOpen2} />}
+            <Snackbar open={that.state.open} autoHideDuration={3000}  onClose={this.handleClose} >
+         <Alert onClose={this.handleClose} severity={that.state.severity}>
+           {that.state.message}
+         </Alert>      
+       </Snackbar>
         </div>
 
 );
 }    
     
 }
-function ShowCart(props){
+function Show(props){
   const classes = useStyles();
-  let newData= JSON.parse(localStorage.getItem('giohang')) ?? [];
+  let newData= JSON.parse(localStorage.getItem('Sach')) ?? [];
   let tax=0.1;
   const handleClickOpenDelete=(value) => props.handleClickOpenDelete(value);
 const handleDelete =() => props.handleDelete();
+const handleClose1 =()=>props.handleClose1();
+const handleClose2=()=>props.handleClose2();
  const handleClose = () => props.handleClose();
 const handleClickOpenUpdate=(value) => props.handleClickOpenUpdate(value);
-const handleTextFieldChange =(e) =>props.handleTextFieldChange(e.target.value);
+const handleTextFieldChange7=(e)=>props.handleTextFieldChange7(e.target.value);
+const handleTextFieldChange6 =(e) =>props.handleTextFieldChange(e.target.value);
+const handleTextFieldChange5=(e)=>props.handleTextFieldChange5(e.target.value);
+const handleTextFieldChange4=(e)=>props.handleTextFieldChange4(e.target.value);
+const handleTextFieldChange2=(e)=>props.handleTextFieldChange2(e.target.value);
+const handleTextFieldChange3=(e)=>props.handleTextFieldChange3(e.target.value);
 const handleUpdate=()=>props.handleUpdate();
+const handleOpen1=()=>props.handleOpen1();
+const handleOpen2=()=>props.handleOpen2();
+const handleCancel=()=>props.handleCancel();
+const handleMenulist2 = (e) =>props.handleMenulist2(e.target.value);
+const handleMenulist1 = (e) =>props.handleMenulist1(e.target.value);
 return (
   
   <div>
-  
-    <Dialog
-        open={props.open1}
-        
+   <Dialog
+        open={props.open3} 
         keepMounted
-        onClose={handleClose}
+        onClose={handleClose1}
         aria-labelledby="alert-dialog-slide-title"
         aria-describedby="alert-dialog-slide-description"
       >
@@ -241,7 +464,7 @@ return (
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={handleCancel} color="primary">
             không
           </Button>
           <Button onClick={handleDelete} color="primary">
@@ -249,32 +472,181 @@ return (
           </Button>
         </DialogActions>
       </Dialog>
-      <Dialog open={props.open2} onClose={handleClose} aria-labelledby="form-dialog-title">      
-        <DialogContent> 
-        <DialogContentText>
-           Số lượng còn lại trong kho {props.SoLuongTon}
-          </DialogContentText>   
-        <TextField onChange={handleTextFieldChange}    
+      
+    <Dialog
+        open={props.open4}
+        keepMounted
+        onClose={handleClose1}
+        aria-labelledby="alert-dialog-slide-title"
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle id="alert-dialog-slide-title">{"cảnh báo"}</DialogTitle>
+        <DialogContent>
+         
+          <TableContainer component={Paper}>
+      <Table className={classes.table} aria-label="customized table">   
+        <TableBody>
+        
+        <StyledTableRow >
+              <StyledTableCell component="th" scope="row">
+               Tên Sản Phẩm
+              </StyledTableCell>
+              <StyledTableCell align="right">
+                <TextField onChange={handleTextFieldChange2}    
+            autoFocus
+            margin="dense"
+            value={newData.TenSp}
+            id="name"
+            fullWidth
+          /></StyledTableCell>
+            </StyledTableRow>
+            <StyledTableRow >
+              <StyledTableCell component="th" scope="row">
+                Giá Bán
+              </StyledTableCell>
+              <StyledTableCell align="right">
+              <TextField onChange={handleTextFieldChange3}type="number"     
             autoFocus
             margin="dense"
             id="name"
-            defaultValue={props.soluong}
-            type="number"
-            label={props.masp}
+            fullWidth
+            error={props.isError3}//bật câu cảnh báo
+        helperText={props.textError3}
+          />
+              </StyledTableCell>
+            </StyledTableRow>
+            <StyledTableRow >
+              <StyledTableCell component="th" scope="row">
+                Mô tả
+              </StyledTableCell>
+              <StyledTableCell align="right">
+              <TextField onChange={handleTextFieldChange4}    
+            autoFocus
+            margin="dense"
+            id="name"       
+            fullWidth
+          />
+              </StyledTableCell>
+            </StyledTableRow>
+            <StyledTableRow >
+              <StyledTableCell component="th" scope="row">
+                Ngày Cập Nhật
+              </StyledTableCell>
+              <StyledTableCell align="right">
+              <MuiPickersUtilsProvider utils={DateFnsUtils} >
+  <KeyboardDatePicker
+  helperText={props.textError}
+  error={props.isError}    
+    variant="inline"
+    format="MM/dd/yyyy"
+    margin="normal"
+    id="date-picker-inline"
+    value={newData.ngayCapNhat}
+    onChange={handleTextFieldChange5}
+    KeyboardButtonProps={{
+      'aria-label': 'change date',
+    }}
+  />
+   </MuiPickersUtilsProvider>
+              </StyledTableCell>
+            </StyledTableRow>
+            <StyledTableRow >
+              <StyledTableCell component="th" scope="row">
+                Ảnh Bìa
+              </StyledTableCell>
+              <StyledTableCell align="right">
+                <TextField onChange={handleTextFieldChange6} type="file"    
+            autoFocus
+            margin="dense"
+            fullWidth
+            error={props.isError6}//bật câu cảnh báo
+        helperText={props.textError6}
+          /></StyledTableCell>
+            </StyledTableRow>
+            <StyledTableRow >
+              <StyledTableCell component="th" scope="row">
+                Số Lượng Tồn
+              </StyledTableCell>
+              <StyledTableCell align="right">
+                <TextField onChange={handleTextFieldChange7}    
+            autoFocus
+            margin="dense"
+            id="name"
+            
             fullWidth
             error={props.isError}//bật câu cảnh báo
         helperText={props.textError}
-          />
+          /></StyledTableCell>
+            </StyledTableRow>
+            <StyledTableRow >
+              <StyledTableCell component="th" scope="row">
+              Mã Chủ Đề
+              </StyledTableCell>
+              <StyledTableCell align="right">
+                <FormControl className={classes.formControl}>
+        <InputLabel id="demo-controlled-open-select-label">Chọn tình trạng</InputLabel>
+        <Select
+          labelId="demo-controlled-open-select-label"
+          id="demo-controlled-open-select"
+          open={props.open1}
+          onClose={handleClose1}
+          onOpen={handleOpen1}
+          value={props.value}
+          onChange={handleMenulist1}
+        >
+         
+        <MenuItem value={0}>
+            <em>Chọn tình trạng</em>
+          </MenuItem>
+          {props.ChuDe.map((row) => (         
+           <MenuItem  value={row.maChuDe} >{row.tenChuDe}</MenuItem>   
+          ))}                                                
+           </Select>
+      </FormControl>
+              </StyledTableCell>
+            </StyledTableRow>
+            <StyledTableRow >
+              <StyledTableCell component="th" scope="row">
+              MaNxb
+              </StyledTableCell>
+              <StyledTableCell align="right">
+              <FormControl className={classes.formControl}>
+        <InputLabel id="demo-controlled-open-select-label">Chọn tình trạng</InputLabel>
+        <Select
+          labelId="demo-controlled-open-select-label"
+          id="demo-controlled-open-select"
+          open={props.open2}
+          onClose={handleClose2}
+          onOpen={handleOpen2}
+          value={props.value}
+          onChange={handleMenulist2}
+        >
+         
+        <MenuItem value={0}>
+            <em>Chọn tình trạng</em>
+          </MenuItem>
+          {props.XuatBan.map((row) => (         
+           <MenuItem  value={row.maNxb} >{row.tenXb}</MenuItem>   
+          ))}                                                
+           </Select>
+      </FormControl>
+              </StyledTableCell>
+            </StyledTableRow>
+        </TableBody>
+      </Table>
+    </TableContainer>
+         
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Cancel
+          <Button onClick={handleCancel} color="primary">
+            không
           </Button>
           <Button onClick={handleUpdate} color="primary">
-          Accept
+            có
           </Button>
         </DialogActions>
       </Dialog>
+     
 <TableContainer component={Paper}>
     <Table className={classes.table} aria-label="customized table">
       <TableHead>
@@ -299,7 +671,8 @@ return (
             </StyledTableCell>
             <StyledTableCell align="right">{row.tenSp}</StyledTableCell>
             <StyledTableCell align="right">{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'VND' }).format(row.giaBan) }</StyledTableCell>
-            <StyledTableCell align="right">{row.mota}</StyledTableCell>
+            <StyledTableCell align="right">{row.mota}
+        </StyledTableCell>
             <StyledTableCell align="right">{new Date(row.ngayCapNhat).toLocaleDateString()}</StyledTableCell>
             <StyledTableCell align="right" ><img  width="60"height="60"src={row.anhBia} /></StyledTableCell>
             <StyledTableCell align="right">{row.soLuongTon}</StyledTableCell>
@@ -316,7 +689,6 @@ return (
 <IconButton aria-label="update" value={row.maSp} onClick={handleClickOpenUpdate.bind(this,row.maSp)}  >
           < EditIcon />
         </IconButton>     
-        
         </Tooltip>
         </StyledTableCell>
           </StyledTableRow>

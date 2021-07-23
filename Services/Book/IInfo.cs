@@ -17,5 +17,6 @@ namespace Web.Services.Book
         int Delete(Sach1 book);
         IEnumerable<Nhaxb> GetMaNXB();
         IEnumerable<ChuDe> GetChuDe();
+        IEnumerable<Sach1> GetSach();
     }
 }

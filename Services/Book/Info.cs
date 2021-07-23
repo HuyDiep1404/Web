@@ -35,10 +35,11 @@ namespace Web.Services.Book
         {
             
             _context.Sach1s.Add(book);
-            return _context.SaveChanges();
-
-
-            
+            return _context.SaveChanges();  
+        }
+        public IEnumerable<Sach1> GetSach()
+        {
+            return _context.Sach1s;
         }
         public int Update(Sach1 book)
         {
@@ -51,10 +52,10 @@ namespace Web.Services.Book
         }
         public int Delete(Sach1 book)
         {
-            var masp = _context.Sach1s.Find(book.MaSp);
-            if (masp == null)
+            
+            if (book == null)
                 throw new Exception("không tìm thấy sản phẩm này");
-            _context.Sach1s.Remove(masp);
+            _context.Sach1s.Remove(book);
                 return _context.SaveChanges();
         }
         public IEnumerable<Nhaxb> GetMaNXB()
@@ -65,6 +66,6 @@ namespace Web.Services.Book
         {
             return _context.ChuDes;
         }
-
+       
     }
 }

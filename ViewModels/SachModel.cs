@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 
-#nullable disable
-
-namespace Web.Models
+namespace Web.ViewModels
 {
-    public partial class Sach1
+    public class SachModel
     {
-        [Key]
         public string MaSp { get; set; }
         public string TenSp { get; set; }
         public decimal? GiaBan { get; set; }

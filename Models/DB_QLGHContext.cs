@@ -547,7 +547,7 @@ namespace Web.Models
 
             modelBuilder.Entity<Sach1>(entity =>
             {
-                entity.HasNoKey();
+                //entity.HasNoKey();
 
                 entity.ToTable("Sach1");
 

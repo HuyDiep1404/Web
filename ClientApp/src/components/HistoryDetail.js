@@ -255,16 +255,15 @@ export class HistoryDetail extends React.Component {
       {
      
       const data= this.state;
-        let newData= JSON.parse(localStorage.getItem('giohangdathanhtoan')) ?? [];    
-        
-        let item=newData.find(a => a.MaSp == param);
+      let newData= JSON.parse(localStorage.getItem('giohangdathanhtoan')) ?? [];    
+      let item=newData.find(a => a.MaSp == param);
         if(item)
         {
-          data.soluong=item.SoLuong;
+          data.soluong=item.SoLuong;//gán lại số lượng dể kiểm tra trong textbox
           data.SoLuongTon=item.SoLuongTon;
           
         }
-        localStorage.setItem('giohangdathanhtoan', JSON.stringify(newData));
+        localStorage.setItem('giohangdathanhtoan', JSON.stringify(newData));//lưu lại storege
       data.masp=param;
       data.open2=true;   
       this.setState(data);
@@ -314,16 +313,16 @@ export class HistoryDetail extends React.Component {
       const  Mahd =this.props.history.location.state?.Mahd;
         let donhang= JSON.parse(localStorage.getItem('donhang')) ?? [];
         let infobill=donhang.find(i =>i.maHoaDon==Mahd)
-        if((new Date(param)) >= infobill.ngayTao)
+        if((new Date(param)) >= infobill.ngayTao)//xet ngày truyền vào phải tước ngày tạo trong đã lưu
      {
       data.NgayGiao = param;
-      data.isError = false;
+      data.isError = false;//tắt cảnh bảo error hiện lên 
       data.textError = "";
-      this.setState(data); 
+      this.setState(data); //gán lại 
      }
      else
      {
-      data.isError = true;
+      data.isError = true;//bật cảnh báo
       data.textError = "ngày giao hang phải sau ngày đặt hàng"; 
       this.setState(data); 
     }
@@ -336,9 +335,9 @@ export class HistoryDetail extends React.Component {
   //trong nay khoong duoc de ham lien quang den state
     //newData.reduce((total,i) => total+i.sl*i.GiaBan,0) total 1 biến i là phân tử thứ i, reduce là giảm , 0 là giá trị ban đầu 
   render(){
-    let that=this;
+    let that=this;//gán để alert và snackbar sử dụng
     this.checkdata();
-    const data= this.props.history.location.state?.data;
+    const data= this.props.history.location.state?.data;//lấy thông tin user trên history
 return(
   <div>
             {this.state.click &&<ShowCart handleDelete={this.handleDelete} handleClickOpenDelete={this.handleClickOpenDelete} handleClose={this.handleClose} handleDeleteAll={this.handleDeleteAll}

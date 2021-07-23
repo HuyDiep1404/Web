@@ -290,7 +290,7 @@ namespace Web.Controllers
                 return BadRequest(ex.Message);
             }
         }*/
-        public IActionResult UpdateeBill([FromBody] UpdateBillModel model)//RegisterModel là 1 viewmoel,
+        public IActionResult UpdateBill([FromBody] UpdateBillModel model)//RegisterModel là 1 viewmoel,
         {
 
             try
@@ -357,13 +357,13 @@ namespace Web.Controllers
             {
                 var donHang = _dangnhap.GetByMaHD(model.MaHoaDon);
                 donHang.Dathanhtoan = model.Dathanhtoan;
-                if (_dangnhap.Update(donHang) >0)
+                if (_dangnhap.Update(donHang) > 0)
                 {
-                    
+
                     for (int i = 0; i < model.Details1.Length; i++)
                     {
                         var detail = _dangnhap.GetByDetail(model.Details1[i].MaHoaDon, model.Details1[i].MaSp);
-                        if(detail ==null)
+                        if (detail == null)
                         {
                             return NotFound(new
                             {
@@ -371,7 +371,7 @@ namespace Web.Controllers
                             });
 
                         }
-                        _dangnhap.Deletechittiet(detail);    
+                        _dangnhap.Deletechittiet(detail);
                     }
                     return Ok(new
                     {
@@ -383,7 +383,7 @@ namespace Web.Controllers
                 {
                     message = "hủy không thành công đơn hàng" //phai tao ra 1 đối tượng 
                 });
-               
+
             }
             catch (Exception ex)
             {
@@ -392,10 +392,72 @@ namespace Web.Controllers
             }
 
         }
-        //[HttpPost("deleteBill")]
+        [HttpPost("deleteBook")]
+        public IActionResult DeleteBook([FromBody] SachModel model)
+        {
+            var Sach = _info.GetMaSP(model.MaSp);
+            if (_info.Delete(Sach) <= 0)
+            {
+                return NotFound(new
+                {
+                    message = "hủy không thành công đơn hàng" //phai tao ra 1 đối tượng 
+                });
+
+            }
+            else
+                return Ok(new
+                {
+                    alert = true,
+                    message = "đơn hàng đã được hủy"
+                });
+
+        }
+        [HttpPost("updateBook")]
+        public IActionResult UpdateBook([FromBody] SachModel model)//RegisterModel là 1 viewmoel,
+        {
+
+            try
+            {
+
+               
+                var book = new Sach1()
+                {
+                    MaSp = model.MaSp,
+                    TenSp = model.TenSp,
+                    GiaBan = model.GiaBan,
+                    Mota = model.Mota,
+                    NgayCapNhat = model.NgayCapNhat,
+                    AnhBia = model.AnhBia,
+                    SoLuongTon = model.SoLuongTon,
+                    MaChuDe = model.MaChuDe,
+                    MaNxb = model.MaNxb,
+
+                };
+                if(_info.Insert(book) >0)
+                {
+                    return Ok(new
+                    {
+                        alert = true,
+                        message = "đã tạo thành công" //phai tao ra 1 đối tượng 
+                    });
+                }
+                else
+                return Ok(new
+                {
+                    message = "tạo không thành công" //phai tao ra 1 đối tượng 
+                });
+               
+            
+            
+        }
+            catch (Exception ex)
+            {
+                // return error message if there was an exception
+                return BadRequest(ex.Message);
+            }
+        }
 
     }
-
 
 
 }

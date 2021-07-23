@@ -15,6 +15,7 @@ namespace Web.Services.Authenticate
         KhachHangb2 Create(KhachHangb2 customer);
         IEnumerable<KhachHangb2> Get();
         IEnumerable<DonHang> GetDonHang();
+        
         IEnumerable<DonHang> GetDonHanghistory(string makh, DateTime? ngaygiao, DateTime? ngaytao = null, bool? dathanhtoan = null, bool? tinhtranggiaohang = null);
         int CreateBill(DonHang bill);
         int CreateDetail(Chittiet1 detail);
