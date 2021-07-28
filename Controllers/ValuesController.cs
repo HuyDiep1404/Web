@@ -419,21 +419,21 @@ namespace Web.Controllers
             try
             {
 
-               
-                var book = new Sach1()
+
+                var book = _info.GetMaSP(model.MaSp);
                 {
-                    MaSp = model.MaSp,
-                    TenSp = model.TenSp,
-                    GiaBan = model.GiaBan,
-                    Mota = model.Mota,
-                    NgayCapNhat = model.NgayCapNhat,
-                    AnhBia = model.AnhBia,
-                    SoLuongTon = model.SoLuongTon,
-                    MaChuDe = model.MaChuDe,
-                    MaNxb = model.MaNxb,
+                    book.MaSp = model.MaSp;
+                    book.TenSp = model.TenSp;
+                    book.GiaBan = model.GiaBan;
+                    book.Mota = model.Mota;
+                    book.NgayCapNhat = model.NgayCapNhat;
+                    book.AnhBia = model.AnhBia;
+                    book.SoLuongTon = model.SoLuongTon;
+                    book.MaChuDe = model.MaChuDe;
+                    book.MaNxb = model.MaNxb;
 
                 };
-                if(_info.Insert(book) >0)
+                if(_info.Update(book) >0)
                 {
                     return Ok(new
                     {
@@ -456,6 +456,124 @@ namespace Web.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpPost("insertBook")]
+        public IActionResult InsertBook([FromBody] SachModel model)//RegisterModel là 1 viewmoel,
+        {
+
+            try
+            {
+                var c = _info.GetSach().Max(k => int.Parse(k.MaSp.Substring(3, 2))); ;
+                var book = new Sach1()
+                {
+                    MaSp = "MSP" + (c+1),
+                    TenSp = model.TenSp,
+                    GiaBan = model.GiaBan,
+                    Mota = model.Mota,
+                    NgayCapNhat = model.NgayCapNhat,
+                    AnhBia = model.AnhBia,
+                    SoLuongTon = model.SoLuongTon,
+                    MaChuDe = model.MaChuDe,
+                    MaNxb = model.MaNxb
+
+                };
+                if (_info.Insert(book) > 0)
+                {
+                    return Ok(new
+                    {
+                        alert = true,
+                        message = "đã tạo thành công" //phai tao ra 1 đối tượng 
+                    });
+                }
+                else
+                    return Ok(new
+                    {
+                        message = "tạo không thành công" //phai tao ra 1 đối tượng 
+                    });
+
+
+
+            }
+            catch (Exception ex)
+            {
+                // return error message if there was an exception
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPost("insertChuDe")]
+        public IActionResult InsertChuDe([FromBody] ChuDeModel model)//RegisterModel là 1 viewmoel,
+        {
+
+            try
+            {
+                var c = _info.GetChuDe().Count();
+                var chude = new ChuDe()
+                {
+                    MaChuDe = "MCD" + (c + 1),
+                    TenChuDe=model.TenChuDe
+
+                };
+                if (_info.InsertChuDe(chude) > 0)
+                {
+                    return Ok(new
+                    {
+                        alert = true,
+                        message = "đã tạo thành công" //phai tao ra 1 đối tượng 
+                    });
+                }
+                else
+                    return Ok(new
+                    {
+                        message = "tạo không thành công" //phai tao ra 1 đối tượng 
+                    });
+
+
+
+            }
+            catch (Exception ex)
+            {
+                // return error message if there was an exception
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPost("insertNhaXB")]
+        public IActionResult InsertNhaXB([FromBody] NhaXBModel model)//RegisterModel là 1 viewmoel,
+        {
+
+            try
+            {
+                var c = _info.GetMaNXB().Count();
+                var nhaXB = new Nhaxb()
+                {
+                    MaNxb = "MNXB" + (c + 1),
+                    TenXb = model.TenXb,
+                    DiaChi = model.DiaChi,
+                    DienThoai =model.DienThoai
+
+                };
+                if (_info.InsertNhaxb(nhaXB) > 0)
+                {
+                    return Ok(new
+                    {
+                        alert = true,
+                        message = "đã tạo thành công" //phai tao ra 1 đối tượng 
+                    });
+                }
+                else
+                    return Ok(new
+                    {
+                        message = "tạo không thành công" //phai tao ra 1 đối tượng 
+                    });
+
+
+
+            }
+            catch (Exception ex)
+            {
+                // return error message if there was an exception
+                return BadRequest(ex.Message);
+            }
+        }
+
 
     }
 

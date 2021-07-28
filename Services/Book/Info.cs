@@ -66,6 +66,18 @@ namespace Web.Services.Book
         {
             return _context.ChuDes;
         }
-       
+        public int InsertChuDe(ChuDe book)
+        {
+
+            _context.ChuDes.Add(book);
+            return _context.SaveChanges();
+        }
+        public int InsertNhaxb(Nhaxb book)
+        {
+
+            _context.Nhaxbs.Add(book);
+            return _context.SaveChanges();
+        }
+
     }
 }

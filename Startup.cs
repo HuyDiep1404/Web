@@ -34,7 +34,7 @@ namespace Web
             services.AddScoped<IDangnhap, Dangnhap>();
             services.AddScoped<IInfo, Info>();
             services.AddDbContext<DB_QLGHContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(Configuration.GetConnectionString("Local")));
             // In production, the React files will be served from this directory
 
             services.AddSpaStaticFiles(configuration =>

@@ -18,5 +18,7 @@ namespace Web.Services.Book
         IEnumerable<Nhaxb> GetMaNXB();
         IEnumerable<ChuDe> GetChuDe();
         IEnumerable<Sach1> GetSach();
+        int InsertChuDe(ChuDe book);
+        int InsertNhaxb(Nhaxb book);
     }
 }
