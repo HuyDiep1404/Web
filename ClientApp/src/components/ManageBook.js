@@ -31,6 +31,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import PhoneInput, { formatPhoneNumber, formatPhoneNumberIntl, isValidPhoneNumber } from 'react-phone-number-input'
+import 'react-phone-number-input/style.css'
 const StyledTableCell = withStyles((theme) => ({
   head: {
     backgroundColor: theme.palette.common.black,
@@ -48,7 +50,14 @@ const StyledTableRow = withStyles((theme) => ({
     },
   },
 }))(TableRow);
-
+const styles = theme => ({
+  field: {
+    margin: '10px 0',
+  },
+  countryList: {
+    ...theme.typography.body1,
+  },
+});
 const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
@@ -127,7 +136,7 @@ export class ManageBook extends React.Component {
           MaNxb:null,
           TenXb:"",
           DiaChi:"",
-          DienThoai:null
+          DienThoai:""
         }
          //thao tác là Update:là gồm insert và update
           
@@ -385,12 +394,11 @@ export class ManageBook extends React.Component {
       InsertChuDe()
       {
         const data=this.state;
-        FetchApi('POST', '/Values/insertNhaXB', 
+        FetchApi('POST', '/Values/insertChuDe', 
         { 'Content-Type': 'application/json' },JSON.stringify(
           {
-            MaChuDe:data.InsertChuDe.MaChuDe,
-            TenChuDe:data.InsertChuDe.TenChuDe,
-                    
+            MaChuDe:data.ChuDeInsert.MaChuDe,
+            TenChuDe:data.ChuDeInsert.TenChuDe,
           }
         ), this.callback8);
       }
@@ -417,16 +425,16 @@ export class ManageBook extends React.Component {
       InsertNhaXB()
       {
         const data=this.state;
-        FetchApi('POST', '/Values/insertChuDe', 
-        { 'Content-Type': 'application/json' },JSON.stringify(
-          {
-                    MaNxb:data.InsertNhaXB.MaNxb,
-                    TenXb:data.InsertNhaXB.TenXb,
-                    DiaChi:data.InsertNhaXB.DiaChi,
-                    DienThoai:data.InsertNhaXB.DienThoai
+        let model2={
+                    MaNxb:data.NhaXBInsert.MaNxb,
+                    TenXb:data.NhaXBInsert.TenXb,
+                    DiaChi:data.NhaXBInsert.DiaChi,
+                    DienThoai:data.NhaXBInsert.DienThoai
           }
-        ), this.callback7);
-      
+        console.log(model2);
+        FetchApi('POST', '/Values/insertNhaXB', 
+        { 'Content-Type': 'application/json' },JSON.stringify(model2
+            ), this.callback7);
       }
       callback7=(data)=>
       {
@@ -546,7 +554,7 @@ export class ManageBook extends React.Component {
       {
         
           const data =this.state;
-        data.InsertChuDe.TenChuDe=e;
+        data.ChuDeInsert.TenChuDe=e;
         this.setState(data);
         
         
@@ -555,7 +563,7 @@ export class ManageBook extends React.Component {
       {
         
           const data =this.state;
-          data.NhaXBInsert.DiaChiIN=e;
+          data.NhaXBInsert.DiaChi=e;
         this.setState(data);
       }
       handleTextFieldChange9(e)
@@ -723,12 +731,12 @@ return(
   <div>
             {this.state.click &&<Show handleCancel={this.handleCancel} XuatBan={this.state.XuatBan} ChuDe={this.state.ChuDe} book={this.state.book} handleDelete={this.handleDelete} handleClickOpenDelete={this.handleClickOpenDelete} handleClose={this.handleClose} handleDeleteAll={this.handleDeleteAll}
             handleClickOpenUpdate = {this.handleClickOpenUpdate} handleClickOpenUpdate={this.handleClickOpenUpdate} handleUpdate={this.handleUpdate} click1={this.state.click1} isError3={this.state.isError3} textError3={this.state.textError3}
-            open1={this.state.open1} open6={this.state.open6} open2={this.state.open2} open3={this.state.open3} open4={this.state.open4} isError={this.state.isError} textError={this.state.textError}  masp={this.state.masp} handleTextFieldChange2={this.handleTextFieldChange2} handleTextFieldChange7={this.handleTextFieldChange7}
+            open1={this.state.open1} open6={this.state.open6}open7={this.state.open7} open8={this.state.open8} open2={this.state.open2} open3={this.state.open3} open4={this.state.open4} isError={this.state.isError} textError={this.state.textError}  masp={this.state.masp} handleTextFieldChange2={this.handleTextFieldChange2} handleTextFieldChange7={this.handleTextFieldChange7}
             handleTextFieldChange3={this.handleTextFieldChange3}  handleTextFieldChange4={this.handleTextFieldChange4}  handleTextFieldChange5={this.handleTextFieldChange5} handleUpdate={this.handleUpdate} handleOpen1={this.handleOpen1} value1={this.state.value1} Insertopen={this.Insertopen}
             soluong={this.state.soluong} masp={this.state.masp} handleMenulist1={this.handleMenulist1} handleMenulist2={this.handleMenulist2} handleClose2={this.handleClose2} handleOpen2={this.handleOpen2} value2={this.state.value2} ChuDe={this.state.ChuDe} XuatBan={this.state.XuatBan}GiaBan={this.state.Update.GiaBan}
             handleClose1={this.handleClose1} handleInsert={this.handleInsert}  handleTextFieldChange6={this.handleTextFieldChange6} NgayCapNhat={this.state.Update.NgayCapNhat}TenSp={this.state.Update.TenSp}Mota={this.state.Update.Mota} MaNxb={this.state.Update.MaNxb}SoLuongTon={this.state.Update.SoLuongTon}MaChuDe={this.state.Update.MaChuDe}
             MaSpI={this.state.Insert.MaSp} NgayCapNhatI={this.state.Insert.NgayCapNhat}TenSpI={this.state.Insert.TenSp}MotaI={this.state.Insert.Mota} MaNxbI={this.state.Insert.MaNxb}SoLuongTonI={this.state.Insert.SoLuongTon}MaChuDeI={this.state.Insert.MaChuDe}GiaBanI={this.state.Insert.GiaBan} InsertNhaXB={this.InsertNhaXB} InsertChuDe={this.InsertNhaXB}
-             TenXbIN={this.state.InsertNhaXB.TenXb} DiaChiIN={this.state.InsertNhaXB.DiaChi} DienThoaiIN={this.state.InsertNhaXB.DienThoai} TenChuDe={this.state.InsertChuDe.TenChuDe} InsertNhaXBOpen={this.InsertNhaXBOpen} InsertChuDeOpen={this.InsertChuDeOpen}
+             TenXbIN={this.state.NhaXBInsert.TenXb} DiaChiIN={this.state.NhaXBInsert.DiaChi} DienThoaiIN={this.state.NhaXBInsert.DienThoai} TenChuDeIN={this.state.ChuDeInsert.TenChuDe} InsertNhaXBOpen={this.InsertNhaXBOpen} InsertChuDeOpen={this.InsertChuDeOpen}
             handleTextFieldChange8={this.handleTextFieldChange8}handleTextFieldChange9={this.handleTextFieldChange9} handleTextFieldChange10={this.handleTextFieldChange10} handleTextFieldChange11={this.handleTextFieldChange11}  />}
             <Snackbar open={that.state.open} autoHideDuration={3000}  onClose={this.handleClose} >
          <Alert onClose={this.handleClose} severity={that.state.severity}>
@@ -743,7 +751,6 @@ return(
 }
 function Show(props){
   const classes = useStyles();
-
   
   let tax=0.1;
   const handleClickOpenDelete=(value) => props.handleClickOpenDelete(value);
@@ -761,7 +768,7 @@ const handleTextFieldChange3=(e)=>props.handleTextFieldChange3(e.target.value);
 const handleTextFieldChange8=(e)=>props.handleTextFieldChange8(e.target.value);
 const handleTextFieldChange9=(e)=>props.handleTextFieldChange9(e.target.value);
 const handleTextFieldChange10=(e)=>props.handleTextFieldChange10(e.target.value);
-const handleTextFieldChange11=(e)=>props.handleTextFieldChange11(e.target.value);
+const handleTextFieldChange11=(e)=>props.handleTextFieldChange11(e);
 
 const handleUpdate=()=>props.handleUpdate();
 const handleOpen1=()=>props.handleOpen1();
@@ -788,7 +795,7 @@ return (
 <Button variant="contained" color="primary"  onClick={Insertopen}>
           Insert 
         </Button>
-        <Dialog
+        {props.open8&&<Dialog
         open={props.open8}
         keepMounted
         width={400} 
@@ -830,7 +837,8 @@ return (
           </Button>
         </DialogActions>
       </Dialog>
-      <Dialog
+      }
+      {props.open7&&<Dialog
         open={props.open7}
         keepMounted
         width={400} 
@@ -850,10 +858,10 @@ return (
               Tên Xuat Ban
               </StyledTableCell>
               <StyledTableCell align="right">
-                <TextField onChange={handleTextFieldChange10}    
+                <TextField onChange={handleTextFieldChange9}    
             autoFocus
             margin="dense"
-            value={props.TenChuDeIN}
+            value={props.TenXbIN}
             id="name"
             fullWidth
           /></StyledTableCell>
@@ -863,7 +871,7 @@ return (
              Địa chỉ
               </StyledTableCell>
               <StyledTableCell align="right">
-                <TextField onChange={handleTextFieldChange9}    
+                <TextField onChange={handleTextFieldChange10}    
             autoFocus
             margin="dense"
             value={props.DiaChiIN}
@@ -876,13 +884,12 @@ return (
              Số Điện Thoại
               </StyledTableCell>
               <StyledTableCell align="right">
-                <TextField onChange={handleTextFieldChange11}    
-            autoFocus
-            margin="dense"
-            value={props.DienThoaiIN}
-            id="name"
-            fullWidth
-          /></StyledTableCell>
+              <PhoneInput
+    international
+    value={props.DienThoaiIN}
+  //initialValueFormat="national"
+    error={props.DienThoaiIN ? (isValidPhoneNumber(props.DienThoaiIN) ? undefined : 'Invalid phone number') : 'Phone number required'}
+    onChange={handleTextFieldChange11}/></StyledTableCell>
             </StyledTableRow>  
                
           </TableBody>
@@ -898,7 +905,7 @@ return (
             có
           </Button>
         </DialogActions>
-      </Dialog>
+      </Dialog>}
         {props.open6&&<Dialog
         open={props.open6}
         keepMounted

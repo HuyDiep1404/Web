@@ -133,7 +133,7 @@ namespace Web.Models
 
             modelBuilder.Entity<ChuDe>(entity =>
             {
-                entity.HasNoKey();
+                //entity.HasNoKey();
 
                 entity.ToTable("ChuDe");
 
@@ -498,7 +498,7 @@ namespace Web.Models
 
             modelBuilder.Entity<Nhaxb>(entity =>
             {
-                entity.HasNoKey();
+                //entity.HasNoKey();
 
                 entity.ToTable("Nhaxb");
 
