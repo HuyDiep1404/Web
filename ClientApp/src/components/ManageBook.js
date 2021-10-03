@@ -394,13 +394,14 @@ export class ManageBook extends React.Component {
       InsertChuDe()
       {
         const data=this.state;
+        let model3=
+        {
+          MaChuDe:data.ChuDeInsert.MaChuDe,
+          TenChuDe:data.ChuDeInsert.TenChuDe,
+        }
         FetchApi('POST', '/Values/insertChuDe', 
-        { 'Content-Type': 'application/json' },JSON.stringify(
-          {
-            MaChuDe:data.ChuDeInsert.MaChuDe,
-            TenChuDe:data.ChuDeInsert.TenChuDe,
-          }
-        ), this.callback8);
+        { 'Content-Type': 'application/json' },JSON.stringify(model3),
+         this.callback8);
       }
       callback8=(data)=>
       {
@@ -431,7 +432,7 @@ export class ManageBook extends React.Component {
                     DiaChi:data.NhaXBInsert.DiaChi,
                     DienThoai:data.NhaXBInsert.DienThoai
           }
-        console.log(model2);
+        
         FetchApi('POST', '/Values/insertNhaXB', 
         { 'Content-Type': 'application/json' },JSON.stringify(model2
             ), this.callback7);
